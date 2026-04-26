@@ -25,6 +25,18 @@ updates:
           - "pytest*"
           - "ruff"
           - "httpx"
+    ignore:
+      # Lockstep with FastAPI 0.115.x: block majors until coordinated upgrade.
+      - dependency-name: "fastapi"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "pydantic"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "uvicorn"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "pytest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "ruff"
+        update-types: ["version-update:semver-major"]
 
   # Frontend (Next.js / shadcn / Tailwind)
   - package-ecosystem: npm
@@ -69,12 +81,34 @@ updates:
           - "typescript"
           - "@types/node"
     ignore:
-      # Major bumps via dedicated PRs (manual review)
+      # Next 14.x lockstep: every dep below must major-bump in concert
+      # with `next` itself, so block solo majors until we plan a full
+      # Next 15/16 upgrade as a dedicated PR.
       - dependency-name: "next"
         update-types: ["version-update:semver-major"]
       - dependency-name: "react"
         update-types: ["version-update:semver-major"]
       - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint-config-next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "tailwind-merge"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "autoprefixer"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "postcss"
         update-types: ["version-update:semver-major"]
 
   # GitHub Actions
