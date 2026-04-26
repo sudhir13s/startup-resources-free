@@ -137,6 +137,32 @@ export type ProvidersResponse = {
   category_counts: { category: string; count: number }[];
 };
 
+export type ChangeSeverity =
+  | "new"
+  | "improved"
+  | "reduced"
+  | "ended"
+  | "unchanged";
+
+export type Change = {
+  provider_id: string;
+  provider_name: string;
+  category: string;
+  field: string;
+  old_value: unknown;
+  new_value: unknown;
+  severity: ChangeSeverity;
+  snapshot_date: string;
+  detected_at: string;
+};
+
+export type ChangesResponse = {
+  total: number;
+  items: Change[];
+  snapshot_dates: string[];
+  latest_snapshot: string | null;
+};
+
 export function isTier(value: string | undefined | null): value is Tier {
   return value !== undefined && value !== null && (TIERS as string[]).includes(value);
 }
