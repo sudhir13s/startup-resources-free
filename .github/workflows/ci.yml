@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  backend:
-    name: backend lint + tests
+  python:
+    name: python lint + tests (backend + freellm)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,9 +20,15 @@ jobs:
       - name: install dev deps
         run: pip install -r backend/requirements-dev.txt
       - name: ruff
-        run: ruff check backend/
+        run: ruff check backend/ freellm/
       - name: pytest
-        run: pytest backend/tests -v
+        run: pytest backend/tests freellm/tests -v
+      - name: freellm CLI smoke
+        run: |
+          python -m freellm version
+          python -m freellm catalog
+          python -m freellm catalog --modality text
+          python -m freellm keys
 
   build-frontend:
     name: frontend lint + build

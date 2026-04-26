@@ -1,0 +1,92 @@
+version: 2
+updates:
+  # Backend (FastAPI / Pydantic / pytest)
+  - package-ecosystem: pip
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - backend
+    commit-message:
+      prefix: chore(deps-backend)
+    groups:
+      python-runtime:
+        patterns:
+          - "fastapi"
+          - "uvicorn*"
+          - "pydantic*"
+      python-dev:
+        patterns:
+          - "pytest*"
+          - "ruff"
+          - "httpx"
+
+  # Frontend (Next.js / shadcn / Tailwind)
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - frontend
+    commit-message:
+      prefix: chore(deps-frontend)
+    groups:
+      next-stack:
+        patterns:
+          - "next"
+          - "next-themes"
+          - "eslint-config-next"
+      react-stack:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react*"
+      tailwind-stack:
+        patterns:
+          - "tailwindcss"
+          - "tailwind-merge"
+          - "autoprefixer"
+          - "postcss"
+      radix-stack:
+        patterns:
+          - "@radix-ui/*"
+          - "class-variance-authority"
+          - "clsx"
+          - "lucide-react"
+      dev-tooling:
+        patterns:
+          - "eslint"
+          - "typescript"
+          - "@types/node"
+    ignore:
+      # Major bumps via dedicated PRs (manual review)
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Asia/Kolkata
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: chore(deps-actions)
