@@ -1,25 +1,40 @@
-import { Suspense } from "react";
-import { TierFilterChips } from "@/components/TierFilterChips";
+import { TopBar } from "@/components/TopBar";
+import { Sidebar } from "@/components/Sidebar";
+import { SubTabs } from "@/components/SubTabs";
 import {
   ProviderGrid,
   ProviderGridSkeleton,
 } from "@/components/ProviderGrid";
 import {
   DEFAULT_TIER,
+  TIERS,
+  TIER_LABELS,
   isTier,
   type ProvidersResponse,
   type Tier,
+  type ParseConfidence,
 } from "@/lib/utils";
+import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
 const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8000";
 
+function getAll(
+  searchParams: Record<string, string | string[] | undefined> | undefined,
+  key: string
+): string[] {
+  if (!searchParams) return [];
+  const v = searchParams[key];
+  if (v === undefined) return [];
+  return Array.isArray(v) ? v : [v];
+}
+
 async function fetchProviders(
-  tier: Tier | null
+  params: URLSearchParams
 ): Promise<ProvidersResponse | null> {
   const url = new URL("/api/providers", BACKEND_URL);
-  if (tier) url.searchParams.set("tier", tier);
+  params.forEach((v, k) => url.searchParams.append(k, v));
   try {
     const res = await fetch(url.toString(), {
       headers: { accept: "application/json" },
@@ -32,123 +47,151 @@ async function fetchProviders(
   }
 }
 
-async function fetchAllForCounts(): Promise<ProvidersResponse | null> {
-  return fetchProviders(null);
-}
-
-function buildCounts(all: ProvidersResponse | null): Record<Tier, number> {
-  const counts: Record<Tier, number> = {
-    hobby: 0,
-    personal: 0,
-    "startup-mvp": 0,
-    startup: 0,
-  };
-  if (!all) return counts;
-  for (const item of all.items) {
-    for (const t of item.use_case_tiers) {
-      counts[t] += 1;
-    }
-  }
-  return counts;
-}
+const VALID_REGIONS = new Set(["india", "india-accessible"]);
+const VALID_CONFIDENCE: ParseConfidence[] = ["high", "medium", "low"];
 
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams?: { tier?: string };
+  searchParams?: Record<string, string | string[] | undefined>;
 }) {
-  const tierParam = searchParams?.tier;
-  const tier: Tier = isTier(tierParam) ? tierParam : DEFAULT_TIER;
+  const rawTier = typeof searchParams?.tier === "string" ? searchParams.tier : undefined;
+  const tier: Tier = isTier(rawTier) ? rawTier : DEFAULT_TIER;
+  const categories = getAll(searchParams, "category");
+  const offerTypes = getAll(searchParams, "offer_type");
+  const region = (typeof searchParams?.region === "string" && VALID_REGIONS.has(searchParams.region))
+    ? searchParams.region
+    : "any";
+  const minConfidenceRaw = typeof searchParams?.min_confidence === "string" ? searchParams.min_confidence : undefined;
+  const minConfidence: ParseConfidence = (VALID_CONFIDENCE as string[]).includes(minConfidenceRaw ?? "")
+    ? (minConfidenceRaw as ParseConfidence)
+    : "medium";
 
-  const [filtered, all] = await Promise.all([
-    fetchProviders(tier),
-    fetchAllForCounts(),
-  ]);
+  const filtered = new URLSearchParams();
+  filtered.set("tier", tier);
+  if (region === "india" || region === "india-accessible") {
+    filtered.set("india", "true");
+  }
+  categories.forEach((c) => filtered.append("category", c));
+  offerTypes.forEach((o) => filtered.append("offer_type", o));
+  filtered.set("min_confidence", minConfidence);
 
-  const counts = buildCounts(all);
-  const indiaCount = (all?.items ?? []).filter((p) => p.india_accessible).length;
+  const filteredResp = await fetchProviders(filtered);
+
+  // Tier counts come from the backend (computed across the full dataset).
+  const tierCountsArr = filteredResp?.tier_counts ?? [];
+  const tierCounts: Record<Tier, number> = {
+    hobby: 0,
+    personal: 0,
+    "startup-mvp": 0,
+    "pre-seed": 0,
+    seed: 0,
+    "series-a": 0,
+  };
+  for (const tc of tierCountsArr) tierCounts[tc.tier] = tc.count;
+
+  const totalProvidersTracked = filteredResp?.total ?? 0;
+  const matched = filteredResp?.items ?? [];
 
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
-      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="font-mono text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            ResourceOS
-          </h1>
-          <p className="mt-1 max-w-2xl text-sm text-white/70">
-            Free-tier cloud, GPU, AI APIs, databases, startup credits and
-            grants — ranked by what your project actually needs.{" "}
-            <span className="text-orange-300">
-              Built India-primary ({indiaCount} providers work in India).
-            </span>
-          </p>
-        </div>
-        <nav
-          aria-label="Primary"
-          className="flex items-center gap-1 self-start font-mono text-xs text-white/60 sm:self-end"
+    <div className="flex min-h-screen flex-col bg-bg-base text-fg">
+      <TopBar />
+
+      <div className="flex flex-1 flex-col md:flex-row">
+        <Sidebar currentTier={tier} tierCounts={tierCounts} />
+
+        <main
+          id="main"
+          className="flex-1 px-4 py-6 sm:px-6 lg:px-8"
         >
-          <span className="rounded-md border border-bg-subtle bg-bg-surface px-2.5 py-1 text-white">
-            Catalog
-          </span>
-          <span
-            className="cursor-not-allowed rounded-md border border-bg-subtle/40 px-2.5 py-1 text-white/30"
-            title="Coming soon"
-          >
-            Compare
-          </span>
-          <span
-            className="cursor-not-allowed rounded-md border border-bg-subtle/40 px-2.5 py-1 text-white/30"
-            title="Coming soon"
-          >
-            Changes
-          </span>
-          <span
-            className="cursor-not-allowed rounded-md border border-bg-subtle/40 px-2.5 py-1 text-white/30"
-            title="Coming soon"
-          >
-            Verify
-          </span>
-        </nav>
-      </header>
+          <div className="mx-auto flex max-w-6xl flex-col gap-5">
+            <header className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
+              <h1 className="text-2xl font-semibold tracking-tight text-fg">
+                Catalog
+              </h1>
+              <span className="font-mono text-xs text-fg-subtle">
+                {totalProvidersTracked} providers tracked
+              </span>
+            </header>
 
-      <section aria-label="Project stage filter">
-        <TierFilterChips current={tier} counts={counts} />
-      </section>
+            <SubTabs matchedCount={filteredResp?.matched ?? 0} />
 
-      <main id="main">
-        <Suspense fallback={<ProviderGridSkeleton />}>
-          {filtered ? (
-            <ProviderGrid items={filtered.items} />
-          ) : (
-            <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-6 text-sm text-rose-200">
-              <p className="font-semibold">Backend unreachable.</p>
-              <p className="mt-1 text-rose-200/80">
-                Check that the FastAPI service at{" "}
-                <code className="font-mono">{BACKEND_URL}</code> is running
-                (free-tier Render services spin down after 15 min idle —
-                first request can take ~30–60 s).
+            <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
+              <p className="text-sm text-fg-muted">
+                Showing{" "}
+                <span className="font-semibold text-fg">
+                  {filteredResp?.matched ?? 0}
+                </span>{" "}
+                providers fit for{" "}
+                <span className="font-medium text-accent">
+                  {TIER_LABELS[tier]}
+                </span>
               </p>
+              <div
+                role="radiogroup"
+                aria-label="Sort"
+                className="flex items-center gap-1 rounded-md border border-border bg-bg-surface p-0.5"
+              >
+                <button
+                  type="button"
+                  aria-pressed="true"
+                  className="rounded-sm bg-bg-tile px-2.5 py-1 text-xs font-medium text-fg"
+                >
+                  Best Fit
+                </button>
+                <button
+                  type="button"
+                  disabled
+                  title="Coming soon"
+                  className="cursor-not-allowed px-2.5 py-1 text-xs text-fg-subtle"
+                >
+                  Recently Verified
+                </button>
+                <button
+                  type="button"
+                  disabled
+                  title="Coming soon"
+                  className="cursor-not-allowed px-2.5 py-1 text-xs text-fg-subtle"
+                >
+                  A–Z
+                </button>
+              </div>
             </div>
-          )}
-        </Suspense>
-      </main>
 
-      <footer className="mt-6 flex flex-col gap-2 border-t border-bg-subtle pt-6 text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between">
-        <span>
-          Showing {filtered?.matched ?? 0} of {all?.total ?? 0} providers ·
-          tier <span className="font-mono">{tier}</span> · v0.1-seed
-        </span>
-        <span>
-          <a
-            href="https://github.com/sudhir13s/startup-resources-free"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-accent"
-          >
-            github.com/sudhir13s/startup-resources-free
-          </a>
-        </span>
-      </footer>
+            <Suspense fallback={<ProviderGridSkeleton />}>
+              {filteredResp ? (
+                <ProviderGrid items={matched} />
+              ) : (
+                <div className="rounded-xl border border-bad/30 bg-bad/10 p-6 text-sm text-bad">
+                  <p className="font-semibold">Backend unreachable.</p>
+                  <p className="mt-1 text-bad/80">
+                    FastAPI service at{" "}
+                    <code className="font-mono text-xs">{BACKEND_URL}</code>{" "}
+                    is not responding. Free-tier Render Web Services spin
+                    down after 15 min idle — first request can take ~30–60 s.
+                    Try refreshing.
+                  </p>
+                </div>
+              )}
+            </Suspense>
+
+            <footer className="mt-4 flex flex-col items-start justify-between gap-2 border-t border-border pt-4 text-[10px] text-fg-subtle sm:flex-row sm:items-center">
+              <span className="font-mono">
+                tier <span className="text-fg-muted">{tier}</span> · all 6
+                tiers tracked: {TIERS.join(", ")} · v0.1-seed
+              </span>
+              <a
+                href="https://github.com/sudhir13s/startup-resources-free"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent"
+              >
+                github.com/sudhir13s/startup-resources-free
+              </a>
+            </footer>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

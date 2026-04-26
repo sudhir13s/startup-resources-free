@@ -33,11 +33,13 @@ If `/validate` later flips this to a public product (FreeStackHub.com angle), up
 
 ## Headline features (LOCKED by user 2026-04-26)
 
-1. **Use-case tier filter.** UI filters by intended project stage. Tiers:
-   - `hobby` — weekend project, learning, throwaway demos
-   - `personal` — small personal site / tool, low traffic, single user
-   - `startup-mvp` — pre-revenue prototype, ~10-1000 users, want easy upgrade path
-   - `startup` — paying users, production reliability, free tier as dev/sandbox only
+1. **Use-case tier filter.** Sidebar radio list (Lovable-style). 6-tier scheme:
+   - `hobby` — weekend tinkering, learning, throwaway demos
+   - `personal` — small personal site / tool, single user, always-on
+   - `startup-mvp` — pre-revenue prototype, ~10-1000 users, easy upgrade path
+   - `pre-seed` — bootstrapped or friends-and-family-funded, early traction
+   - `seed` — post-seed round, $0.5–5M raised
+   - `series-a` — post-Series A, paying users + production scale
 2. **Agentic discovery + extraction.** Daily GH Actions cron + manual `python -m pipeline.run`. Vendor-neutral agentic stack — direct LiteLLM calls + small in-repo orchestrator. NEVER ties to a single vendor's agent SDK.
 3. **`freellm/` router library.** Single source of truth for the free-LLM catalog. Knows every free provider's text / vision / image-gen / video / embedding tier. Routes calls in a quota-aware chain so total spend stays at $0. Reusable as a library outside this project. See [`freellm-router.md`](./.claude/rules/project/freellm-router.md).
 4. **Free-LLM-Chain filter** in the dashboard UI — see only the LLM/multimodal providers `freellm/` knows about, with live chain order + quota state + a "test the chain" button that proves the $0 promise.
@@ -172,8 +174,8 @@ User mandate: deployed-on-Render basic version in **~2 hours from 12:06 IST**. 3
 
 1. **Hardcoded seed** at `data/seed.json` — 15-20 hand-curated provider records. Fields: `id, name, category, tiers[], geo_priority, india_accessible, headline, free_tier_summary, source_url, parse_confidence, last_verified_at`. NO scraping. NO LLM calls. NO SQLite.
 2. **FastAPI**: ONE file `api/main.py`, ONE route `GET /api/providers?tier=&india=` reading + filtering the seed JSON. `/api/health`. Uvicorn entry. CORS-allow the Next.js origin.
-3. **Next.js 14 App Router**: ONE page `app/page.tsx`. Components: `TierFilterChips` (4 chips, hobby pre-selected), `ProviderCard` (logo + name + tier badges + 3 key limits + "Works in India" badge if applicable + parse-confidence dot + freshness), `ProviderGrid` (CSS grid: 1/2/3 col responsive). shadcn/ui components: `card`, `button`, `badge` only.
-4. **Theme**: dark-only. `#0f172a` bg + slate accent + cyan tier-active. NO toggle. WCAG 4.5:1 verified.
+3. **Next.js 14 App Router** (Lovable-redesign 2026-04-26): TopBar (logo + nav + ⌘K search + status pill + Run-now + theme toggle) · left Sidebar (tier radio + category checkboxes + offer-type checkboxes + region select + parse-confidence buttons + Reset) · main with SubTabs (Catalog active, Compare/Changes/Verify SOON) · Provider cards with three stat tiles (Free Quota / Duration / Region), tier-fit pill, offer + eligibility, Source link, Details expand, parse-confidence dot, freshness footer.
+4. **Theme**: light + dark via `next-themes` (CSS variables, `class` attribute on `<html>`). Default dark, system-aware, toggle in TopBar right side. Both palettes contrast-checked.
 5. **Tab bar in nav**: 4 labels rendered, but Compare/Changes/Verify are visually muted with `Coming soon` tooltip. Click is a no-op.
 6. **Detail view**: inline expanded card on click (NOT slide-over, NOT separate route). Faster, no focus-trap accessibility risk.
 7. **Render deploy**: `render.yaml` declaring **two Web Services** — FastAPI + Next.js. **NOT Static Site** for Next.js (server components + route handlers require a runtime). Free-tier Render services do NOT share a private network, so frontend calls API via its public Render URL via env var `BACKEND_URL`. CORS_ORIGINS on FastAPI must match the frontend's Render URL exactly.
@@ -226,7 +228,7 @@ Confidence 8+ findings from 2026-04-26 roundtable. Every box MUST be ticked befo
 - [ ] **A1-4** — Catalog-only scope; no agentic / SQLite / cron / 3-tabs in v0.1 (Architect)
 - [ ] **F-B1** — `GET /api/providers` route exists, returns seed JSON (Frontend)
 - [ ] **F-B2** — Next.js 14 App Router project initialized with TS strict + Tailwind (Frontend)
-- [ ] **D-B1** — Tier chip `startup-mvp` pre-selected on first paint (user override 2026-04-26 — was originally `hobby`); grid renders filtered cards immediately (Designer)
+- [ ] **D-B1** — Tier filter (Lovable-style sidebar radio list, 6-tier scheme: hobby/personal/startup-mvp/pre-seed/seed/series-a) renders with `personal` pre-selected on first paint; grid renders filtered cards immediately. (User override 2026-04-26: was `hobby`, then redesign added 6 tiers, default became `personal`.)
 - [ ] **D-B2** — Skeleton pulse cards render during data fetch — no empty white screen (Designer)
 - [ ] **D-B3** — 4.5:1 contrast verified on body text + ≥3:1 on large text (Designer)
 - [ ] **DO-B1** — Next.js is `type: web` not `static-site` in render.yaml (DevOps)

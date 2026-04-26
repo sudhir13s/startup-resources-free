@@ -51,8 +51,8 @@
   // ^ One of: india-native | accessible-from-india | global-other | us-only | eu-only | other-region
   // See "GEO_PRIORITY rubric" below.
 
-  // Use-case fit (locked enum — drives the dashboard tier filter)
-  "use_case_tiers": ["hobby", "personal", "startup-mvp"],
+  // Use-case fit (locked 6-tier enum — drives the dashboard tier filter)
+  "use_case_tiers": ["hobby", "personal", "startup-mvp", "pre-seed"],
   // ^ Multi-valued. A provider "fits" a tier when its free offer is sufficient + safe to use at that stage.
   // See "Use-case tier rubric" below for how to assign these. Set by collector heuristic; overridable by user.
 
@@ -108,16 +108,18 @@ When the collector / LLM is uncertain, use `global-other` (most permissive defau
 
 A grant or accelerator can carry BOTH `geo_priority` AND a more granular country list in `eligibility.regions`. The two are not redundant — `geo_priority` drives default sort + UI tabs; `eligibility.regions` is precise truth.
 
-## USE_CASE_TIER rubric (locked — assigning these consistently is critical for the filter UX)
+## USE_CASE_TIER rubric (LOCKED — 6-tier scheme, updated 2026-04-26 from Lovable design)
 
 | Tier | Project profile | Resource fit criteria |
 |---|---|---|
 | `hobby` | Weekend tinkering, learning, throwaway demos | Any free tier qualifies. Even 30-day trials. Sleep-after-inactivity OK. Public-only OK. |
 | `personal` | Small personal site / tool. Single user or family. Always-on expected. | Always-free OR refresh-without-CC OR free-tier with no aggressive sleep. Auth + minimal DB. |
-| `startup-mvp` | Pre-revenue prototype, ~10-1000 users, want easy upgrade path | Production-grade SLA on free tier, room to grow into paid without rewrite, no surprise overage charges, supports auth + custom domain. |
-| `startup` | Paying users, production reliability, free tier as dev/sandbox only | Provider has a credible paid path AND the free tier is genuinely useful for staging/dev. Otherwise, omit this tier. |
+| `startup-mvp` | Pre-revenue MVP, ~10-1000 users, want easy upgrade path | Production-grade SLA on free tier, room to grow into paid without rewrite, no surprise overage charges, supports auth + custom domain. |
+| `pre-seed` | Bootstrapped / friends-and-family-funded, 1-3 person team, early traction | Free tier sufficient for first 1k–10k MAU. OR: program targets pre-seed founders (e.g. AWS Activate Founders, GCP Start). |
+| `seed` | Post-seed-round, ~$500k-$5M raised, 3-15 person team | Free tier as dev/sandbox + meaningful credit programs (AWS Activate Portfolio, GCP for Startups Scale, Azure for Startups Pro). |
+| `series-a` | Post-Series-A, paying users + production scale, 15-50 person team | Free tier as dev only; emphasis on enterprise credit programs, accelerator alumni perks, large-scale grants. |
 
-A record can carry MULTIPLE tier slugs. Most quality offers fit `["hobby", "personal", "startup-mvp"]`. A few enterprise-grade products fit `["startup-mvp", "startup"]`. A 14-day-only trial is `["hobby"]`.
+A record can carry MULTIPLE tier slugs. Most quality dev resources fit `["hobby", "personal", "startup-mvp", "pre-seed"]`. Credit programs fit `["pre-seed", "seed", "series-a"]`. Cheap-and-cheerful free tiers fit `["hobby", "personal"]`.
 
 **Negative criteria — when to NOT include a tier:**
 - Don't tag `personal` if the provider sleeps containers after 15 min idle on free.
@@ -148,8 +150,10 @@ A record can carry MULTIPLE tier slugs. Most quality offers fit `["hobby", "pers
 - `scraped_at` ≤ now + 5 min (clock skew tolerance). Reject future timestamps beyond that.
 - `currency` and `credit_amount` are both null OR both non-null.
 - `eligibility.regions` non-empty array. Use `["global"]` if open to anyone.
-- `use_case_tiers` non-empty array, every element ∈ {hobby, personal, startup-mvp, startup}.
-- `tier_fit_rationale` required when `use_case_tiers` includes `startup-mvp` or `startup` (forces the collector / LLM to defend the claim).
+- `use_case_tiers` non-empty array, every element ∈ {hobby, personal, startup-mvp, pre-seed, seed, series-a}.
+- `tier_fit_rationale` required when `use_case_tiers` includes any of `seed`, `series-a` (forces the collector / LLM to defend the claim).
+- `quota_summary`, `duration_summary`, `region_summary` required (drive the three stat tiles in the card UI). All three MUST be ≤ 30 chars to fit the tile layout. Use `Always free`, `Global`, `Rate-limited`, etc.
+- `eligibility_summary` required (one short phrase like "Any developer with email", "Any user", "DPIIT-recognized startups").
 
 ## Migrations
 

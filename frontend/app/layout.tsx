@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "ResourceOS — Free-tier resources, ranked by project stage",
+  title: "ResourceOS — free-tier resources, ranked by project stage",
   description:
-    "Personal-first dashboard aggregating free-tier cloud, GPU, AI APIs, databases, startup credits, grants, and OSS resources. Ranked for hobby / personal / startup-MVP / startup. India-primary.",
+    "Personal-first dashboard aggregating free-tier cloud, GPU, AI APIs, databases, startup credits, grants, and OSS resources. Ranked for hobby / personal / startup-MVP / pre-seed / seed / Series A. India-primary.",
 };
 
 export default function RootLayout({
@@ -13,15 +14,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-screen bg-bg-base text-white antialiased">
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen bg-bg-base text-fg antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded focus:bg-accent focus:px-3 focus:py-2 focus:text-accent-fg"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-accent focus:px-3 focus:py-2 focus:text-accent-fg"
         >
           Skip to content
         </a>
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

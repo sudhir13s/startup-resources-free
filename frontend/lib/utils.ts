@@ -5,25 +5,42 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export type Tier = "hobby" | "personal" | "startup-mvp" | "startup";
+export type Tier =
+  | "hobby"
+  | "personal"
+  | "startup-mvp"
+  | "pre-seed"
+  | "seed"
+  | "series-a";
 
-export const TIERS: Tier[] = ["hobby", "personal", "startup-mvp", "startup"];
+export const TIERS: Tier[] = [
+  "hobby",
+  "personal",
+  "startup-mvp",
+  "pre-seed",
+  "seed",
+  "series-a",
+];
 
 export const TIER_LABELS: Record<Tier, string> = {
   hobby: "Hobby",
   personal: "Personal",
   "startup-mvp": "Startup MVP",
-  startup: "Startup",
+  "pre-seed": "Pre-seed",
+  seed: "Seed",
+  "series-a": "Series A",
 };
 
 export const TIER_DESCRIPTIONS: Record<Tier, string> = {
   hobby: "Weekend tinkering, learning, throwaway demos",
   personal: "Small personal site or tool, single user, always-on",
-  "startup-mvp": "Pre-revenue prototype, 10–1000 users, easy upgrade path",
-  startup: "Paying users, production reliability, free tier as dev/sandbox",
+  "startup-mvp": "Pre-revenue prototype, 10–1000 users",
+  "pre-seed": "Bootstrapped or friends-and-family-funded, early traction",
+  seed: "Post-seed round, $0.5–5M raised",
+  "series-a": "Post-Series A, paying users + production scale",
 };
 
-export const DEFAULT_TIER: Tier = "startup-mvp";
+export const DEFAULT_TIER: Tier = "personal";
 
 export type GeoPriority =
   | "india-native"
@@ -35,12 +52,74 @@ export type GeoPriority =
 
 export type ParseConfidence = "high" | "medium" | "low";
 
+export type OfferType =
+  | "always-free"
+  | "free-credits"
+  | "free-trial"
+  | "free-quota"
+  | "grant"
+  | "perk"
+  | "oss";
+
+export const OFFER_TYPES: OfferType[] = [
+  "always-free",
+  "free-credits",
+  "free-trial",
+  "free-quota",
+  "grant",
+  "perk",
+  "oss",
+];
+
+export const CATEGORIES = [
+  "cloud",
+  "gpu",
+  "ai-api",
+  "databases",
+  "storage",
+  "auth",
+  "observability",
+  "domains",
+  "startup-credits",
+  "grants",
+  "accelerators",
+  "perks",
+  "oss",
+  "learning",
+  "hosting",
+] as const;
+
+export type Category = (typeof CATEGORIES)[number];
+
+export const CATEGORY_LABELS: Record<string, string> = {
+  cloud: "Cloud",
+  gpu: "GPU",
+  "ai-api": "AI APIs",
+  databases: "Databases",
+  storage: "Storage",
+  auth: "Auth",
+  observability: "Observability",
+  domains: "Domains",
+  "startup-credits": "Startup Credits",
+  grants: "Grants",
+  accelerators: "Accelerators",
+  perks: "Perks",
+  oss: "OSS",
+  learning: "Learning",
+  hosting: "Hosting",
+};
+
 export type Provider = {
   id: string;
   name: string;
   category: string;
   headline: string;
   free_tier_summary: string;
+  quota_summary: string;
+  duration_summary: string;
+  region_summary: string;
+  offer_type: OfferType;
+  eligibility_summary: string;
   use_case_tiers: Tier[];
   india_accessible: boolean;
   geo_priority: GeoPriority;
@@ -54,10 +133,16 @@ export type ProvidersResponse = {
   total: number;
   matched: number;
   items: Provider[];
+  tier_counts: { tier: Tier; count: number }[];
+  category_counts: { category: string; count: number }[];
 };
 
-export function isTier(value: string | undefined): value is Tier {
-  return value !== undefined && (TIERS as string[]).includes(value);
+export function isTier(value: string | undefined | null): value is Tier {
+  return value !== undefined && value !== null && (TIERS as string[]).includes(value);
+}
+
+export function isOfferType(value: string): value is OfferType {
+  return (OFFER_TYPES as string[]).includes(value);
 }
 
 export function relativeTime(isoDate: string): string {
@@ -72,4 +157,14 @@ export function relativeTime(isoDate: string): string {
   if (abs < 2592000) return rtf.format(Math.round(diffSec / 86400), "day");
   if (abs < 31536000) return rtf.format(Math.round(diffSec / 2592000), "month");
   return rtf.format(Math.round(diffSec / 31536000), "year");
+}
+
+export function tierFitFirst(tiers: Tier[]): Tier | null {
+  if (tiers.length === 0) return null;
+  return tiers[0];
+}
+
+export function tierFitLast(tiers: Tier[]): Tier | null {
+  if (tiers.length === 0) return null;
+  return tiers[tiers.length - 1];
 }

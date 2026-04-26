@@ -3,17 +3,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-bg-base",
+  "inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium transition-colors",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-accent/20 text-accent",
-        outline: "border-bg-subtle text-white/80",
-        muted: "border-bg-subtle bg-bg-subtle/40 text-white/60",
-        success: "border-transparent bg-emerald-500/20 text-emerald-300",
-        warning: "border-transparent bg-amber-500/20 text-amber-300",
-        danger: "border-transparent bg-rose-500/20 text-rose-300",
-        india: "border-transparent bg-orange-500/20 text-orange-300",
+        default: "border-transparent bg-accent/15 text-accent",
+        outline: "border-border-strong text-fg-muted",
+        muted: "border-border bg-bg-tile text-fg-subtle",
+        solid: "border-transparent bg-bg-subtle text-fg-muted",
+        success: "border-transparent bg-ok/15 text-ok",
+        warning: "border-transparent bg-warn/15 text-warn",
+        danger: "border-transparent bg-bad/15 text-bad",
+        india: "border-transparent bg-india/15 text-india",
+        soon: "border-transparent bg-bg-subtle text-fg-subtle uppercase tracking-wide",
       },
     },
     defaultVariants: { variant: "default" },
