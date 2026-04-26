@@ -12,8 +12,14 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.3"
-      - key: CORS_ORIGINS
-        sync: false
+      # Auto-resolved from the web service host. No manual entry needed
+      # after Blueprint sync. Render expands `host` to e.g.
+      # "startup-resources.onrender.com" — code prepends https:// scheme.
+      - key: CORS_ORIGIN_HOST
+        fromService:
+          type: web
+          name: startup-resources
+          property: host
 
   - type: web
     name: startup-resources
@@ -27,7 +33,11 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "20.12.2"
-      - key: BACKEND_URL
-        sync: false
+      # Auto-resolved from the api service host. Code prepends https://.
+      - key: BACKEND_HOST
+        fromService:
+          type: web
+          name: startup-resources-api
+          property: host
       - key: NEXT_PUBLIC_APP_ENV
         value: production

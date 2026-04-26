@@ -27,6 +27,19 @@ ALL_OFFER_TYPES = [
 ]
 
 
+# ---------- / (friendly index) ----------
+
+
+def test_root_returns_service_index():
+    r = client.get("/")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["service"] == "ResourceOS API"
+    assert body["status"] == "ok"
+    assert "/api/health" in body["endpoints"]["health"]
+    assert "/api/providers" in body["endpoints"]["providers"]
+
+
 # ---------- /api/health ----------
 
 
@@ -174,3 +187,41 @@ def test_at_least_one_record_per_offer_type_we_use():
     # Seed currently exercises these five (perk + oss are valid enum members
     # but optional in v0.1).
     assert {"always-free", "free-quota", "free-credits", "free-trial", "grant"}.issubset(used)
+
+
+# ---------- CORS env resolution ----------
+
+
+def test_cors_resolves_explicit_origins(monkeypatch: pytest.MonkeyPatch):
+    """CORS_ORIGINS (full URLs, comma-sep) wins over CORS_ORIGIN_HOST."""
+    import importlib
+
+    monkeypatch.setenv("CORS_ORIGINS", "https://a.example,https://b.example")
+    monkeypatch.setenv("CORS_ORIGIN_HOST", "ignored.example")
+    import main as fresh
+
+    importlib.reload(fresh)
+    assert fresh.allow_origins == ["https://a.example", "https://b.example"]
+
+
+def test_cors_resolves_host_with_https_prefix(monkeypatch: pytest.MonkeyPatch):
+    """CORS_ORIGIN_HOST is host-only — module prepends https://."""
+    import importlib
+
+    monkeypatch.delenv("CORS_ORIGINS", raising=False)
+    monkeypatch.setenv("CORS_ORIGIN_HOST", "startup-resources.onrender.com")
+    import main as fresh
+
+    importlib.reload(fresh)
+    assert fresh.allow_origins == ["https://startup-resources.onrender.com"]
+
+
+def test_cors_falls_back_to_wildcard(monkeypatch: pytest.MonkeyPatch):
+    import importlib
+
+    monkeypatch.delenv("CORS_ORIGINS", raising=False)
+    monkeypatch.delenv("CORS_ORIGIN_HOST", raising=False)
+    import main as fresh
+
+    importlib.reload(fresh)
+    assert fresh.allow_origins == ["*"]

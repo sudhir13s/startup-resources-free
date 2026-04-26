@@ -168,3 +168,21 @@ export function tierFitLast(tiers: Tier[]): Tier | null {
   if (tiers.length === 0) return null;
   return tiers[tiers.length - 1];
 }
+
+/** Resolve backend base URL.
+ *
+ * Order of precedence:
+ *   1. BACKEND_URL — full URL incl. scheme (manual entry path).
+ *   2. BACKEND_HOST — host only, scheme prepended (Render fromService.host).
+ *   3. http://localhost:8000 — local-dev fallback.
+ *
+ * Server-only — do NOT call from a Client Component (process.env not
+ * available there).
+ */
+export function resolveBackendUrl(): string {
+  const explicit = process.env.BACKEND_URL?.trim();
+  if (explicit) return explicit.replace(/\/+$/, "");
+  const host = process.env.BACKEND_HOST?.trim();
+  if (host) return `https://${host.replace(/^https?:\/\//, "")}`;
+  return "http://localhost:8000";
+}

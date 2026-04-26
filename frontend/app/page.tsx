@@ -10,6 +10,7 @@ import {
   TIERS,
   TIER_LABELS,
   isTier,
+  resolveBackendUrl,
   type ProvidersResponse,
   type Tier,
   type ParseConfidence,
@@ -18,7 +19,7 @@ import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8000";
+const BACKEND_URL = resolveBackendUrl();
 
 function getAll(
   searchParams: Record<string, string | string[] | undefined> | undefined,

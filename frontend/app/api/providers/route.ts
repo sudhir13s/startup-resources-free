@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import type { ProvidersResponse } from "@/lib/utils";
+import { resolveBackendUrl, type ProvidersResponse } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8000";
+const BACKEND_URL = resolveBackendUrl();
 
 const FORWARD_KEYS = [
   "tier",

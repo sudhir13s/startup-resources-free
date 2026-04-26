@@ -100,14 +100,47 @@ def compute_counts(
 
 app = FastAPI(title=SERVICE_NAME, version=SERVICE_VERSION)
 
-cors_origins_env = os.environ.get("CORS_ORIGINS", "*")
-allow_origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
+
+def _resolve_cors_origins() -> list[str]:
+    """Resolve CORS allow-list from CORS_ORIGINS (full URLs, comma-sep) OR
+    CORS_ORIGIN_HOST (Render fromService.host — single hostname, scheme added).
+    """
+    explicit = os.environ.get("CORS_ORIGINS", "").strip()
+    if explicit:
+        return [o.strip() for o in explicit.split(",") if o.strip()]
+    host = os.environ.get("CORS_ORIGIN_HOST", "").strip()
+    if host:
+        return [f"https://{host}"]
+    return ["*"]
+
+
+allow_origins = _resolve_cors_origins()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
     allow_methods=["GET"],
     allow_headers=["*"],
 )
+
+
+@app.get("/")
+async def root() -> dict:
+    """Friendly index — replaces the default 404 at `/` so visitors who
+    open the API URL directly see the live service identity + endpoints.
+    """
+    return {
+        "service": SERVICE_NAME,
+        "version": SERVICE_VERSION,
+        "status": "ok",
+        "endpoints": {
+            "health": "/api/health",
+            "providers": "/api/providers",
+            "openapi": "/openapi.json",
+            "docs": "/docs",
+        },
+        "docs_url": "/docs",
+        "github": "https://github.com/sudhir13s/startup-resources-free",
+    }
 
 
 @app.get("/api/health")
