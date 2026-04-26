@@ -104,13 +104,19 @@ app = FastAPI(title=SERVICE_NAME, version=SERVICE_VERSION)
 def _resolve_cors_origins() -> list[str]:
     """Resolve CORS allow-list from CORS_ORIGINS (full URLs, comma-sep) OR
     CORS_ORIGIN_HOST (Render fromService.host — single hostname, scheme added).
+
+    If CORS_ORIGIN_HOST has no dot (e.g. raw service name), auto-append
+    `.onrender.com` so a Render service-name entry still produces a valid
+    Origin header to match.
     """
     explicit = os.environ.get("CORS_ORIGINS", "").strip()
     if explicit:
         return [o.strip() for o in explicit.split(",") if o.strip()]
     host = os.environ.get("CORS_ORIGIN_HOST", "").strip()
     if host:
-        return [f"https://{host}"]
+        cleaned = host.removeprefix("https://").removeprefix("http://").rstrip("/")
+        full = cleaned if "." in cleaned else f"{cleaned}.onrender.com"
+        return [f"https://{full}"]
     return ["*"]
 
 

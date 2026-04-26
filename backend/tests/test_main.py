@@ -216,6 +216,29 @@ def test_cors_resolves_host_with_https_prefix(monkeypatch: pytest.MonkeyPatch):
     assert fresh.allow_origins == ["https://startup-resources.onrender.com"]
 
 
+def test_cors_auto_suffixes_render_service_name(monkeypatch: pytest.MonkeyPatch):
+    """Bare Render service name (no dot) -> auto-append .onrender.com."""
+    import importlib
+
+    monkeypatch.delenv("CORS_ORIGINS", raising=False)
+    monkeypatch.setenv("CORS_ORIGIN_HOST", "startup-resources")
+    import main as fresh
+
+    importlib.reload(fresh)
+    assert fresh.allow_origins == ["https://startup-resources.onrender.com"]
+
+
+def test_cors_strips_scheme_and_trailing_slash(monkeypatch: pytest.MonkeyPatch):
+    import importlib
+
+    monkeypatch.delenv("CORS_ORIGINS", raising=False)
+    monkeypatch.setenv("CORS_ORIGIN_HOST", "https://startup-resources.onrender.com/")
+    import main as fresh
+
+    importlib.reload(fresh)
+    assert fresh.allow_origins == ["https://startup-resources.onrender.com"]
+
+
 def test_cors_falls_back_to_wildcard(monkeypatch: pytest.MonkeyPatch):
     import importlib
 
