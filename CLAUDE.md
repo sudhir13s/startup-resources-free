@@ -237,6 +237,25 @@ Confidence 8+ findings from 2026-04-26 roundtable. Every box MUST be ticked befo
 
 Plus standard `/release` gates (QA, Security, DevOps, Docs).
 
+## Dependency-update workflow (auto-pilot)
+
+`.github/dependabot.yml` opens weekly PRs (Mon 06:00 IST) grouped by stack:
+
+- `python-runtime` (fastapi, uvicorn, pydantic) — minor + patch only.
+- `python-dev` (pytest, ruff, httpx) — minor + patch only.
+- `next-stack` (next, next-themes, eslint-config-next) — minor + patch only.
+- `react-stack` (react, react-dom, @types/react) — minor + patch only.
+- `tailwind-stack` (tailwindcss, tailwind-merge, autoprefixer, postcss) — minor + patch only.
+- `radix-stack` (@radix-ui/*, class-variance-authority, clsx, lucide-react) — all bumps allowed.
+- `dev-tooling` (eslint, typescript, @types/node) — minor + patch only.
+- `github-actions` — all bumps allowed.
+
+Major bumps for the lockstep deps (`next`, `react`, `react-dom`, `eslint*`, `tailwind*`, `typescript`, `@types/node`, `@types/react*`, `autoprefixer`, `postcss`, `fastapi`, `pydantic`, `uvicorn`, `pytest`, `ruff`) are **blocked** at dependabot level — they require coordinated upgrade PRs (e.g. Next 15/16 cutover) so they don't break CI in solo bumps.
+
+`.github/workflows/dependabot-auto-merge.yml` watches CI completion and, when a Dependabot PR's CI finishes green, approves + squash-merges + deletes the branch immediately. Free-tier private repos don't get GitHub's native auto-merge UI; this workflow_run-triggered approach replaces it without paid plan.
+
+End result: dependency PRs flow Dependabot → CI → auto-merge → main → Render auto-deploys, hands-off.
+
 ## Workflow expectations
 
 - **Greenfield.** Run `/validate` (Market + CEO + CTO + Product) BEFORE `/design`. Personal-tool framing changes the demand bar — make sure CEO + Product agree this is worth building vs. just maintaining a Notion list.
