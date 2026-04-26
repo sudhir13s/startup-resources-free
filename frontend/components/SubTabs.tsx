@@ -13,9 +13,9 @@ type Tab = {
 
 const TABS: readonly Tab[] = [
   { key: "catalog", label: "Catalog", href: "/", soon: false },
-  { key: "compare", label: "Compare", href: "/compare", soon: true },
+  { key: "compare", label: "Compare", href: "/compare", soon: false },
   { key: "changes", label: "Changes", href: "/changes", soon: false },
-  { key: "verify", label: "Verify", href: "/verify", soon: true },
+  { key: "verify", label: "Verify", href: "/verify", soon: false },
 ] as const;
 
 export function SubTabs({ matchedCount }: { matchedCount?: number }) {
