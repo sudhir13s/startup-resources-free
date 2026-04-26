@@ -1,6 +1,8 @@
-# startup-resources-free
+# ResourceOS — startup-resources-free
 
-> A personal-first **resource intelligence dashboard** that aggregates free / discounted / time-limited offerings across cloud, GPUs, AI APIs, databases, hosting, startup credits, grants, and OSS goldmines — and ranks them for **hobby / personal / startup-MVP / startup** projects, India-primary.
+> **ResourceOS** is a personal-first **resource intelligence dashboard** that aggregates free / discounted / time-limited offerings across cloud, GPUs, AI APIs, databases, hosting, startup credits, grants, and OSS goldmines — and ranks them for **hobby / personal / startup-MVP / startup** projects, India-primary.
+>
+> Repo slug: `startup-resources-free`. Product display name: **ResourceOS**.
 
 **Status: pre-code — `/design` + `/build` cycles produce v0.1 next.**
 

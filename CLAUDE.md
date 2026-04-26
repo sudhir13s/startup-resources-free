@@ -16,9 +16,9 @@ A personal-first **resource intelligence dashboard** that aggregates free / disc
 
 Source: [`project-idea.md`](./project-idea.md) (full brainstorm).
 
-## Working name
+## Display name
 
-Not locked. Candidates: **FreeStack Radar**, **Resource Command Center**, **ResourceOS**, **FounderOS**, **Infra Compass**. Pick during `/validate`.
+**ResourceOS** — locked by user 2026-04-26 (chosen over FounderOS / FreeStack Radar / Infra Compass / Resource Command Center). Repo slug remains `startup-resources-free`. UI title, README header, and FastAPI `/api/health` `service_name` all read **ResourceOS**.
 
 ## Goal posture (important)
 
@@ -218,6 +218,21 @@ If any block exceeds budget by > 50%, STOP and reassess scope — don't push the
 - **Env-var circular dependency** (DevOps flag): Frontend needs API URL; API needs frontend URL for CORS. Both services must be NAMED first in `render.yaml`, then URLs derived as `https://<name>.onrender.com`, then both env vars set in Render dashboard BEFORE first deploy. Failure mode: deploy succeeds but CORS rejects all calls.
 - Seed data accuracy: 15 hand-picked records sourced from public free-tier pages today. Mark `last_verified_at: 2026-04-26` and `parse_confidence: high` only after a manual click-through.
 - One specialist (designer) suggested `/provider/[slug]` static route for detail view; downgraded to inline-expand for time. Promote to a route in v0.2 when slide-over goes in.
+
+### `/release` verification checklist (CRITICAL findings — must all pass before ship)
+
+Confidence 8+ findings from 2026-04-26 roundtable. Every box MUST be ticked before `/release`.
+
+- [ ] **A1-4** — Catalog-only scope; no agentic / SQLite / cron / 3-tabs in v0.1 (Architect)
+- [ ] **F-B1** — `GET /api/providers` route exists, returns seed JSON (Frontend)
+- [ ] **F-B2** — Next.js 14 App Router project initialized with TS strict + Tailwind (Frontend)
+- [ ] **D-B1** — Tier chip "hobby" pre-selected on first paint; grid renders filtered cards immediately (Designer)
+- [ ] **D-B2** — Skeleton pulse cards render during data fetch — no empty white screen (Designer)
+- [ ] **D-B3** — 4.5:1 contrast verified on body text + ≥3:1 on large text (Designer)
+- [ ] **DO-B1** — Next.js is `type: web` not `static-site` in render.yaml (DevOps)
+- [ ] **DO-B2** — `BACKEND_URL` (frontend) + `CORS_ORIGINS` (api) set in Render dashboard before first deploy; both URLs derived from `name:` fields BEFORE deploy (DevOps)
+
+Plus standard `/release` gates (QA, Security, DevOps, Docs).
 
 ## Workflow expectations
 
