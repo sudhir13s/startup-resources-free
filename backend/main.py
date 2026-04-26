@@ -9,6 +9,8 @@ from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+import snapshots as snap_module
+
 SEED_PATH = Path(__file__).parent.parent / "data" / "seed.json"
 SERVICE_NAME = "ResourceOS API"
 SERVICE_VERSION = "0.1.0"
@@ -156,6 +158,25 @@ async def health() -> dict:
         "service_name": SERVICE_NAME,
         "version": SERVICE_VERSION,
     }
+
+
+@app.get("/api/changes", response_model=snap_module.ChangesResponse)
+async def list_changes(
+    limit: int = Query(default=200, ge=1, le=1000),
+    since: str | None = Query(default=None, description="YYYY-MM-DD lower bound"),
+) -> snap_module.ChangesResponse:
+    """Reverse-chronological feed of field-level changes between snapshots.
+
+    With <2 snapshots present, returns an empty list (cron writes the
+    second snapshot once daily LLM-pipeline keys are configured).
+    """
+    return snap_module.compute_changes(limit=limit, since=since)
+
+
+@app.get("/api/snapshots")
+async def list_snapshot_dates() -> dict[str, list[str] | str | None]:
+    dates = snap_module.list_snapshots()
+    return {"dates": dates, "latest": dates[-1] if dates else None}
 
 
 @app.get("/api/providers", response_model=ProvidersResponse)
