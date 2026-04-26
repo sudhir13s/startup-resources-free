@@ -42,12 +42,12 @@ export function TopBar({
         >
           Free-LLM Chain
         </Link>
-        <span
-          className="cursor-not-allowed rounded-md px-3 py-1.5 text-xs text-fg-subtle"
-          title="Coming soon"
+        <Link
+          href="/media-benchmark"
+          className="rounded-md px-3 py-1.5 text-xs font-medium text-fg-muted hover:text-fg"
         >
           Media Benchmark
-        </span>
+        </Link>
         <span
           className="cursor-not-allowed rounded-md px-3 py-1.5 text-xs text-fg-subtle"
           title="Coming soon"
