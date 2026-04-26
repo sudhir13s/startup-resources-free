@@ -174,6 +174,8 @@ export function tierFitLast(tiers: Tier[]): Tier | null {
  * Order of precedence:
  *   1. BACKEND_URL — full URL incl. scheme (manual entry path).
  *   2. BACKEND_HOST — host only, scheme prepended (Render fromService.host).
+ *      If the value has no dot (e.g. user entered "startup-resources-api"
+ *      thinking it was a service name), auto-append ".onrender.com".
  *   3. http://localhost:8000 — local-dev fallback.
  *
  * Server-only — do NOT call from a Client Component (process.env not
@@ -182,7 +184,21 @@ export function tierFitLast(tiers: Tier[]): Tier | null {
 export function resolveBackendUrl(): string {
   const explicit = process.env.BACKEND_URL?.trim();
   if (explicit) return explicit.replace(/\/+$/, "");
-  const host = process.env.BACKEND_HOST?.trim();
-  if (host) return `https://${host.replace(/^https?:\/\//, "")}`;
+
+  const rawHost = process.env.BACKEND_HOST?.trim();
+  if (rawHost) {
+    const cleaned = rawHost
+      .replace(/^https?:\/\//, "")
+      .replace(/\/+$/, "");
+    // Defensive: if user entered a bare Render service name (no TLD),
+    // assume it's a `<service>.onrender.com`. Without this, an entry of
+    // "startup-resources-api" yields "https://startup-resources-api"
+    // which has no DNS resolution and fails every fetch.
+    const fullHost = cleaned.includes(".")
+      ? cleaned
+      : `${cleaned}.onrender.com`;
+    return `https://${fullHost}`;
+  }
+
   return "http://localhost:8000";
 }
