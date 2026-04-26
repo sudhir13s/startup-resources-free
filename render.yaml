@@ -16,7 +16,7 @@ services:
         sync: false
 
   - type: web
-    name: startup-resources-web
+    name: startup-resources
     runtime: node
     plan: free
     region: oregon

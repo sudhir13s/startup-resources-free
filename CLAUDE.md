@@ -163,6 +163,7 @@ Until scaffolded, only docs exist. `/design` produces the task list that creates
 | Writing/editing any LLM call, agent, or pipeline orchestrator | [.claude/rules/project/agentic-pipeline.md](./.claude/rules/project/agentic-pipeline.md) |
 | Writing/editing `freellm/` (the free-LLM router library) | [.claude/rules/project/freellm-router.md](./.claude/rules/project/freellm-router.md) |
 | Writing/editing the Media Benchmark dashboard (v0.3+) | [.claude/rules/project/media-benchmark.md](./.claude/rules/project/media-benchmark.md) |
+| Migrating off Render (any host change) | [.claude/rules/project/hosting-migration.md](./.claude/rules/project/hosting-migration.md) |
 
 Global rules from `~/.claude/rules/` still bind. These extend, not replace.
 
