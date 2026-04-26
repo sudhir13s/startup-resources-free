@@ -22,6 +22,7 @@ const NAV_ITEMS = [
   { label: "Changes", href: "/changes" },
   { label: "Verify", href: "/verify" },
   { label: "Free-LLM Chain", href: "/freellm" },
+  { label: "Media Benchmark", href: "/media-benchmark" },
 ] as const;
 
 export function CommandPalette() {
