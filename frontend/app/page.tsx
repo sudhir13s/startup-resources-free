@@ -7,7 +7,6 @@ import {
 import {
   DEFAULT_TIER,
   isTier,
-  TIERS,
   type ProvidersResponse,
   type Tier,
 } from "@/lib/utils";
@@ -150,8 +149,6 @@ export default async function HomePage({
           </a>
         </span>
       </footer>
-      {/* Suppress unused import warning for TIERS in static export */}
-      <span className="hidden">{TIERS.length}</span>
     </div>
   );
 }
