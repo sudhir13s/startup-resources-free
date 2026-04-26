@@ -36,6 +36,12 @@ export function TopBar({
         >
           Catalog
         </Link>
+        <Link
+          href="/freellm"
+          className="rounded-md px-3 py-1.5 text-xs font-medium text-fg-muted hover:text-fg"
+        >
+          Free-LLM Chain
+        </Link>
         <span
           className="cursor-not-allowed rounded-md px-3 py-1.5 text-xs text-fg-subtle"
           title="Coming soon"
@@ -51,23 +57,23 @@ export function TopBar({
       </nav>
 
       <div className="order-last flex w-full items-center sm:order-none sm:flex-1 sm:max-w-md">
-        <label htmlFor="search" className="sr-only">
-          Search resources
-        </label>
-        <div className="relative w-full">
+        <button
+          type="button"
+          onClick={() =>
+            window.dispatchEvent(new CustomEvent("open-command-palette"))
+          }
+          aria-label='Open search ("⌘K")'
+          aria-haspopup="dialog"
+          className="relative flex h-9 w-full items-center rounded-md border border-border bg-bg-surface pl-9 pr-12 text-left text-xs text-fg-subtle hover:bg-bg-tile focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        >
           <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-subtle" />
-          <input
-            id="search"
-            type="text"
-            placeholder='Try "free postgres 10gb" or "AI inference for India"'
-            disabled
-            aria-disabled="true"
-            className="h-9 w-full rounded-md border border-border bg-bg-surface pl-9 pr-12 text-xs text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-70"
-          />
+          <span className="truncate">
+            Try &quot;free postgres 10gb&quot; or &quot;AI inference for India&quot;
+          </span>
           <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-border bg-bg-tile px-1.5 py-0.5 font-mono text-[10px] text-fg-subtle sm:inline">
             ⌘K
           </kbd>
-        </div>
+        </button>
       </div>
 
       <div className="ml-auto flex items-center gap-2 shrink-0">

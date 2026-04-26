@@ -2,14 +2,25 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, Query
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+# Make the repo-root `freellm/` package importable when uvicorn runs from
+# the `backend/` rootDir on Render. Tests already run with cwd at repo
+# root so this is a no-op there.
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
-import snapshots as snap_module
+from fastapi import FastAPI, Query  # noqa: E402
+from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
+from pydantic import BaseModel  # noqa: E402
+
+import snapshots as snap_module  # noqa: E402
+from freellm import plan as freellm_plan  # noqa: E402
+from freellm.providers import PROVIDERS as FREELLM_PROVIDERS  # noqa: E402
+from freellm.schemas import ALL_MODALITIES, Modality as FreellmModality  # noqa: E402
 
 SEED_PATH = Path(__file__).parent.parent / "data" / "seed.json"
 SERVICE_NAME = "ResourceOS API"
@@ -177,6 +188,54 @@ async def list_changes(
 async def list_snapshot_dates() -> dict[str, list[str] | str | None]:
     dates = snap_module.list_snapshots()
     return {"dates": dates, "latest": dates[-1] if dates else None}
+
+
+@app.get("/api/freellm/catalog")
+async def freellm_catalog() -> dict:
+    """Public-readable view of the freellm catalog.
+
+    Used by the dashboard's Free-LLM-Chain UI to render the chain
+    visually. No keys leaked; this is the same data committed to
+    `freellm/providers.py`.
+    """
+    by_modality: dict[str, list[dict]] = {}
+    for modality in ALL_MODALITIES:
+        rows = []
+        for entry in FREELLM_PROVIDERS.get(modality, []):
+            rows.append(
+                {
+                    "provider": entry.provider,
+                    "model": entry.model,
+                    "env_var": entry.env_var,
+                    "speed_tier": entry.speed_tier,
+                    "free_tier_kind": entry.free_tier.kind,  # type: ignore[union-attr]
+                    "last_verified": entry.last_verified.isoformat(),
+                    "docs_url": entry.docs_url,
+                    "notes": entry.notes,
+                }
+            )
+        by_modality[modality] = rows
+    return {
+        "modalities": list(ALL_MODALITIES),
+        "total": sum(len(v) for v in by_modality.values()),
+        "by_modality": by_modality,
+    }
+
+
+@app.get("/api/freellm/plan")
+async def freellm_plan_endpoint(
+    modality: FreellmModality = Query(...),
+    task_name: str = Query(default="dashboard-preview"),
+) -> dict:
+    """Dry-run routing plan for the given modality.
+
+    Returns the chain that WOULD be tried, in order, given the env vars
+    actually present on this server. Safe to call cheaply — no LiteLLM
+    invocation, no network. The dashboard's "Test the chain" button
+    calls this and renders `chosen` + `options`.
+    """
+    plan = freellm_plan(modality=modality, task_name=task_name)
+    return plan.model_dump()
 
 
 @app.get("/api/providers", response_model=ProvidersResponse)

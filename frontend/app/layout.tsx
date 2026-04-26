@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { CommandPalette } from "@/components/CommandPalette";
 
 const SITE_DESCRIPTION =
   "Personal-first dashboard aggregating free-tier cloud, GPU, AI APIs, databases, startup credits, grants, and OSS resources. Ranked for hobby / personal / startup-MVP / pre-seed / seed / Series A. India-primary.";
@@ -58,7 +59,10 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          <CommandPalette />
+        </ThemeProvider>
       </body>
     </html>
   );
