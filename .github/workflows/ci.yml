@@ -20,15 +20,17 @@ jobs:
       - name: install dev deps
         run: pip install -r backend/requirements-dev.txt
       - name: ruff
-        run: ruff check backend/ freellm/
+        run: ruff check backend/ freellm/ collectors/ pipeline/
       - name: pytest
-        run: pytest backend/tests freellm/tests -v
+        run: pytest backend/tests freellm/tests collectors/tests pipeline/tests -v
       - name: freellm CLI smoke
         run: |
           python -m freellm version
           python -m freellm catalog
           python -m freellm catalog --modality text
           python -m freellm keys
+      - name: pipeline dry-run smoke
+        run: python -m pipeline --dry-run
 
   build-frontend:
     name: frontend lint + build
