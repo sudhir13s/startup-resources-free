@@ -226,7 +226,7 @@ Confidence 8+ findings from 2026-04-26 roundtable. Every box MUST be ticked befo
 - [ ] **A1-4** — Catalog-only scope; no agentic / SQLite / cron / 3-tabs in v0.1 (Architect)
 - [ ] **F-B1** — `GET /api/providers` route exists, returns seed JSON (Frontend)
 - [ ] **F-B2** — Next.js 14 App Router project initialized with TS strict + Tailwind (Frontend)
-- [ ] **D-B1** — Tier chip "hobby" pre-selected on first paint; grid renders filtered cards immediately (Designer)
+- [ ] **D-B1** — Tier chip `startup-mvp` pre-selected on first paint (user override 2026-04-26 — was originally `hobby`); grid renders filtered cards immediately (Designer)
 - [ ] **D-B2** — Skeleton pulse cards render during data fetch — no empty white screen (Designer)
 - [ ] **D-B3** — 4.5:1 contrast verified on body text + ≥3:1 on large text (Designer)
 - [ ] **DO-B1** — Next.js is `type: web` not `static-site` in render.yaml (DevOps)

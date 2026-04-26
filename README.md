@@ -209,22 +209,40 @@ startup-resources-free/
 
 ---
 
-## Quick start (after v0.1 scaffolding lands)
+## Quick start (v0.1)
 
 ```bash
-git clone <repo-url> startup-resources-free
+git clone git@github.com:sudhir13s/startup-resources-free.git
 cd startup-resources-free
 
-# Backend
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
-uvicorn api.main:app --reload --port 8000
+# Backend (Python 3.12 required — Render also pins to 3.12.3)
+python3.12 -m venv .venv && source .venv/bin/activate
+pip install -r backend/requirements.txt
+cd backend && uvicorn main:app --reload --port 8000
+# Smoke test:
+#   curl http://localhost:8000/api/health
+#   curl http://localhost:8000/api/providers?tier=startup-mvp
 
-# Frontend (separate terminal)
+# Frontend (separate terminal — Node.js 20+)
 cd frontend
-pnpm install
-pnpm dev   # http://localhost:3000
+npm install
+BACKEND_URL=http://localhost:8000 npm run dev
+# Open http://localhost:3000
 ```
+
+## Deploy to Render (first-time setup)
+
+1. **Connect repo** in Render dashboard → New → Blueprint → pick `sudhir13s/startup-resources-free`. Render auto-detects `render.yaml` and proposes two services: `startup-resources-api` + `startup-resources-web`.
+2. **Before clicking deploy**, derive both public URLs from the service names:
+   - API URL: `https://startup-resources-api.onrender.com`
+   - Web URL: `https://startup-resources-web.onrender.com`
+3. **Set the two `sync: false` env vars** in the Render dashboard:
+   - On `startup-resources-api`: `CORS_ORIGINS=https://startup-resources-web.onrender.com`
+   - On `startup-resources-web`: `BACKEND_URL=https://startup-resources-api.onrender.com`
+4. Click **Deploy**. Render will build + start both services. First build ~3–5 min.
+5. Free-tier services spin down after 15 min idle. First request after sleep takes ~30–60 s. Pre-warm with `curl https://startup-resources-api.onrender.com/api/health` before demoing.
+
+> **Why this order matters:** if you deploy without `CORS_ORIGINS` + `BACKEND_URL` set, the deploy succeeds but the dashboard shows "Backend unreachable" until you add the vars and redeploy.
 
 For v0.2 (after agentic pipeline lands):
 
