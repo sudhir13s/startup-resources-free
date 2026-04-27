@@ -1,0 +1,10 @@
+-r requirements.txt
+# Agent stack — used by the daily cron pipeline + local dev that drives
+# real LLM calls through OmniRoute. NOT installed on Render (Render serves
+# the DB only) and NOT installed in CI (MockBackend covers all freellm
+# tests without spinning OmniRoute).
+#
+# OmniRouteConfig pin: matches the commit verified locally on 2026-04-27.
+OmniRouteConfig @ git+https://github.com/sudhir13s/OmniRouteConfig.git@45df2499b64fb4818e5b710bedae4e62866e0586
+openai==1.59.8
+httpx==0.28.1
