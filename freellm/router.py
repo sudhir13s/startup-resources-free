@@ -1,12 +1,26 @@
 """Quota-aware fallback chain executor.
 
-v0.1 status: ships the contract + a working `plan()` (dry-run) so the
-dashboard's "Test the chain" UX has data to render. The actual
-`call_text()` etc. live calls land in v0.2 once LiteLLM is added as a
-dependency.
+Public API:
+- `plan(modality, task_name)` — pure preview, no network.
+- `call_text/_vision/_image_gen/_video_gen/_embed/_stt/_tts(...)` — async,
+  walk the chain, hit the backend for each candidate, record quota state.
+- `dry_run=True` on any call_* returns the same Plan as `plan()`.
 
-Per `agentic-pipeline.md` rule, this file is the ONLY place allowed to
-import `litellm`. v0.1 doesn't import it yet; v0.2 will.
+Chain semantics (per `agentic-pipeline.md`):
+- Try each candidate in `plan().options` order.
+- On success: record_success in quotas, return Result with
+  `chain_attempted` populated.
+- On failure: record_failure in quotas, move to next candidate.
+- All exhausted: raise `AllProvidersExhaustedError(chain_attempted)`.
+
+The router NEVER imports an LLM SDK directly — it delegates to the
+`Backend` resolved by `freellm.backend.get_backend()`. Swapping
+backends (mock for tests, OmniRoute in prod, future LiteLLM-direct)
+needs zero changes here.
+
+`call_image_gen / call_video_gen / call_stt / call_tts` are scoped out
+of B1: the agents and dashboard surfaces shipping next don't need them.
+They raise `NotImplementedError` with a pointer to the v0.3 work.
 """
 
 from __future__ import annotations
@@ -15,6 +29,7 @@ import os
 from typing import Any
 
 from freellm import quotas
+from freellm.backend import Backend, get_backend
 from freellm.providers import PROVIDERS, list_providers
 from freellm.schemas import (
     Modality,
@@ -70,9 +85,8 @@ def plan(
 ) -> Plan:
     """Compute the route a call would take WITHOUT making the call.
 
-    Used by the dashboard's "Test the chain" button + the `python -m freellm
-    plan` CLI subcommand. No network, no LiteLLM import, safe to call
-    cheaply.
+    Used by the dashboard's "Test the chain" button + the `python -m
+    freellm plan` CLI subcommand. No network, no backend.
     """
     if allow_paid is None:
         allow_paid = os.environ.get("LLM_ALLOW_PAID") == "1"
@@ -91,24 +105,71 @@ def plan(
 
 
 # ============================================================
+# Chain executor — shared by every modality.
+# ============================================================
+
+
+async def _execute_chain(
+    *,
+    modality: Modality,
+    task_name: str,
+    one_call: Any,  # bound method on Backend
+    allow_paid: bool | None,
+    persist_quotas: bool,
+) -> Result:
+    """Run plan() then walk options against `one_call`.
+
+    `one_call(*, provider, model)` -> Result. Caller closes over its
+    modality-specific kwargs (messages, inputs, etc.).
+    """
+    p = plan(modality=modality, task_name=task_name, allow_paid=allow_paid)
+    if not p.options:
+        raise AllProvidersExhaustedError([])
+
+    state = quotas.load()
+    chain_attempted: list[str] = []
+    last_error: BaseException | None = None
+    try:
+        for opt in p.options:
+            tag = f"{opt.provider}/{opt.model}"
+            chain_attempted.append(tag)
+            try:
+                result = await one_call(provider=opt.provider, model=opt.model)
+                quotas.record_success(
+                    state,
+                    provider=opt.provider,
+                    model=opt.model,
+                    tokens_in=result.tokens_in or 0,
+                    tokens_out=result.tokens_out or 0,
+                )
+                result.chain_attempted = chain_attempted
+                return result
+            except Exception as e:
+                last_error = e
+                quotas.record_failure(
+                    state,
+                    provider=opt.provider,
+                    model=opt.model,
+                    reason=f"{type(e).__name__}: {e}"[:200],
+                )
+                continue
+    finally:
+        if persist_quotas:
+            quotas.save(state)
+
+    err = AllProvidersExhaustedError(chain_attempted)
+    if last_error is not None:
+        raise err from last_error
+    raise err
+
+
+# ============================================================
 # Modality-specific call_* entry points.
 # ============================================================
-# v0.1 contract: each function accepts the locked kwargs, returns a Result
-# OR raises AllProvidersExhaustedError. Live execution arrives in v0.2 when
-# LiteLLM is wired in.
-#
-# When dry_run=True, every call_* returns a Plan rather than a Result so
-# callers can preview routing without hitting the network.
-# ============================================================
 
 
-def _not_implemented(modality: Modality) -> Result:
-    raise NotImplementedError(
-        f"freellm.call_{modality}() runtime is v0.2 work. "
-        "v0.1 ships only the contract + dry_run=True plan(). "
-        "Use `from freellm import plan; plan(modality='...', task_name='...')` "
-        "to preview routing."
-    )
+def _resolve_backend(backend: Backend | None) -> Backend:
+    return backend if backend is not None else get_backend()
 
 
 async def call_text(
@@ -121,11 +182,32 @@ async def call_text(
     temperature: float = 0.0,
     timeout_s: int = 60,
     dry_run: bool = False,
+    backend: Backend | None = None,
+    allow_paid: bool | None = None,
+    persist_quotas: bool = True,
 ) -> Result | Plan:
     if dry_run:
-        return plan(modality="text", task_name=task_name)
-    _ = (messages, model_chain, response_model, max_tokens, temperature, timeout_s)
-    return _not_implemented("text")
+        return plan(modality="text", task_name=task_name, allow_paid=allow_paid)
+    _ = (model_chain, response_model)  # B2 will use response_model for structured output
+    be = _resolve_backend(backend)
+
+    async def one(*, provider: str, model: str) -> Result:
+        return await be.call_text_one(
+            provider=provider,
+            model=model,
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            timeout_s=timeout_s,
+        )
+
+    return await _execute_chain(
+        modality="text",
+        task_name=task_name,
+        one_call=one,
+        allow_paid=allow_paid,
+        persist_quotas=persist_quotas,
+    )
 
 
 async def call_vision(
@@ -133,12 +215,73 @@ async def call_vision(
     messages: list[dict[str, Any]],
     image_bytes: bytes | None = None,
     task_name: str,
+    max_tokens: int = 2000,
+    temperature: float = 0.0,
+    timeout_s: int = 60,
     dry_run: bool = False,
+    backend: Backend | None = None,
+    allow_paid: bool | None = None,
+    persist_quotas: bool = True,
 ) -> Result | Plan:
     if dry_run:
-        return plan(modality="vision", task_name=task_name)
-    _ = (messages, image_bytes)
-    return _not_implemented("vision")
+        return plan(modality="vision", task_name=task_name, allow_paid=allow_paid)
+    _ = image_bytes  # caller embeds image_url parts in `messages`; reserved for B6
+    be = _resolve_backend(backend)
+
+    async def one(*, provider: str, model: str) -> Result:
+        return await be.call_vision_one(
+            provider=provider,
+            model=model,
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            timeout_s=timeout_s,
+        )
+
+    return await _execute_chain(
+        modality="vision",
+        task_name=task_name,
+        one_call=one,
+        allow_paid=allow_paid,
+        persist_quotas=persist_quotas,
+    )
+
+
+async def call_embed(
+    *,
+    inputs: list[str],
+    task_name: str,
+    timeout_s: int = 60,
+    dry_run: bool = False,
+    backend: Backend | None = None,
+    allow_paid: bool | None = None,
+    persist_quotas: bool = True,
+) -> Result | Plan:
+    if dry_run:
+        return plan(modality="embed", task_name=task_name, allow_paid=allow_paid)
+    be = _resolve_backend(backend)
+
+    async def one(*, provider: str, model: str) -> Result:
+        return await be.call_embed_one(
+            provider=provider,
+            model=model,
+            inputs=inputs,
+            timeout_s=timeout_s,
+        )
+
+    return await _execute_chain(
+        modality="embed",
+        task_name=task_name,
+        one_call=one,
+        allow_paid=allow_paid,
+        persist_quotas=persist_quotas,
+    )
+
+
+# ============================================================
+# Scoped out of B1 — agents/pipeline don't need these yet.
+# Land with B6/B7/B8 (Media Benchmark v0.3+).
+# ============================================================
 
 
 async def call_image_gen(
@@ -152,7 +295,10 @@ async def call_image_gen(
     if dry_run:
         return plan(modality="image_gen", task_name=task_name)
     _ = (prompt, width, height)
-    return _not_implemented("image_gen")
+    raise NotImplementedError(
+        "call_image_gen runtime is v0.3 (Media Benchmark) work. "
+        "Use dry_run=True for plan preview."
+    )
 
 
 async def call_video_gen(
@@ -166,19 +312,9 @@ async def call_video_gen(
     if dry_run:
         return plan(modality="video_gen", task_name=task_name)
     _ = (prompt, duration_s, resolution)
-    return _not_implemented("video_gen")
-
-
-async def call_embed(
-    *,
-    inputs: list[str],
-    task_name: str,
-    dry_run: bool = False,
-) -> Result | Plan:
-    if dry_run:
-        return plan(modality="embed", task_name=task_name)
-    _ = inputs
-    return _not_implemented("embed")
+    raise NotImplementedError(
+        "call_video_gen runtime is v0.3 (Media Benchmark) work."
+    )
 
 
 async def call_stt(
@@ -191,7 +327,7 @@ async def call_stt(
     if dry_run:
         return plan(modality="stt", task_name=task_name)
     _ = (audio_bytes, language)
-    return _not_implemented("stt")
+    raise NotImplementedError("call_stt runtime is v0.3 work.")
 
 
 async def call_tts(
@@ -204,12 +340,15 @@ async def call_tts(
     if dry_run:
         return plan(modality="tts", task_name=task_name)
     _ = (text, voice)
-    return _not_implemented("tts")
+    raise NotImplementedError("call_tts runtime is v0.3 work.")
 
 
-# Pure-function helper for catalog inspection (used by CLI + tests).
+# ============================================================
+# Catalog inspection helpers — unchanged from v0.1.
+# ============================================================
+
+
 def catalog_summary() -> dict[str, int]:
-    """Return modality -> count of entries."""
     return {modality: len(entries) for modality, entries in PROVIDERS.items()}
 
 
@@ -218,5 +357,4 @@ def total_entries() -> int:
 
 
 def list_all() -> list[ProviderEntry]:
-    """Return every catalog row across all modalities."""
     return list_providers()
