@@ -98,7 +98,8 @@ export default async function HomePage({
     <div className="flex min-h-screen flex-col bg-bg-base text-fg">
       <TopBar />
 
-      <div className="flex flex-1 flex-col md:flex-row">
+      {/* md:flex-row-reverse — sidebar pinned to the right per project layout convention */}
+      <div className="flex flex-1 flex-col md:flex-row-reverse">
         <Sidebar currentTier={tier} tierCounts={tierCounts} />
 
         <main

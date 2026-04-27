@@ -77,7 +77,7 @@ export function Sidebar({
   return (
     <aside
       aria-label="Filters"
-      className="sticky top-[73px] flex h-[calc(100dvh-73px)] w-64 shrink-0 flex-col gap-6 overflow-y-auto border-r border-border bg-bg-base px-5 py-6"
+      className="sticky top-[73px] flex h-[calc(100dvh-73px)] w-64 shrink-0 flex-col gap-6 overflow-y-auto border-l border-border bg-bg-base px-5 py-6"
     >
       {/* Tier */}
       <section>
