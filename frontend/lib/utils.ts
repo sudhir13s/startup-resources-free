@@ -163,6 +163,30 @@ export type ChangesResponse = {
   latest_snapshot: string | null;
 };
 
+// /api/verify-queue (B9). Surfaced by the dashboard's Verify tab once
+// the daily pipeline writes its first SQLite DB; until then GET returns
+// total=0 + items=[] and the tab falls back to seed-filtered display.
+export type VerifyQueueItem = {
+  record_id: string;
+  provider_id: string;
+  provider_name: string;
+  source_url: string;
+  parse_confidence: ParseConfidence;
+  reason: string;
+  queued_at: string;
+};
+
+export type VerifyQueueResponse = {
+  total: number;
+  items: VerifyQueueItem[];
+};
+
+export type VerifyResolveResponse = {
+  record_id: string;
+  status: "confirmed" | "rejected";
+  resolved_by: string | null;
+};
+
 export function isTier(value: string | undefined | null): value is Tier {
   return value !== undefined && value !== null && (TIERS as string[]).includes(value);
 }

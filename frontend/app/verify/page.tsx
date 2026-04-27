@@ -1,11 +1,30 @@
 import { TopBar } from "@/components/TopBar";
 import { SubTabs } from "@/components/SubTabs";
+import { LiveVerifyQueue } from "@/components/LiveVerifyQueue";
 import { VerifyQueue } from "@/components/VerifyQueue";
-import { resolveBackendUrl, type ProvidersResponse } from "@/lib/utils";
+import {
+  resolveBackendUrl,
+  type ProvidersResponse,
+  type VerifyQueueResponse,
+} from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 const BACKEND_URL = resolveBackendUrl();
+
+async function fetchVerifyQueue(): Promise<VerifyQueueResponse | null> {
+  try {
+    const url = new URL("/api/verify-queue", BACKEND_URL);
+    const res = await fetch(url.toString(), {
+      headers: { accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as VerifyQueueResponse;
+  } catch {
+    return null;
+  }
+}
 
 async function fetchAllProviders(): Promise<ProvidersResponse | null> {
   try {
@@ -22,13 +41,23 @@ async function fetchAllProviders(): Promise<ProvidersResponse | null> {
 }
 
 export default async function VerifyPage() {
-  const data = await fetchAllProviders();
-  // Verify queue surfaces records with parse_confidence != "high".
-  // The agentic extractor (v0.2) populates these as it scrapes new
-  // providers; v0.1 seed only has "huggingface" at "medium" so the
-  // queue starts mostly empty.
-  const queue =
-    data?.items.filter((p) => p.parse_confidence !== "high") ?? [];
+  const [liveQueue, providers] = await Promise.all([
+    fetchVerifyQueue(),
+    fetchAllProviders(),
+  ]);
+
+  // Two-mode display:
+  //
+  // 1. /api/verify-queue returns one or more pending rows -> LIVE mode.
+  //    Confirm/Reject POST to the backend; the SQLite DB is authoritative.
+  //
+  // 2. Empty queue (no DB yet OR no low-confidence records) -> SEED mode.
+  //    Falls back to filtering /api/providers for parse_confidence != "high".
+  //    Decisions persist to localStorage; the cron will overwrite the
+  //    seed shape once it runs against the real catalog.
+
+  const liveItems = liveQueue?.items ?? [];
+  const seedQueue = providers?.items.filter((p) => p.parse_confidence !== "high") ?? [];
 
   return (
     <div className="flex min-h-screen flex-col bg-bg-base text-fg">
@@ -49,8 +78,13 @@ export default async function VerifyPage() {
 
           <SubTabs />
 
-          {data ? (
-            <VerifyQueue items={queue} />
+          {liveQueue && liveItems.length > 0 ? (
+            <LiveVerifyQueue
+              initialItems={liveItems}
+              apiBase={BACKEND_URL}
+            />
+          ) : providers ? (
+            <VerifyQueue items={seedQueue} />
           ) : (
             <div className="rounded-xl border border-bad/30 bg-bad/10 p-6 text-sm text-bad">
               <p className="font-semibold">Backend unreachable.</p>
