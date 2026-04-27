@@ -20,9 +20,9 @@ jobs:
       - name: install dev deps
         run: pip install -r backend/requirements-dev.txt
       - name: ruff
-        run: ruff check backend/ freellm/ collectors/ pipeline/
+        run: ruff check backend/ freellm/ collectors/ pipeline/ agents/ schema/
       - name: pytest
-        run: pytest backend/tests freellm/tests collectors/tests pipeline/tests -v
+        run: pytest backend/tests freellm/tests collectors/tests pipeline/tests agents/tests schema/tests -v
       - name: freellm CLI smoke
         run: |
           python -m freellm version
