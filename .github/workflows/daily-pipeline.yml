@@ -103,10 +103,34 @@ jobs:
       - name: bootstrap OmniRoute (mode=auto / mode=llm only)
         if: env.MODE != 'heuristic'
         run: |
+          set -e
           omniroutectl env-sync
-          omniroutectl up &
-          sleep 30  # give npx a moment to fetch + start
-          omniroutectl status
+
+          # Pre-warm the npm cache so the actual spawn doesn't pay the
+          # full omniroute@latest fetch cost while we poll for readiness.
+          npx -y omniroute@latest --version > /tmp/npx-warm.log 2>&1 || true
+
+          # Spawn detached + capture logs. nohup so the process survives
+          # the step's shell exit.
+          nohup npx -y omniroute@latest --no-open --port 20128 \
+            > /tmp/omniroute.log 2>&1 &
+          OMNI_PID=$!
+          echo "OmniRoute spawned with PID $OMNI_PID"
+
+          # Poll up to 5 min — first cold-start on a fresh runner is slow.
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:20128/api/init >/dev/null 2>&1; then
+              echo "OmniRoute reachable after $((i * 5))s"
+              omniroutectl status || true
+              exit 0
+            fi
+            sleep 5
+          done
+
+          echo "::error::OmniRoute did not become reachable within 5 minutes"
+          echo "--- /tmp/omniroute.log ---"
+          tail -200 /tmp/omniroute.log || true
+          exit 1
 
       - name: run pipeline
         run: |
