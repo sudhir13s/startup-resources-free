@@ -1,27 +1,16 @@
-"""Pipeline entry — runs all registered collectors politely.
+"""Pipeline CLI entry point.
 
 Usage:
-    python -m pipeline                     # run all collectors
-    python -m pipeline --providers groq    # subset
-    python -m pipeline --dry-run           # show plan, no fetch
+    python -m pipeline                              # all collectors, mode=auto
+    python -m pipeline --providers groq             # subset
+    python -m pipeline --dry-run                    # show plan, no fetch
+    python -m pipeline --mode heuristic             # no LLM
+    python -m pipeline --mode llm                   # LLM-only (fail loud if no keys)
+    python -m pipeline --no-db                      # skip SQLite write
+    python -m pipeline --db /tmp/x.db               # custom DB path
 
-What it does (v0.2 with-LLM-keys path is documented but stubbed here):
-  1. for each Collector in collectors.REGISTRY:
-     - check robots.txt
-     - polite-fetch source_url (1 req / 30s / host)
-     - save raw body to data/raw/<provider>/<date>.html
-     - call collector.extract_fields() for a heuristic record
-  2. compose the new snapshot from extracted records + the existing
-     seed.json baseline (fields the heuristic couldn't parse stay
-     from the previous snapshot).
-  3. write data/snapshots/<today>.json (atomic).
-  4. print a JSONL run summary to stdout.
-
-The LLM extractor (v0.2 with keys) replaces step 1's heuristic
-extract_fields with a `freellm.call_text(...)` call against the saved
-raw HTML — see `.claude/rules/project/agentic-pipeline.md`. This file
-ships the polite-fetch + heuristic-write loop only; the LLM step
-is not invoked here.
+Outputs JSON to stdout. Lock files at `data/runs/<run-id>.lock` prevent
+double-runs (cron + manual concurrency).
 """
 
 from __future__ import annotations
@@ -31,127 +20,35 @@ import asyncio
 import json
 import sys
 from pathlib import Path
-from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
-if str(REPO_ROOT / "backend") not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT / "backend"))
 
-from collectors import REGISTRY, BaseCollector, FetchResult, PoliteClient  # noqa: E402
-
-import snapshots as snap_module  # noqa: E402
-
-
-SEED_PATH = REPO_ROOT / "data" / "seed.json"
+from collectors import REGISTRY  # noqa: E402
+from pipeline.orchestrator import (  # noqa: E402
+    acquire_lock,
+    release_lock,
+    run_pipeline,
+)
 
 
-def _load_seed_index() -> dict[str, dict[str, Any]]:
-    if not SEED_PATH.exists():
-        return {}
-    with SEED_PATH.open(encoding="utf-8") as f:
-        rows = json.load(f)
-    return {r["id"]: r for r in rows}
-
-
-def _merge_with_seed(
-    extracted: dict[str, Any],
-    seed: dict[str, Any] | None,
-) -> dict[str, Any]:
-    """Fill blanks in `extracted` from `seed` so we don't lose fields
-    the heuristic couldn't parse. The LLM extractor (v0.2) replaces
-    this fallback with full extraction.
-    """
-    if seed is None:
-        return extracted
-    out = dict(seed)
-    for k, v in extracted.items():
-        if v not in (None, ""):
-            out[k] = v
-    return out
-
-
-async def _run_one(
-    collector: BaseCollector, client: PoliteClient
-) -> tuple[FetchResult, dict[str, Any] | None]:
-    fr = await collector.collect(client)
-    record: dict[str, Any] | None = None
-    if fr.is_ok and fr.text:
-        record = collector.extract_fields(fr.text)
-    return fr, record
-
-
-async def _run(
-    *,
-    only: list[str] | None = None,
-    dry_run: bool = False,
-    rate_limit_s: float | None = None,
-) -> int:
-    chosen: list[BaseCollector] = REGISTRY.all()
+def _dry_run_plan(only: list[str] | None) -> dict:
+    chosen = REGISTRY.all()
     if only:
         only_set = set(only)
         chosen = [c for c in chosen if c.provider_id in only_set]
-    if not chosen:
-        print(json.dumps({"error": "no collectors matched", "filter": only}))
-        return 2
-
-    if dry_run:
-        out = {
-            "dry_run": True,
-            "would_fetch": [
-                {
-                    "provider_id": c.provider_id,
-                    "category": c.category,
-                    "source_url": c.source_url,
-                }
-                for c in chosen
-            ],
-        }
-        print(json.dumps(out, indent=2))
-        return 0
-
-    summary: list[dict[str, Any]] = []
-    seed_idx = _load_seed_index()
-    extracted_by_id: dict[str, dict[str, Any]] = {}
-
-    kwargs: dict[str, Any] = {}
-    if rate_limit_s is not None:
-        kwargs["rate_limit_s"] = rate_limit_s
-    async with PoliteClient(**kwargs) as client:
-        for c in chosen:
-            try:
-                fr, record = await _run_one(c, client)
-            except Exception as e:  # noqa: BLE001 - top-level loop must not crash
-                summary.append(
-                    {
-                        "provider_id": c.provider_id,
-                        "status": "error",
-                        "detail": str(e),
-                    }
-                )
-                continue
-            entry = {
+    return {
+        "dry_run": True,
+        "would_fetch": [
+            {
                 "provider_id": c.provider_id,
-                "status_code": fr.status_code,
-                "not_modified": fr.not_modified,
-                "raw_path": str(fr.raw_path) if fr.raw_path else None,
-                "extracted_confidence": (record or {}).get("parse_confidence"),
+                "category": c.category,
+                "source_url": c.source_url,
             }
-            summary.append(entry)
-            if record is not None:
-                merged = _merge_with_seed(record, seed_idx.get(c.provider_id))
-                extracted_by_id[c.provider_id] = merged
-
-    # Compose new snapshot: start from the seed, override with anything
-    # we successfully re-extracted.
-    composed: dict[str, dict[str, Any]] = dict(seed_idx)
-    composed.update(extracted_by_id)
-    rows = list(composed.values())
-    snap_path = snap_module.write_snapshot(rows)
-    summary.append({"snapshot_written": str(snap_path), "records": len(rows)})
-    print(json.dumps({"summary": summary}, indent=2))
-    return 0
+            for c in chosen
+        ],
+    }
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -164,16 +61,103 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument(
+        "--mode",
+        choices=("auto", "llm", "heuristic"),
+        default="auto",
+    )
+    parser.add_argument(
         "--rate-limit-s",
         type=float,
         default=None,
         help="Seconds between requests per host (default: 30)",
     )
-    args = parser.parse_args(argv)
-    return asyncio.run(
-        _run(only=args.providers, dry_run=args.dry_run, rate_limit_s=args.rate_limit_s)
+    parser.add_argument(
+        "--db",
+        type=str,
+        default=None,
+        help="Path to SQLite DB (default: $RESOURCEOS_DB_PATH or data/resourceos.db)",
     )
+    parser.add_argument(
+        "--no-db",
+        action="store_true",
+        help="Skip SQLite writes (useful in dry-runs / smoke tests).",
+    )
+    parser.add_argument(
+        "--no-snapshot",
+        action="store_true",
+        help="Skip writing data/snapshots/<date>.json (legacy FE shape).",
+    )
+    parser.add_argument(
+        "--run-id",
+        type=str,
+        default="default",
+        help="Lock-file id, default 'default'. Use unique values for parallel runs.",
+    )
+    args = parser.parse_args(argv)
+
+    if args.dry_run:
+        plan = _dry_run_plan(args.providers)
+        if not plan["would_fetch"]:
+            print(
+                json.dumps(
+                    {"error": "no collectors matched", "filter": args.providers}
+                )
+            )
+            return 2
+        print(json.dumps(plan, indent=2))
+        return 0
+
+    db_path: Path | None
+    if args.no_db:
+        db_path = None
+    elif args.db:
+        db_path = Path(args.db)
+    else:
+        from backend import db as db_module
+
+        db_path = db_module.db_path()
+
+    lock = acquire_lock(args.run_id)
+    if lock is None:
+        print(json.dumps({"error": "another run is in progress", "run_id": args.run_id}))
+        return 3
+    try:
+        summary = asyncio.run(
+            run_pipeline(
+                only=args.providers,
+                mode=args.mode,  # type: ignore[arg-type]
+                rate_limit_s=args.rate_limit_s,
+                db_path=db_path,
+                write_snapshot=not args.no_snapshot,
+            )
+        )
+    finally:
+        release_lock(lock)
+
+    print(json.dumps(summary.to_dict(), indent=2))
+    return 0
 
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# Backward-compat shim — older tests imported `_run`. Delegates to the new
+# orchestrator with mode='heuristic' (no LLM keys assumed in those tests).
+async def _run(
+    *,
+    only: list[str] | None = None,
+    dry_run: bool = False,
+    rate_limit_s: float | None = None,
+) -> int:
+    if dry_run:
+        print(json.dumps(_dry_run_plan(only), indent=2))
+        return 0
+    summary = await run_pipeline(
+        only=only,
+        mode="heuristic",
+        rate_limit_s=rate_limit_s,
+        db_path=None,
+    )
+    print(json.dumps(summary.to_dict(), indent=2))
+    return 0
