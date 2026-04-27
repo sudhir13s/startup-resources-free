@@ -51,8 +51,9 @@ class OmniRouteBackend:
         except ImportError as e:
             raise ImportError(
                 "OmniRouteBackend requires the OmniRouteConfig package. "
-                "Add it to your env: `pip install OmniRouteConfig` "
-                "(or use the git dep already pinned in backend/requirements.txt)."
+                "Install the agent stack: "
+                "`pip install -r backend/requirements-agents.txt`. "
+                "Or set FREELLM_BACKEND=mock for offline / CI use."
             ) from e
 
         # Honor a pre-set OMNIROUTE_URL — keeps tests + alt deployments
@@ -67,7 +68,8 @@ class OmniRouteBackend:
         except ImportError as e:
             raise ImportError(
                 "OmniRouteBackend requires the `openai` package. "
-                "Already pinned in backend/requirements.txt."
+                "Install the agent stack: "
+                "`pip install -r backend/requirements-agents.txt`."
             ) from e
 
         base = os.environ.get("OMNIROUTE_URL", "http://localhost:20128").rstrip("/")
