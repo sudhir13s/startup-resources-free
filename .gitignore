@@ -38,12 +38,18 @@ next-env.d.ts
 *.key
 secrets/
 
-# Local data (only fixtures + snapshots committed)
+# Local data (only fixtures + snapshots + resourceos.db committed)
 data/raw/
 data/logs/
 data/runs/
+data/verify-queue/
 data/freellm/quotas.json
 data/benchmark_runs/
+# SQLite write-ahead log + shared-memory files — ephemeral, never commit.
+# The .db file itself IS committed by the daily cron so Render can read it.
+data/resourceos.db-wal
+data/resourceos.db-shm
+data/resourceos.db-journal
 !data/raw/_fixtures/
 
 # OS / editor
