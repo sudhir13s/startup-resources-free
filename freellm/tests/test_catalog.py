@@ -102,13 +102,16 @@ def test_plan_dry_run_via_call_text(monkeypatch: pytest.MonkeyPatch):
     assert getattr(result, "chosen").provider == "groq"
 
 
-def test_call_text_runtime_not_yet_implemented(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setenv("GROQ_API_KEY", "fake")
+def test_call_image_gen_runtime_still_deferred(monkeypatch: pytest.MonkeyPatch):
+    """B1 ships text/vision/embed live; image_gen/video_gen/stt/tts wait for v0.3."""
+    from freellm import call_image_gen
+
+    monkeypatch.setenv("HF_TOKEN", "fake")
     with pytest.raises(NotImplementedError):
         asyncio.run(
-            call_text(
-                messages=[{"role": "user", "content": "hi"}],
-                task_name="runtime-test",
+            call_image_gen(
+                prompt="a cat",
+                task_name="image-deferred",
                 dry_run=False,
             )
         )
