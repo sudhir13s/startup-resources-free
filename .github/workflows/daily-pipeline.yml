@@ -10,13 +10,12 @@ name: daily-pipeline
 #    out of the box; commits today's snapshot if anything moved.
 #
 # 2. `mode: auto` / `mode: llm`
-#    Requires:
-#    - `OMNIROUTE_REPO_TOKEN`  (PAT with read access to the private
-#                              sudhir13s/OmniRouteConfig repo, used by pip)
-#    - free-provider API keys as repo secrets:
+#    Requires free-provider API keys as repo secrets:
 #      `GROQ_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY`,
 #      `CEREBRAS_API_KEY`, `TOGETHER_API_KEY`, `MISTRAL_API_KEY`,
-#      `HF_TOKEN`, `OMNIROUTE_API_TOKEN`
+#      `HF_TOKEN`, `OMNIROUTE_API_TOKEN`.
+#    OmniRouteConfig is now public — pip install runs anonymously,
+#    no PAT needed.
 #    Use `workflow_dispatch` to switch modes without editing this file.
 #
 # Output: pushes back to `main` with `data/snapshots/<date>.json` (and
@@ -94,18 +93,7 @@ jobs:
 
       - name: install agent stack (mode=auto / mode=llm only)
         if: env.MODE != 'heuristic'
-        env:
-          OMNIROUTE_REPO_TOKEN: ${{ secrets.OMNIROUTE_REPO_TOKEN }}
-        run: |
-          if [ -z "$OMNIROUTE_REPO_TOKEN" ]; then
-            echo "::error::OMNIROUTE_REPO_TOKEN secret missing — required for non-heuristic mode."
-            exit 1
-          fi
-          # Inject the PAT into the git URL so pip can clone the private
-          # OmniRouteConfig repo. The token is masked in logs by GH Actions.
-          sed "s#git+https://github.com/sudhir13s/OmniRouteConfig#git+https://x-access-token:${OMNIROUTE_REPO_TOKEN}@github.com/sudhir13s/OmniRouteConfig#" \
-            backend/requirements-agents.txt > /tmp/agents.txt
-          pip install -r /tmp/agents.txt
+        run: pip install -r backend/requirements-agents.txt
 
       - uses: actions/setup-node@v6
         if: env.MODE != 'heuristic'
