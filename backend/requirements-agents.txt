@@ -5,6 +5,6 @@
 # tests without spinning OmniRoute).
 #
 # OmniRouteConfig pin: matches the commit verified locally on 2026-04-27.
-OmniRouteConfig @ git+https://github.com/sudhir13s/OmniRouteConfig.git@45df2499b64fb4818e5b710bedae4e62866e0586
+OmniRouteConfig @ git+https://github.com/sudhir13s/OmniRouteConfig.git@7bdce4dbdbde5d0c3d511f1f54e4ee660099c1b9
 openai==1.59.8
 httpx==0.28.1
