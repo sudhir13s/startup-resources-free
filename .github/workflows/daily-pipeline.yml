@@ -137,7 +137,7 @@ jobs:
 
       - name: upload run summary
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pipeline-summary-${{ github.run_id }}
           path: |
