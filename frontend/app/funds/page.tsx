@@ -1,11 +1,8 @@
 import { Suspense } from "react";
 import { TopBar } from "@/components/TopBar";
 import { SubTabs } from "@/components/SubTabs";
-import {
-  FundsSidebar,
-  fundKindSlugs,
-  type FundKind,
-} from "@/components/FundsSidebar";
+import { FundsSidebar } from "@/components/FundsSidebar";
+import { fundKindSlugs, type FundKind } from "@/lib/fund-kinds";
 import {
   ProviderGrid,
   ProviderGridSkeleton,
