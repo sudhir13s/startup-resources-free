@@ -89,15 +89,17 @@ jobs:
 
       - name: bootstrap OmniRoute (LLM ranker dependency)
         env:
-          # OmniRoute defaults DB path to /app/data which is unwritable on
-          # GitHub Actions runners. Without DB, auth-guard fails-closed
-          # (isAuthRequired=true) and every chat completion returns 500.
-          # Diagnosed 2026-04-28 from /tmp/omniroute.log dump on run #25059676895.
+          # `omniroutectl env-sync` writes `.env` with DATA_DIR=/app/data
+          # (containerized default) which is unwritable on Actions runners.
+          # The sed step below overrides to /tmp/omniroute-data BEFORE
+          # OmniRoute boots and reads `.env`. Diagnosed locally 2026-04-28.
           DATA_DIR: /tmp/omniroute-data
         run: |
           set -e
           mkdir -p "$DATA_DIR"
           omniroutectl env-sync
+          # Override the DATA_DIR=/app/data that env-sync wrote.
+          sed -i 's|^DATA_DIR=.*|DATA_DIR=/tmp/omniroute-data|' .env
           npx -y omniroute@latest --version > /tmp/npx-warm.log 2>&1 || true
           nohup env DATA_DIR="$DATA_DIR" npx -y omniroute@latest --no-open --port 20128 \
             > /tmp/omniroute.log 2>&1 &
@@ -111,6 +113,28 @@ jobs:
           echo "::error::OmniRoute did not become reachable within 5 minutes"
           tail -200 /tmp/omniroute.log || true
           exit 1
+
+      - name: issue OmniRoute API token
+        # Pre-shared OMNIROUTE_API_TOKEN secret was issued against a
+        # different API_KEY_SECRET than the one env-sync auto-generates
+        # each run, so it always 401's. Issue a fresh token at runtime
+        # against THIS run's OmniRoute instance and override the env var
+        # for the discovery step. Diagnosed locally 2026-04-28 — solo
+        # /api/keys POST works without auth on a fresh boot.
+        run: |
+          set -e
+          token=$(curl -sS -X POST http://localhost:20128/api/keys \
+            -H 'content-type: application/json' \
+            -d '{"name":"workflow-runner","scope":"read-write"}' \
+            | python -c "import json,sys; print(json.load(sys.stdin)['key'])")
+          if [ -z "$token" ] || [ "$token" = "null" ]; then
+            echo "::error::Failed to issue OmniRoute API key"
+            exit 1
+          fi
+          # Mask in any future log output and propagate to subsequent steps.
+          echo "::add-mask::$token"
+          echo "OMNIROUTE_API_TOKEN=$token" >> "$GITHUB_ENV"
+          echo "Issued runtime OmniRoute API token (length=${#token})"
 
       - name: run discovery
         run: |
