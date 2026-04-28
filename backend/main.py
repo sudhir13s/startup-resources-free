@@ -71,6 +71,17 @@ class Provider(BaseModel):
     parse_confidence: ParseConfidence
     last_verified_at: str
     notes: str | None = None
+    # Extended detail fields — populated when seed.json or the cron has
+    # the data. Frontend modal surfaces these; cards keep the compact
+    # shape from the quota/duration/region summaries above.
+    limits: dict | None = None
+    restrictions: str | None = None
+    access_method: str | None = None
+    subcategory: str | None = None
+    tier_fit_rationale: str | None = None
+    credit_amount: float | None = None
+    credit_duration_days: int | None = None
+    currency: str | None = None
 
     @computed_field  # type: ignore[prop-decorator]
     @property

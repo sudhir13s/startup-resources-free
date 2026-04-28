@@ -136,6 +136,16 @@ export type Provider = {
   parse_confidence: ParseConfidence;
   last_verified_at: string;
   notes?: string | null;
+  // Extended detail fields — backend may omit any of these on older
+  // snapshots. Frontend renders them only when present.
+  limits?: Record<string, unknown> | null;
+  restrictions?: string | null;
+  access_method?: string | null;
+  subcategory?: string | null;
+  tier_fit_rationale?: string | null;
+  credit_amount?: number | null;
+  credit_duration_days?: number | null;
+  currency?: string | null;
 };
 
 /** Categories that route to the /funds view. Both canonical singular

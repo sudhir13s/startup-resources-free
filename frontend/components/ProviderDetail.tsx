@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   CATEGORY_LABELS,
   TIER_LABELS,
-  TIER_DESCRIPTIONS,
   relativeTime,
   type Provider,
 } from "@/lib/utils";
@@ -40,6 +39,94 @@ function StatTile({ label, value }: { label: string; value: string }) {
         {value}
       </span>
     </div>
+  );
+}
+
+/** Pretty-print a limits-key (e.g. "ec2_instance_hours_per_month") so the
+ * UI reads naturally without forcing the data shape to be perfect. */
+function prettyKey(k: string): string {
+  return k
+    .replace(/_/g, " ")
+    .replace(/\b([a-z])/g, (_, c: string) => c.toUpperCase())
+    .replace(/\bEc2\b/, "EC2")
+    .replace(/\bGcp\b/, "GCP")
+    .replace(/\bAws\b/, "AWS")
+    .replace(/\bGpu\b/, "GPU")
+    .replace(/\bCpu\b/, "CPU")
+    .replace(/\bRam\b/, "RAM")
+    .replace(/\bSsd\b/, "SSD")
+    .replace(/\bUrl\b/, "URL")
+    .replace(/\bApi\b/, "API");
+}
+
+/** Render a single limits-value: number → comma-formatted, bool → Yes/No,
+ * string → as-is, array → bullet list, object → nested. */
+function LimitsValue({ value }: { value: unknown }) {
+  if (value === null || value === undefined) {
+    return <span className="text-fg-subtle">—</span>;
+  }
+  if (typeof value === "boolean") {
+    return (
+      <span className={value ? "text-ok" : "text-bad"}>
+        {value ? "Yes" : "No"}
+      </span>
+    );
+  }
+  if (typeof value === "number") {
+    return <span className="font-mono">{value.toLocaleString()}</span>;
+  }
+  if (typeof value === "string") {
+    return <span>{value}</span>;
+  }
+  if (Array.isArray(value)) {
+    return (
+      <ul className="flex flex-col gap-0.5 text-fg-muted">
+        {value.map((v, i) => (
+          <li key={i} className="text-xs">
+            • {typeof v === "string" || typeof v === "number" ? v : JSON.stringify(v)}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  if (typeof value === "object") {
+    return <LimitsView limits={value as Record<string, unknown>} nested />;
+  }
+  return <span>{String(value)}</span>;
+}
+
+/** Render a limits dict as a key-value grid. Recursive when values are
+ * objects (e.g. AWS Activate has per-service breakdowns). */
+function LimitsView({
+  limits,
+  nested = false,
+}: {
+  limits: Record<string, unknown>;
+  nested?: boolean;
+}) {
+  const entries = Object.entries(limits);
+  if (entries.length === 0) return null;
+  return (
+    <dl
+      className={cn(
+        "flex flex-col gap-1.5 text-sm",
+        nested ? "ml-2 mt-1 border-l-2 border-border pl-3" : "rounded-md border border-border bg-bg-tile p-3",
+      )}
+    >
+      {entries.map(([k, v]) => (
+        <div
+          key={k}
+          className="grid grid-cols-[max-content_1fr] items-baseline gap-x-3"
+        >
+          <dt className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
+            {prettyKey(k)}
+          </dt>
+          <dd className="text-sm break-words text-fg">
+            <LimitsValue value={v} />
+          </dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -570,28 +657,36 @@ export function ProviderDetail({
               </p>
             </section>
 
-            <section className="flex flex-col gap-2">
-              <h3 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
-                Tier fit ({provider.use_case_tiers.length} of 6)
-              </h3>
-              <ul className="flex flex-col gap-1.5">
-                {provider.use_case_tiers.map((t) => (
-                  <li
-                    key={t}
-                    className="rounded-md border border-border bg-bg-tile px-3 py-2"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium text-fg">
-                        {TIER_LABELS[t]}
-                      </span>
-                    </div>
-                    <p className="mt-0.5 text-xs leading-snug text-fg-muted">
-                      {TIER_DESCRIPTIONS[t]}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            {provider.limits && Object.keys(provider.limits).length > 0 ? (
+              <section className="flex flex-col gap-2">
+                <h3 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
+                  Detailed limits + offerings
+                </h3>
+                <LimitsView limits={provider.limits} />
+              </section>
+            ) : null}
+
+            {provider.restrictions ? (
+              <section className="flex flex-col gap-2">
+                <h3 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
+                  Restrictions
+                </h3>
+                <p className="text-sm leading-relaxed text-fg-muted">
+                  {provider.restrictions}
+                </p>
+              </section>
+            ) : null}
+
+            {provider.tier_fit_rationale ? (
+              <section className="flex flex-col gap-2">
+                <h3 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
+                  Why this tier fit
+                </h3>
+                <p className="text-sm leading-relaxed text-fg-muted">
+                  {provider.tier_fit_rationale}
+                </p>
+              </section>
+            ) : null}
 
             <section className="flex flex-col gap-2">
               <h3 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
@@ -604,6 +699,29 @@ export function ProviderDetail({
                 <Row label="Category">
                   {CATEGORY_LABELS[provider.category] ?? provider.category}
                 </Row>
+                {provider.subcategory ? (
+                  <Row label="Subcategory">{provider.subcategory}</Row>
+                ) : null}
+                {provider.access_method ? (
+                  <Row label="Access method">
+                    <span className="font-mono text-xs">
+                      {provider.access_method}
+                    </span>
+                  </Row>
+                ) : null}
+                {provider.credit_amount != null ? (
+                  <Row label="Credit amount">
+                    <span className="font-mono text-xs">
+                      {provider.currency ?? "USD"}{" "}
+                      {provider.credit_amount.toLocaleString()}
+                    </span>
+                  </Row>
+                ) : null}
+                {provider.credit_duration_days != null ? (
+                  <Row label="Credit duration">
+                    {provider.credit_duration_days} days
+                  </Row>
+                ) : null}
                 <Row label="Geo priority">
                   <span className="capitalize">
                     {provider.geo_priority.replace(/-/g, " ")}
