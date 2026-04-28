@@ -18,6 +18,7 @@ client = TestClient(app)
 ALL_TIERS = ["hobby", "personal", "startup-mvp", "pre-seed", "seed", "series-a"]
 ALL_OFFER_TYPES = [
     "always-free",
+    "free-tier",
     "free-credits",
     "free-trial",
     "free-quota",

@@ -47,7 +47,9 @@ GeoPriority = Literal[
     "other-region",
 ]
 OfferType = Literal[
-    "always-free", "free-credits", "free-trial", "free-quota", "grant", "perk", "oss"
+    "always-free",  # vendor explicitly calls it "Always Free" (e.g. Oracle)
+    "free-tier",    # vendor calls it "Free Tier" / 12-month-free / free account
+    "free-credits", "free-trial", "free-quota", "grant", "perk", "oss",
 ]
 ParseConfidence = Literal["high", "medium", "low"]
 CardVariant = Literal["resource", "funds"]

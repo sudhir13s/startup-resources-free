@@ -54,6 +54,7 @@ export type ParseConfidence = "high" | "medium" | "low";
 
 export type OfferType =
   | "always-free"
+  | "free-tier"
   | "free-credits"
   | "free-trial"
   | "free-quota"
@@ -63,6 +64,7 @@ export type OfferType =
 
 export const OFFER_TYPES: OfferType[] = [
   "always-free",
+  "free-tier",
   "free-credits",
   "free-trial",
   "free-quota",
