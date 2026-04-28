@@ -84,6 +84,12 @@ class Provider(BaseModel):
     credit_amount: float | None = None
     credit_duration_days: int | None = None
     currency: str | None = None
+    # Multi-service breakdowns (Architect B3) — AWS / GCP / Azure / Oracle.
+    # Single-offer providers leave this null.
+    sub_offerings: list[dict] | None = None
+    # Personal-tier eligibility filter signal (Architect O3) — promoted
+    # from limits.always_on. None = unknown.
+    always_on: bool | None = None
 
     @computed_field  # type: ignore[prop-decorator]
     @property

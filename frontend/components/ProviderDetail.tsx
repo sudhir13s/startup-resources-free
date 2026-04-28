@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ExternalLink, ArrowRight } from "lucide-react";
 import {
   Dialog,
@@ -14,6 +15,7 @@ import {
   TIER_LABELS,
   relativeTime,
   type Provider,
+  type SubOffering,
 } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -93,6 +95,57 @@ function LimitsValue({ value }: { value: unknown }) {
     return <LimitsView limits={value as Record<string, unknown>} nested />;
   }
   return <span>{String(value)}</span>;
+}
+
+/** Tabbed renderer for `sub_offerings` — each service (EC2 / S3 / Lambda
+ * for AWS; Always Free / 12-Month / Trials etc.) gets its own tab.
+ * Single-service providers don't render this section. */
+function SubOfferingsTabs({ items }: { items: SubOffering[] }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  if (items.length === 0) return null;
+  const active = items[activeIdx] ?? items[0];
+
+  return (
+    <div className="flex flex-col gap-2 rounded-md border border-border bg-bg-tile p-3">
+      {/* Tab strip */}
+      <div
+        role="tablist"
+        aria-label="Service offerings"
+        className="flex flex-wrap items-center gap-1 border-b border-border pb-2"
+      >
+        {items.map((s, idx) => {
+          const isActive = idx === activeIdx;
+          return (
+            <button
+              key={`${s.service_name}-${idx}`}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveIdx(idx);
+              }}
+              className={cn(
+                "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
+                isActive
+                  ? "bg-accent/15 text-accent"
+                  : "text-fg-muted hover:bg-bg-surface hover:text-fg",
+              )}
+            >
+              {s.service_name}
+            </button>
+          );
+        })}
+      </div>
+      {/* Active service panel */}
+      <div role="tabpanel" className="flex flex-col gap-2 pt-1">
+        <p className="text-sm leading-snug text-fg">{active.headline}</p>
+        {active.limits && Object.keys(active.limits).length > 0 ? (
+          <LimitsView limits={active.limits} />
+        ) : null}
+      </div>
+    </div>
+  );
 }
 
 /** Render a limits dict as a key-value grid. Recursive when values are
@@ -606,6 +659,11 @@ export function ProviderDetail({
                 {provider.india_accessible ? (
                   <Badge variant="india">📍 Works in India</Badge>
                 ) : null}
+                {provider.always_on === true ? (
+                  <Badge variant="success">⚡ Always on</Badge>
+                ) : provider.always_on === false ? (
+                  <Badge variant="muted">💤 Sleeps when idle</Badge>
+                ) : null}
                 <span className="font-mono text-[10px] text-fg-subtle">
                   {domain}
                 </span>
@@ -657,10 +715,21 @@ export function ProviderDetail({
               </p>
             </section>
 
+            {provider.sub_offerings && provider.sub_offerings.length > 0 ? (
+              <section className="flex flex-col gap-2">
+                <h3 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
+                  Service offerings ({provider.sub_offerings.length})
+                </h3>
+                <SubOfferingsTabs items={provider.sub_offerings} />
+              </section>
+            ) : null}
+
             {provider.limits && Object.keys(provider.limits).length > 0 ? (
               <section className="flex flex-col gap-2">
                 <h3 className="font-mono text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
-                  Detailed limits + offerings
+                  {provider.sub_offerings && provider.sub_offerings.length > 0
+                    ? "Other limits"
+                    : "Detailed limits + offerings"}
                 </h3>
                 <LimitsView limits={provider.limits} />
               </section>
