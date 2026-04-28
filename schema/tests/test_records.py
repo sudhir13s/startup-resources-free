@@ -12,6 +12,7 @@ from pydantic import ValidationError
 from schema.records import (
     Eligibility,
     ProviderRecord,
+    category_card_variant,
     record_from_seed,
 )
 
@@ -134,3 +135,84 @@ def test_seed_adapter_normalizes_pluralized_categories():
 def test_eligibility_default_open():
     record = ProviderRecord(**_good_kwargs())
     assert record.eligibility == Eligibility(regions=["global"], user_types=["any"])
+
+
+# ---------- card_variant discriminator (Sprint #5 / CRITICAL #5) ----------
+
+
+@pytest.mark.parametrize(
+    "category,expected",
+    [
+        # Resources: things you USE.
+        ("cloud", "resource"),
+        ("hosting", "resource"),
+        ("gpu", "resource"),
+        ("ai-api", "resource"),
+        ("database", "resource"),
+        ("storage", "resource"),
+        ("auth", "resource"),
+        ("observability", "resource"),
+        ("domain", "resource"),
+        ("oss", "resource"),
+        ("learning", "resource"),
+        # Funds: things that GIVE you money. Both canonical AND legacy
+        # plural slugs route to /funds.
+        ("grant", "funds"),
+        ("grants", "funds"),
+        ("startup-credit", "funds"),
+        ("startup-credits", "funds"),
+        ("accelerator", "funds"),
+        ("accelerators", "funds"),
+        ("perk", "funds"),
+        ("perks", "funds"),
+    ],
+)
+def test_category_card_variant_routes_correctly(category: str, expected: str):
+    assert category_card_variant(category) == expected
+
+
+def test_provider_record_card_variant_resource_for_cloud():
+    record = ProviderRecord(**_good_kwargs(category="cloud"))
+    assert record.card_variant == "resource"
+
+
+def test_provider_record_card_variant_resource_for_ai_api():
+    record = ProviderRecord(**_good_kwargs(category="ai-api"))
+    assert record.card_variant == "resource"
+
+
+def test_provider_record_card_variant_funds_for_grant():
+    record = ProviderRecord(**_good_kwargs(category="grant", offer_type="grant"))
+    assert record.card_variant == "funds"
+
+
+def test_provider_record_card_variant_funds_for_startup_credit():
+    record = ProviderRecord(
+        **_good_kwargs(category="startup-credit", offer_type="free-credits")
+    )
+    assert record.card_variant == "funds"
+
+
+def test_provider_record_card_variant_funds_for_accelerator():
+    record = ProviderRecord(**_good_kwargs(category="accelerator", offer_type="grant"))
+    assert record.card_variant == "funds"
+
+
+def test_provider_record_card_variant_funds_for_perk():
+    record = ProviderRecord(**_good_kwargs(category="perk", offer_type="perk"))
+    assert record.card_variant == "funds"
+
+
+def test_card_variant_emitted_in_to_seed_shape():
+    record = ProviderRecord(**_good_kwargs(category="grant", offer_type="grant"))
+    seed = record.to_seed_shape()
+    assert seed["card_variant"] == "funds"
+
+
+def test_card_variant_serialized_in_model_dump():
+    """Computed fields must appear in the JSON dump that goes over the
+    wire to the frontend (via FastAPI). Without this, the frontend can't
+    discriminate ResourceCard vs FundCard."""
+    record = ProviderRecord(**_good_kwargs(category="cloud"))
+    dumped = record.model_dump()
+    assert dumped["card_variant"] == "resource"

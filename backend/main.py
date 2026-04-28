@@ -23,12 +23,13 @@ for _p in (REPO_ROOT, BACKEND_DIR):
 
 from fastapi import FastAPI, Query  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
-from pydantic import BaseModel  # noqa: E402
+from pydantic import BaseModel, computed_field  # noqa: E402
 
 import snapshots as snap_module  # noqa: E402
 from freellm import plan as freellm_plan  # noqa: E402
 from freellm.providers import PROVIDERS as FREELLM_PROVIDERS  # noqa: E402
 from freellm.schemas import ALL_MODALITIES, Modality as FreellmModality  # noqa: E402
+from schema.records import category_card_variant  # noqa: E402
 
 SEED_PATH = Path(__file__).parent.parent / "data" / "seed.json"
 SERVICE_NAME = "ResourceOS API"
@@ -49,6 +50,7 @@ OfferType = Literal[
     "always-free", "free-credits", "free-trial", "free-quota", "grant", "perk", "oss"
 ]
 ParseConfidence = Literal["high", "medium", "low"]
+CardVariant = Literal["resource", "funds"]
 
 
 class Provider(BaseModel):
@@ -69,6 +71,18 @@ class Provider(BaseModel):
     parse_confidence: ParseConfidence
     last_verified_at: str
     notes: str | None = None
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def card_variant(self) -> CardVariant:
+        """Discriminator for the dual-view UI (Sprint #5).
+
+        Mirrors `schema.records.category_card_variant` — single source of
+        truth lives there. `funds` for grant / startup-credit /
+        accelerator / perk (and their legacy plurals); `resource` for
+        everything else.
+        """
+        return category_card_variant(self.category)
 
 
 class TierCount(BaseModel):
