@@ -122,20 +122,17 @@ export default async function HomePage({
     <div className="flex min-h-screen flex-col bg-bg-base text-fg">
       <TopBar cronStatus={cronStatus} />
 
-      {/* Filters LEFT, content CENTER, slide-over RIGHT — per locked layout convention. */}
-      <div className="flex flex-1 flex-col md:flex-row">
+      {/* Filters LEFT, content CENTER, slide-over RIGHT — per locked layout convention.
+          Outer wrapper bounds the layout to laptop-target width and centers it on
+          wider screens (1080p / external monitors). On MBP 14"/16" the layout
+          fills the screen; on 1920p+ it centers with side gutters. */}
+      <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col md:flex-row">
         <Sidebar currentTier={tier} tierCounts={tierCounts} />
 
         <main
           id="main"
-          // Tight against the sidebar's right edge on the left, mild
-          // breathing room on the right (no centered max-width — fills
-          // viewport on MBP 14"/16").
-          className="flex-1 px-4 py-6 sm:px-5 lg:pl-6 lg:pr-8"
+          className="flex-1 px-4 py-6 sm:px-5 lg:pl-6 lg:pr-6"
         >
-          {/* Drop the centered max-w-6xl: with sidebar on left, the main
-              column should fill the remaining viewport width on MBP
-              14"/16" so cards don't render with empty gutters. */}
           <div className="flex flex-col gap-5">
             <header className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
               <h1 className="text-2xl font-semibold tracking-tight text-fg">
