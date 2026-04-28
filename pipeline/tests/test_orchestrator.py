@@ -83,6 +83,9 @@ def _isolated_runtime(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     )
     snap_dir.mkdir(parents=True, exist_ok=True)
     monkeypatch.setenv("VERIFY_QUEUE_DIR", str(tmp_path / "verify"))
+    # Isolate the SQLite DB so the auto-expire sweep at the end of
+    # run_pipeline can't mutate the repo's real data/resourceos.db.
+    monkeypatch.setenv("RESOURCEOS_DB_PATH", str(tmp_path / "isolated.db"))
     yield
 
 
@@ -296,3 +299,79 @@ def _sniff_agent(messages: list[dict]) -> str:
                     if line and not line.startswith("---"):
                         break
     return "unknown"
+
+
+# =============================================================================
+# Sprint #4: verifier auto-expire wiring (architect CRITICAL #6, 2026-04-28).
+# =============================================================================
+
+
+def test_run_pipeline_populates_expired_verify_count(
+    mocked_http, tmp_path: Path
+):
+    """Stale rows in BOTH stores should be swept and counted in RunSummary."""
+    from datetime import datetime as _dt
+    from datetime import timedelta as _td
+    from datetime import timezone as _tz
+
+    from agents.verifier import VerifyItem
+    from backend import db as db_module
+
+    db_path = tmp_path / "expire.db"
+    # Pre-seed a stale row in SQLite so the orchestrator's sweep finds it.
+    conn = db_module.connect(db_path)
+    db_module.apply_migrations(conn)
+    stale_dt = _dt.now(tz=_tz.utc) - _td(days=45)
+    db_module.enqueue_verify(
+        conn,
+        VerifyItem(
+            record_id="stale-rec",
+            provider_id="stale",
+            provider_name="Stale",
+            source_url="https://stale.test/",
+            parse_confidence="low",
+            reason="ancient",
+            queued_at=stale_dt.isoformat(),
+            record_payload={"id": "stale-rec"},
+        ),
+    )
+    conn.close()
+
+    summary = asyncio.run(
+        orchestrator.run_pipeline(
+            only=["render"],
+            mode="heuristic",
+            db_path=db_path,
+        )
+    )
+    assert summary.expired_verify_count >= 1
+    # The summary surface for /api/run consumers must include the count.
+    assert (
+        summary.to_dict()["totals"]["expired_verify_count"]
+        == summary.expired_verify_count
+    )
+
+    # Confirm the row landed in `expired` status with the auto-expire marker.
+    with db_module.db_session(db_path) as check_conn:
+        row = check_conn.execute(
+            "SELECT status, resolved_by FROM verify_queue WHERE record_id = ?",
+            ("stale-rec",),
+        ).fetchone()
+        assert row["status"] == "expired"
+        assert row["resolved_by"] == "auto-expire"
+
+
+def test_run_pipeline_expired_count_zero_when_nothing_stale(
+    mocked_http, tmp_path: Path
+):
+    """Default field is 0; a clean queue must keep it 0."""
+    db_path = tmp_path / "clean.db"
+    summary = asyncio.run(
+        orchestrator.run_pipeline(
+            only=["render"],
+            mode="heuristic",
+            db_path=db_path,
+        )
+    )
+    assert summary.expired_verify_count == 0
+    assert summary.to_dict()["totals"]["expired_verify_count"] == 0

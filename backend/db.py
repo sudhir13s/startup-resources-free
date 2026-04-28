@@ -18,7 +18,7 @@ import os
 import sqlite3
 from contextlib import contextmanager
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -396,9 +396,11 @@ def resolve_verify(
     status: str,
     resolved_by: str | None = None,
 ) -> bool:
-    """Flip a pending row to confirmed/rejected. Returns True iff updated."""
-    if status not in ("confirmed", "rejected"):
-        raise ValueError(f"status must be confirmed|rejected, got {status!r}")
+    """Flip a pending row to confirmed/rejected/expired. Returns True iff updated."""
+    if status not in ("confirmed", "rejected", "expired"):
+        raise ValueError(
+            f"status must be confirmed|rejected|expired, got {status!r}"
+        )
     cur = conn.execute(
         """
         UPDATE verify_queue
@@ -413,6 +415,40 @@ def resolve_verify(
         ),
     )
     return cur.rowcount > 0
+
+
+def auto_expire_verify(conn: sqlite3.Connection, *, days: int = 30) -> int:
+    """Mark every `pending` verify_queue row older than `days` days as `expired`.
+
+    `resolved_by` is set to `"auto-expire"` so a human reviewer can
+    distinguish auto-expired rows from confirmed/rejected ones.
+    Idempotent: already-resolved rows are not touched (the WHERE clause
+    requires `status='pending'`).
+
+    Returns the count of rows updated.
+
+    Closes architect roundtable CRITICAL #6 (2026-04-28): with the
+    /verify UI killed in Sprint #3, low-confidence rows had no
+    resolution path → unbounded growth on Render's free disk. This TTL
+    sweep prevents that.
+    """
+    if days <= 0:
+        raise ValueError(f"days must be a positive integer, got {days}")
+
+    now = datetime.now(tz=timezone.utc)
+    cutoff = (now - timedelta(days=days)).isoformat()
+    cur = conn.execute(
+        """
+        UPDATE verify_queue
+           SET status = 'expired',
+               resolved_at = ?,
+               resolved_by = 'auto-expire'
+         WHERE status = 'pending'
+           AND queued_at < ?
+        """,
+        (now.isoformat(), cutoff),
+    )
+    return cur.rowcount or 0
 
 
 def verify_item_dict(item: VerifyItem) -> dict[str, Any]:

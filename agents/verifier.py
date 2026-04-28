@@ -10,24 +10,40 @@ B3 swaps the storage to SQLite via `backend/db.py` while keeping the
 public API (`queue_low_confidence`, `pending_items`, `resolve`).
 That way callers don't change.
 
-Confirm/Reject flow used by the dashboard's verify tab will live in B9
-(`/api/verify-queue/<id>/{confirm,reject}`) — this module only writes
-the queue. The API + UI consume it.
+Note: the orchestrator currently writes to BOTH stores — JSONL via
+`queue_low_confidence` (for legacy/local debugging) and SQLite via
+`backend.db.enqueue_verify` (for the API). `auto_expire()` therefore
+sweeps both; either one alone would leak rows on the other side.
+
+Confirm/Reject flow used by the dashboard's verify tab landed in B9
+(`/api/verify-queue/<id>/{confirm,reject}`). Sprint #3 retires that
+UI/API; Sprint #4 (this file) adds a 30-day auto-expire so rows that
+no longer have a resolution path don't accumulate forever on Render's
+free disk. Closes architect roundtable CRITICAL #6 (2026-04-28).
 """
 
 from __future__ import annotations
 
 import json
+import logging
 import os
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Iterable, Literal
 
 from schema.records import ProviderRecord
 
 
-VerifyStatus = Literal["pending", "confirmed", "rejected"]
+logger = logging.getLogger("agents.verifier")
+
+
+VerifyStatus = Literal["pending", "confirmed", "rejected", "expired"]
+
+
+# Sentinel `resolved_by` value attached to rows expired by `auto_expire()`.
+# Lets human review distinguish auto-expired rows from human-resolved ones.
+AUTO_EXPIRE_RESOLVER = "auto-expire"
 
 
 @dataclass
@@ -122,8 +138,10 @@ def resolve(
     flipped. The file is small (low-confidence rows only) so a full
     rewrite is fine. B3's SQLite swap eliminates this O(n) cost.
     """
-    if status not in ("confirmed", "rejected"):
-        raise ValueError(f"resolve() status must be confirmed|rejected, got {status!r}")
+    if status not in ("confirmed", "rejected", "expired"):
+        raise ValueError(
+            f"resolve() status must be confirmed|rejected|expired, got {status!r}"
+        )
 
     items = all_items()
     target_idx: int | None = None
@@ -147,3 +165,106 @@ def resolve(
 def queue_many(items: Iterable[tuple[ProviderRecord, str]]) -> list[VerifyItem]:
     """Convenience: queue multiple `(record, reason)` pairs."""
     return [queue_low_confidence(r, reason=reason) for r, reason in items]
+
+
+def _parse_queued_at(raw: str) -> datetime | None:
+    """Parse an ISO-8601 timestamp; return None when malformed.
+
+    Defensive: a hand-edited JSONL row should not crash the sweep.
+    """
+    if not raw:
+        return None
+    try:
+        ts = datetime.fromisoformat(raw)
+    except ValueError:
+        return None
+    if ts.tzinfo is None:
+        # Treat naive timestamps as UTC (the writer always emits UTC).
+        ts = ts.replace(tzinfo=timezone.utc)
+    return ts
+
+
+def _auto_expire_jsonl(*, cutoff: datetime, now_iso: str) -> int:
+    """Sweep the JSONL queue. Returns the count of rows expired."""
+    path = _queue_path()
+    if not path.exists():
+        return 0
+    items = all_items()
+    expired = 0
+    for item in items:
+        if item.status != "pending":
+            continue
+        queued_at = _parse_queued_at(item.queued_at)
+        if queued_at is None or queued_at >= cutoff:
+            continue
+        item.status = "expired"
+        item.resolved_at = now_iso
+        item.resolved_by = AUTO_EXPIRE_RESOLVER
+        expired += 1
+    if expired:
+        with path.open("w", encoding="utf-8") as f:
+            for item in items:
+                f.write(json.dumps(asdict(item), default=str) + "\n")
+    return expired
+
+
+def _auto_expire_sqlite(*, days: int) -> int:
+    """Sweep the SQLite queue if a DB exists. Returns the count expired.
+
+    Looks at `RESOURCEOS_DB_PATH` env first; falls back to the default
+    `backend.db.DEFAULT_DB_PATH`. If neither file exists, returns 0
+    without touching disk. We import lazily so this module stays
+    importable without `backend/` on sys.path (e.g. pure-JSONL flows).
+    """
+    raw = os.environ.get("RESOURCEOS_DB_PATH")
+    try:
+        from backend import db as db_module  # local import — avoids cycle
+    except ImportError:
+        return 0
+
+    target = Path(raw) if raw else db_module.DEFAULT_DB_PATH
+    if not target.exists():
+        return 0
+    try:
+        with db_module.db_session(target) as conn:
+            return db_module.auto_expire_verify(conn, days=days)
+    except Exception:  # noqa: BLE001 — sweep is best-effort, never crash pipeline
+        logger.exception("verify_auto_expire_sqlite_failed", extra={"db": str(target)})
+        return 0
+
+
+def auto_expire(*, days: int = 30) -> int:
+    """Mark every `pending` verify-queue row older than `days` days as `expired`.
+
+    Sweeps BOTH storage layers — the JSONL file (legacy) AND the SQLite
+    `verify_queue` table (live). The orchestrator writes to both today,
+    so a single-store sweep would leak rows on the other side. The
+    architect's 2026-04-28 roundtable explicitly flagged this dual-write.
+
+    Idempotent: rows already in `expired` / `confirmed` / `rejected`
+    status are untouched.
+
+    Returns the total number of rows transitioned across both stores.
+    """
+    if days <= 0:
+        raise ValueError(f"days must be a positive integer, got {days}")
+
+    now = datetime.now(tz=timezone.utc)
+    now_iso = now.isoformat()
+    cutoff = now - timedelta(days=days)
+
+    jsonl_count = _auto_expire_jsonl(cutoff=cutoff, now_iso=now_iso)
+    sqlite_count = _auto_expire_sqlite(days=days)
+    total = jsonl_count + sqlite_count
+
+    logger.info(
+        "verify_auto_expire",
+        extra={
+            "event": "verify_auto_expire",
+            "expired_count": total,
+            "jsonl_expired": jsonl_count,
+            "sqlite_expired": sqlite_count,
+            "ttl_days": days,
+        },
+    )
+    return total

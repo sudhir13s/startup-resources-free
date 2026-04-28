@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -12,6 +12,19 @@ from agents.change_detector import ChangeReport
 from agents.verifier import VerifyItem
 from backend import db as db_module
 from schema.records import ProviderRecord
+
+
+def _verify_item(*, record_id: str, queued_at: datetime) -> VerifyItem:
+    return VerifyItem(
+        record_id=record_id,
+        provider_id=record_id,
+        provider_name=record_id.upper(),
+        source_url=f"https://{record_id}.test/",
+        parse_confidence="low",
+        reason="missing",
+        queued_at=queued_at.isoformat(),
+        record_payload={"id": record_id},
+    )
 
 
 def _record(**overrides) -> ProviderRecord:
@@ -240,3 +253,101 @@ def test_record_round_trips_eligibility_and_tiers(conn):
     payload = json.loads(raw["eligibility_json"])
     assert payload["regions"] == ["global"]
     assert payload["user_types"] == ["any"]
+
+
+# =============================================================================
+# auto_expire_verify — Sprint #4 / architect CRITICAL #6 (2026-04-28).
+# =============================================================================
+
+
+def test_auto_expire_verify_flips_old_pending_rows(conn):
+    now = datetime.now(tz=timezone.utc)
+    old = _verify_item(record_id="old", queued_at=now - timedelta(days=45))
+    fresh = _verify_item(record_id="fresh", queued_at=now - timedelta(days=2))
+    db_module.enqueue_verify(conn, old)
+    db_module.enqueue_verify(conn, fresh)
+
+    expired = db_module.auto_expire_verify(conn, days=30)
+    assert expired == 1
+
+    row = conn.execute(
+        "SELECT status, resolved_at, resolved_by FROM verify_queue WHERE record_id = ?",
+        ("old",),
+    ).fetchone()
+    assert row["status"] == "expired"
+    assert row["resolved_by"] == "auto-expire"
+    assert row["resolved_at"] is not None
+
+    fresh_row = conn.execute(
+        "SELECT status FROM verify_queue WHERE record_id = ?", ("fresh",)
+    ).fetchone()
+    assert fresh_row["status"] == "pending"
+
+
+def test_auto_expire_verify_does_not_touch_resolved_rows(conn):
+    now = datetime.now(tz=timezone.utc)
+    item = _verify_item(record_id="done", queued_at=now - timedelta(days=120))
+    db_module.enqueue_verify(conn, item)
+    db_module.resolve_verify(conn, "done", status="confirmed", resolved_by="curator")
+
+    expired = db_module.auto_expire_verify(conn, days=30)
+    assert expired == 0
+
+    row = conn.execute(
+        "SELECT status, resolved_by FROM verify_queue WHERE record_id = ?",
+        ("done",),
+    ).fetchone()
+    assert row["status"] == "confirmed"
+    assert row["resolved_by"] == "curator"
+
+
+def test_auto_expire_verify_respects_days_param(conn):
+    now = datetime.now(tz=timezone.utc)
+    item = _verify_item(record_id="middling", queued_at=now - timedelta(days=10))
+    db_module.enqueue_verify(conn, item)
+
+    # 30-day TTL leaves it pending.
+    assert db_module.auto_expire_verify(conn, days=30) == 0
+    pending = db_module.pending_verify(conn)
+    assert {p["record_id"] for p in pending} == {"middling"}
+
+    # 7-day TTL flips it.
+    assert db_module.auto_expire_verify(conn, days=7) == 1
+    assert db_module.pending_verify(conn) == []
+
+
+def test_auto_expire_verify_returns_zero_on_empty_queue(conn):
+    assert db_module.auto_expire_verify(conn, days=30) == 0
+
+
+def test_auto_expire_verify_is_idempotent(conn):
+    now = datetime.now(tz=timezone.utc)
+    item = _verify_item(record_id="r", queued_at=now - timedelta(days=60))
+    db_module.enqueue_verify(conn, item)
+
+    assert db_module.auto_expire_verify(conn, days=30) == 1
+    # Second sweep finds nothing because the row is already in `expired`.
+    assert db_module.auto_expire_verify(conn, days=30) == 0
+
+
+def test_auto_expire_verify_rejects_non_positive_days(conn):
+    with pytest.raises(ValueError):
+        db_module.auto_expire_verify(conn, days=0)
+    with pytest.raises(ValueError):
+        db_module.auto_expire_verify(conn, days=-1)
+
+
+def test_resolve_verify_now_accepts_expired_status(conn):
+    """`resolve_verify` validator must allow `expired` so manual sweeps work too."""
+    now = datetime.now(tz=timezone.utc)
+    item = _verify_item(record_id="manual", queued_at=now)
+    db_module.enqueue_verify(conn, item)
+
+    ok = db_module.resolve_verify(conn, "manual", status="expired", resolved_by="ops")
+    assert ok is True
+    row = conn.execute(
+        "SELECT status, resolved_by FROM verify_queue WHERE record_id = ?",
+        ("manual",),
+    ).fetchone()
+    assert row["status"] == "expired"
+    assert row["resolved_by"] == "ops"
