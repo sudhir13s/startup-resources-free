@@ -9,9 +9,17 @@ from typing import Literal
 # Make the repo-root `freellm/` package importable when uvicorn runs from
 # the `backend/` rootDir on Render. Tests already run with cwd at repo
 # root so this is a no-op there.
+# Ensure both REPO_ROOT (for `agents`, `schema`, `freellm` packages) AND
+# REPO_ROOT/backend (for the bare `import snapshots` / `import db` lines
+# below) are on sys.path. Render's blueprint runs uvicorn with
+# rootDir=backend, which puts backend/ in sys.path implicitly via cwd —
+# but local dev (`uvicorn backend.main:app` from REPO_ROOT) does NOT,
+# so we insert it here unconditionally.
 REPO_ROOT = Path(__file__).resolve().parent.parent
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+BACKEND_DIR = Path(__file__).resolve().parent
+for _p in (REPO_ROOT, BACKEND_DIR):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
 from fastapi import FastAPI, Query  # noqa: E402
 from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
