@@ -18,6 +18,10 @@ import {
   type SubOffering,
 } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import {
+  formatLimitLabel,
+  formatLimitValue,
+} from "@/lib/limits-labels";
 
 const CONFIDENCE_DOT: Record<Provider["parse_confidence"], string> = {
   high: "bg-ok",
@@ -46,24 +50,16 @@ function StatTile({ label, value }: { label: string; value: string }) {
 
 /** Pretty-print a limits-key (e.g. "ec2_instance_hours_per_month") so the
  * UI reads naturally without forcing the data shape to be perfect. */
-function prettyKey(k: string): string {
-  return k
-    .replace(/_/g, " ")
-    .replace(/\b([a-z])/g, (_, c: string) => c.toUpperCase())
-    .replace(/\bEc2\b/, "EC2")
-    .replace(/\bGcp\b/, "GCP")
-    .replace(/\bAws\b/, "AWS")
-    .replace(/\bGpu\b/, "GPU")
-    .replace(/\bCpu\b/, "CPU")
-    .replace(/\bRam\b/, "RAM")
-    .replace(/\bSsd\b/, "SSD")
-    .replace(/\bUrl\b/, "URL")
-    .replace(/\bApi\b/, "API");
-}
-
-/** Render a single limits-value: number → comma-formatted, bool → Yes/No,
- * string → as-is, array → bullet list, object → nested. */
-function LimitsValue({ value }: { value: unknown }) {
+/** Render a single limits-value with key-aware unit formatting.
+ *
+ * - Booleans → "Yes" / "No" (color-coded).
+ * - Numbers → comma-formatted, with the canonical unit appended when
+ *   `LIMIT_FIELD_META[k].unit` is set (e.g. `512` + `MB` → "512 MB").
+ * - Strings → as-is, but the canonical unit is appended if the string
+ *   has a digit and doesn't already include the unit text.
+ * - Arrays → bullet list (no unit suffix per item).
+ * - Objects → recurse into nested `LimitsView`. */
+function LimitsValue({ k, value }: { k: string; value: unknown }) {
   if (value === null || value === undefined) {
     return <span className="text-fg-subtle">—</span>;
   }
@@ -74,11 +70,8 @@ function LimitsValue({ value }: { value: unknown }) {
       </span>
     );
   }
-  if (typeof value === "number") {
-    return <span className="font-mono">{value.toLocaleString()}</span>;
-  }
-  if (typeof value === "string") {
-    return <span>{value}</span>;
+  if (typeof value === "number" || typeof value === "string") {
+    return <span>{formatLimitValue(k, value)}</span>;
   }
   if (Array.isArray(value)) {
     return (
@@ -148,8 +141,14 @@ function SubOfferingsTabs({ items }: { items: SubOffering[] }) {
   );
 }
 
-/** Render a limits dict as a key-value grid. Recursive when values are
- * objects (e.g. AWS Activate has per-service breakdowns). */
+/** Render a limits dict as a key-value list with aligned colon separator.
+ *
+ *   Web Service                      : 750 hours/month
+ *   Build Minutes                    : 500 minutes/month
+ *   RAM                              : 512 MB
+ *
+ * Recursive when values are objects (e.g. AWS Activate's tiered credit
+ * breakdown). Title-Case labels, no font-mono uppercase noise. */
 function LimitsView({
   limits,
   nested = false,
@@ -163,33 +162,48 @@ function LimitsView({
     <dl
       className={cn(
         "flex flex-col gap-1.5 text-sm",
-        nested ? "ml-2 mt-1 border-l-2 border-border pl-3" : "rounded-md border border-border bg-bg-tile p-3",
+        nested
+          ? "ml-2 mt-1 border-l-2 border-border pl-3"
+          : "rounded-md border border-border bg-bg-tile p-3",
       )}
     >
-      {entries.map(([k, v]) => (
-        <div
-          key={k}
-          className="grid grid-cols-[max-content_1fr] items-baseline gap-x-3"
-        >
-          <dt className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
-            {prettyKey(k)}
-          </dt>
-          <dd className="text-sm break-words text-fg">
-            <LimitsValue value={v} />
-          </dd>
-        </div>
-      ))}
+      {entries.map(([k, v]) => {
+        const isObject =
+          v !== null &&
+          typeof v === "object" &&
+          !Array.isArray(v);
+        return (
+          <div
+            key={k}
+            className={cn(
+              "grid items-baseline gap-x-3",
+              isObject
+                ? "grid-cols-1"
+                : "grid-cols-[minmax(140px,max-content)_auto_1fr]",
+            )}
+          >
+            <dt className="text-fg-muted">{formatLimitLabel(k)}</dt>
+            {isObject ? null : (
+              <span className="text-fg-subtle">:</span>
+            )}
+            <dd className="break-words text-fg">
+              <LimitsValue k={k} value={v} />
+            </dd>
+          </div>
+        );
+      })}
     </dl>
   );
 }
 
+/** Provider-info row — same colon-aligned layout as LimitsView so the
+ * detail modal reads consistently across sections. */
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[max-content_1fr] items-baseline gap-x-4 gap-y-0">
-      <dt className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
-        {label}
-      </dt>
-      <dd className="text-sm text-fg break-words">{children}</dd>
+    <div className="grid grid-cols-[minmax(140px,max-content)_auto_1fr] items-baseline gap-x-3 text-sm">
+      <dt className="text-fg-muted">{label}</dt>
+      <span className="text-fg-subtle">:</span>
+      <dd className="break-words text-fg">{children}</dd>
     </div>
   );
 }
