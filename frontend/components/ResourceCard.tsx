@@ -246,21 +246,25 @@ export function ResourceCard({ provider }: { provider: Provider }) {
           {/* Row 8 — notes preview (only when we have notes; uses up the
               bottom whitespace that was wasted before). */}
           {provider.notes ? (
-            <p
-              className="text-[11px] leading-snug text-fg-subtle"
-              style={{
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
+            <div
+              className="rounded-md border border-warn/30 bg-warn/10 px-2.5 py-1.5"
               title={provider.notes}
             >
-              <span className="font-mono uppercase tracking-wider text-fg-subtle">
-                Note
-              </span>{" "}
-              <span className="text-fg-muted">{provider.notes}</span>
-            </p>
+              <p
+                className="text-[11px] leading-snug"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-warn">
+                  Note
+                </span>{" "}
+                <span className="text-fg">{provider.notes}</span>
+              </p>
+            </div>
           ) : null}
 
         </CardContent>

@@ -267,21 +267,25 @@ export function FundCard({ provider }: { provider: Provider }) {
           {/* Row 7 — notes preview when present (uses up the bottom
               whitespace that was wasted on the v0.1 card). */}
           {provider.notes ? (
-            <p
-              className="text-[11px] leading-snug text-fg-subtle"
-              style={{
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
+            <div
+              className="rounded-md border border-warn/40 bg-warn/15 px-2.5 py-1.5"
               title={provider.notes}
             >
-              <span className="font-mono uppercase tracking-wider text-fg-subtle">
-                Note
-              </span>{" "}
-              <span className="text-fg-muted">{provider.notes}</span>
-            </p>
+              <p
+                className="text-[11px] leading-snug"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                <span className="font-mono text-[9px] font-semibold uppercase tracking-wider text-warn">
+                  Note
+                </span>{" "}
+                <span className="text-fg">{provider.notes}</span>
+              </p>
+            </div>
           ) : null}
 
         </CardContent>
