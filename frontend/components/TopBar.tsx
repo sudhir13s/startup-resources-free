@@ -25,12 +25,14 @@ export function TopBar({
 }) {
   const stale = cronStatus?.is_stale ?? true;
   const freshness = cronStatus ? freshnessText(cronStatus) : lastUpdated;
+  // manual-full-run.yml fans out to BOTH weekly-discovery (find new
+  // providers) AND weekly-refresh (re-validate existing rows for drift)
+  // in one click. Single dispatch URL beats opening two Actions tabs.
   const runUrl =
-    cronStatus?.workflow_url_discovery ??
-    "https://github.com/sudhir13s/startup-resources-free/actions/workflows/weekly-discovery.yml";
+    "https://github.com/sudhir13s/startup-resources-free/actions/workflows/manual-full-run.yml";
   const tooltip = stale
-    ? "Trigger the weekly-discovery workflow on GitHub Actions (opens in a new tab)"
-    : `Last run ${freshness} — cron is up-to-date. Click anyway to force-run.`;
+    ? "Trigger discovery + refresh on GitHub Actions (opens in a new tab)"
+    : `Last run ${freshness} — cron is up-to-date. Click to force-run discovery + refresh.`;
   return (
     <header
       role="banner"
