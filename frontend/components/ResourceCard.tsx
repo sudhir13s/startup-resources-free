@@ -141,6 +141,21 @@ export function ResourceCard({ provider }: { provider: Provider }) {
                       India
                     </Badge>
                   ) : null}
+                  {provider.always_on === true ? (
+                    <Badge variant="success" aria-label="Always on (no spin-down)">
+                      <span className="mr-0.5" aria-hidden="true">
+                        ⚡
+                      </span>
+                      24/7
+                    </Badge>
+                  ) : provider.always_on === false ? (
+                    <Badge variant="muted" aria-label="Sleeps when idle">
+                      <span className="mr-0.5" aria-hidden="true">
+                        💤
+                      </span>
+                      Sleeps
+                    </Badge>
+                  ) : null}
                   {fitFirst ? (
                     <Badge variant="success" className="gap-1">
                       <span className="font-semibold">

@@ -159,6 +159,14 @@ export function FundCard({ provider }: { provider: Provider }) {
                       India
                     </Badge>
                   ) : null}
+                  {provider.always_on === true ? (
+                    <Badge variant="success" aria-label="Always on">
+                      <span className="mr-0.5" aria-hidden="true">
+                        ⚡
+                      </span>
+                      24/7
+                    </Badge>
+                  ) : null}
                   {fitFirst ? (
                     <Badge variant="success" className="gap-1">
                       <span className="font-semibold">
