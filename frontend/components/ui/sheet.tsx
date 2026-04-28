@@ -51,10 +51,10 @@ const SheetContent = React.forwardRef<
       // We deliberately do NOT override onOpenAutoFocus / onCloseAutoFocus.
       className={cn(
         "fixed z-50 flex h-full flex-col gap-4 border-border bg-bg-base p-6 shadow-2xl outline-none",
-        // Non-modal panels must NOT cover the whole viewport. ~45vw on
+        // Non-modal panels must NOT cover the whole viewport. ~40vw on
         // desktop leaves the grid usable to the side; mobile goes full
-        // width below md.
-        "w-full md:w-[45vw] md:max-w-[600px] overflow-y-auto",
+        // width below md. Capped so it never dominates a 1080p screen.
+        "w-full md:w-[40vw] md:max-w-[560px] overflow-y-auto",
         side === "right"
           ? "right-0 top-0 border-l data-[state=open]:animate-in data-[state=open]:slide-in-from-right data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right"
           : "left-0 top-0 border-r data-[state=open]:animate-in data-[state=open]:slide-in-from-left data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left",
