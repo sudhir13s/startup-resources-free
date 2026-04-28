@@ -2,12 +2,12 @@
 
 import { ExternalLink } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import {
   CATEGORY_LABELS,
@@ -64,24 +64,24 @@ export function ProviderDetail({
   const initial = provider.name.charAt(0).toUpperCase();
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent side="right" aria-describedby={`detail-${provider.id}`}>
-        <DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" aria-describedby={`detail-${provider.id}`}>
+        <SheetHeader>
           <div className="flex items-start gap-3">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-border bg-bg-tile font-mono text-lg font-semibold text-fg-muted">
               {initial}
             </div>
             <div className="flex flex-col gap-0.5">
-              <DialogTitle>{provider.name}</DialogTitle>
+              <SheetTitle>{provider.name}</SheetTitle>
               <span className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
                 {CATEGORY_LABELS[provider.category] ?? provider.category}
               </span>
-              <DialogDescription className="mt-1.5" id={`detail-${provider.id}`}>
+              <SheetDescription className="mt-1.5" id={`detail-${provider.id}`}>
                 {provider.headline}
-              </DialogDescription>
+              </SheetDescription>
             </div>
           </div>
-        </DialogHeader>
+        </SheetHeader>
 
         <div className="flex flex-wrap gap-1.5">
           {provider.use_case_tiers.map((t) => (
@@ -148,7 +148,7 @@ export function ProviderDetail({
             {provider.notes ? <Row label="Notes">{provider.notes}</Row> : null}
           </dl>
         </section>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }
