@@ -39,6 +39,7 @@ if str(REPO_ROOT) not in sys.path:
 if str(REPO_ROOT / "backend") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "backend"))
 
+from agents import verifier as verifier_module  # noqa: E402
 from agents.change_detector import ChangeReport, diff_against_last  # noqa: E402
 from agents.extractor import extract_record  # noqa: E402
 from agents.tier_classifier import assign_tiers  # noqa: E402
@@ -84,6 +85,7 @@ class RunSummary:
     inserted_records: int = 0
     inserted_changes: int = 0
     queued_for_verify: int = 0
+    expired_verify_count: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -97,6 +99,7 @@ class RunSummary:
                 "inserted_records": self.inserted_records,
                 "inserted_changes": self.inserted_changes,
                 "queued_for_verify": self.queued_for_verify,
+                "expired_verify_count": self.expired_verify_count,
             },
             "providers": [s.__dict__ for s in self.provider_summaries],
         }
@@ -316,6 +319,22 @@ async def run_pipeline(
             rows = list(seed_idx.values())
         snap_path = snap_module.write_snapshot(rows)
         summary.snapshot_path = str(snap_path)
+
+    # Verify-queue TTL sweep — closes architect roundtable CRITICAL #6
+    # (2026-04-28). Runs AFTER snapshot write so a slow sweep can't
+    # block the FE-visible artifact. Sweeps JSONL + SQLite via
+    # verifier.auto_expire (handles both stores); when an orchestrator
+    # DB connection is already open, also calls auto_expire_verify on
+    # it directly so the operation is observable from the same conn
+    # (second sweep finds 0 — idempotent).
+    expired_total = 0
+    try:
+        expired_total += verifier_module.auto_expire()
+        if conn is not None:
+            expired_total += db_module.auto_expire_verify(conn)
+    except Exception:  # noqa: BLE001 - never fail the pipeline on cleanup
+        logger.exception("verify_auto_expire_failed")
+    summary.expired_verify_count = expired_total
 
     if conn is not None:
         with suppress(Exception):
