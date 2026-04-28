@@ -131,6 +131,33 @@ class Eligibility(BaseModel):
     funding_max_usd: float | None = None
 
 
+# === Sub-offering (multi-service providers) ===
+
+
+class SubOffering(BaseModel):
+    """One service inside a multi-service provider record.
+
+    Architect B3 from 2026-04-28 schema-flexibility roundtable: AWS Free
+    Tier is one logical record but carries structurally distinct limit
+    sets for EC2, S3, Lambda, RDS, etc. A flat `limits` dict can't
+    represent this without polluting the canonical-key namespace. This
+    structured shape is the escape hatch.
+
+    Each sub-offering carries its own headline + limits dict. The parent
+    `ProviderRecord.limits` holds the headline / primary limit for the
+    whole record (e.g. AWS = 'EC2 t2.micro 750h/mo' as the headline).
+
+    `extra="allow"` so future per-service metadata (region overrides,
+    SLA, etc.) doesn't require schema migration.
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+    service_name: str  # e.g. "EC2", "S3", "Lambda", "RDS"
+    headline: str  # one-liner describing the free quota for this service
+    limits: dict[str, Any] = Field(default_factory=dict)
+
+
 # === Canonical record ===
 
 
@@ -167,6 +194,14 @@ class ProviderRecord(BaseModel):
 
     limits: dict[str, Any] = Field(default_factory=dict)
 
+    # --- Multi-service offerings (Architect B3 from 2026-04-28 roundtable) ---
+    # Multi-service providers (AWS Free Tier, GCP Free Tier, Azure Free)
+    # carry structurally distinct limit sets per sub-service (EC2 / S3 /
+    # Lambda / RDS as one logical record). Flat `limits` can't represent
+    # this faithfully — `sub_offerings` is the structured escape hatch.
+    # Single-offer providers leave this null.
+    sub_offerings: list[SubOffering] | None = None
+
     # --- UI stat tiles (≤ 30 chars each per spec) ---
     quota_summary: str = "—"
     duration_summary: str = "—"
@@ -181,6 +216,12 @@ class ProviderRecord(BaseModel):
     # --- Geographic + tier fit ---
     geo_priority: GeoPriority = "global-other"
     india_accessible: bool = True  # seed.json carries this; convenience for UI
+    # `always_on` is a top-level boolean (Architect O3 from 2026-04-28
+    # roundtable) — promoted from `limits.always_on` because the
+    # `personal` tier eligibility filter depends on it on every grid
+    # render. Querying `json_extract(limits, '$.always_on')` per row is
+    # wasteful; a top-level field gets a real index. None = unknown.
+    always_on: bool | None = None
     use_case_tiers: list[UseCaseTier] = Field(default_factory=list)
     tier_fit_rationale: str | None = None
 
