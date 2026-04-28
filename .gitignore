@@ -10,8 +10,11 @@ dist/
 .installed.cfg
 *.egg
 .venv/
+.venv-*/
 venv/
+venv-*/
 env/
+.python-version
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -44,7 +47,20 @@ data/logs/
 data/runs/
 data/verify-queue/
 data/freellm/quotas.json
+data/search/quotas.json
 data/benchmark_runs/
+
+# Editor / OS / temp
+.DS_Store
+*.bak
+*.swp
+.idea/
+.vscode/
+*.tmp
+
+# Claude Code runtime (rules stay tracked under .claude/rules/)
+.claude/scheduled_tasks.lock
+.claude/worktrees/
 # SQLite write-ahead log + shared-memory files — ephemeral, never commit.
 # The .db file itself IS committed by the daily cron so Render can read it.
 data/resourceos.db-wal
