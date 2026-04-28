@@ -98,7 +98,7 @@ jobs:
       - uses: actions/setup-node@v6
         if: env.MODE != 'heuristic'
         with:
-          node-version: "22.12.0"
+          node-version: "22.22.2"
 
       - name: bootstrap OmniRoute (mode=auto / mode=llm only)
         if: env.MODE != 'heuristic'

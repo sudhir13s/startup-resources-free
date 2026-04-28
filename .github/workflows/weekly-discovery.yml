@@ -85,14 +85,21 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: "22.12.0"
+          node-version: "22.22.2"
 
       - name: bootstrap OmniRoute (LLM ranker dependency)
+        env:
+          # OmniRoute defaults DB path to /app/data which is unwritable on
+          # GitHub Actions runners. Without DB, auth-guard fails-closed
+          # (isAuthRequired=true) and every chat completion returns 500.
+          # Diagnosed 2026-04-28 from /tmp/omniroute.log dump on run #25059676895.
+          DATA_DIR: /tmp/omniroute-data
         run: |
           set -e
+          mkdir -p "$DATA_DIR"
           omniroutectl env-sync
           npx -y omniroute@latest --version > /tmp/npx-warm.log 2>&1 || true
-          nohup npx -y omniroute@latest --no-open --port 20128 \
+          nohup env DATA_DIR="$DATA_DIR" npx -y omniroute@latest --no-open --port 20128 \
             > /tmp/omniroute.log 2>&1 &
           for i in $(seq 1 60); do
             if curl -fsS http://localhost:20128/api/init >/dev/null 2>&1; then
