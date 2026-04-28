@@ -109,10 +109,19 @@ export const CATEGORY_LABELS: Record<string, string> = {
   hosting: "Hosting",
 };
 
+/** Routes a provider to /resources vs /funds and to ResourceCard vs
+ * FundCard. Sprint #5 / CRITICAL #5.
+ *
+ * Backend computes this from `category` and emits it on every record.
+ * Mirror of `schema.records.category_card_variant`.
+ */
+export type CardVariant = "resource" | "funds";
+
 export type Provider = {
   id: string;
   name: string;
   category: string;
+  card_variant: CardVariant;
   headline: string;
   free_tier_summary: string;
   quota_summary: string;
@@ -128,6 +137,32 @@ export type Provider = {
   last_verified_at: string;
   notes?: string | null;
 };
+
+/** Categories that route to the /funds view. Both canonical singular
+ * AND legacy plural slugs included so it works regardless of ingest. */
+const FUND_CATEGORIES: ReadonlySet<string> = new Set([
+  "grant",
+  "grants",
+  "startup-credit",
+  "startup-credits",
+  "accelerator",
+  "accelerators",
+  "perk",
+  "perks",
+]);
+
+/** Frontend-side fallback when `card_variant` is missing on the wire
+ * (e.g. older snapshots). Mirrors the Python helper in
+ * `schema.records.category_card_variant`. */
+export function categoryCardVariant(category: string): CardVariant {
+  return FUND_CATEGORIES.has(category) ? "funds" : "resource";
+}
+
+/** Get the variant from a provider, falling back to category mapping
+ * if the backend didn't emit one (defensive — backend always should). */
+export function providerCardVariant(provider: Provider): CardVariant {
+  return provider.card_variant ?? categoryCardVariant(provider.category);
+}
 
 export type ProvidersResponse = {
   total: number;

@@ -1,6 +1,11 @@
-import { ProviderCard } from "@/components/ProviderCard";
-import type { Provider } from "@/lib/utils";
+import { ResourceCard } from "@/components/ResourceCard";
+import { FundCard } from "@/components/FundCard";
+import { providerCardVariant, type Provider } from "@/lib/utils";
 
+/** Renders a grid of provider records, switching each cell's card
+ * shape on `card_variant` (Sprint #5). Mixed lists (e.g. a future
+ * Compare tab that places resources next to funds) render correctly
+ * because the discrimination is per-record, not per-grid. */
 export function ProviderGrid({ items }: { items: Provider[] }) {
   if (items.length === 0) {
     return (
@@ -27,9 +32,13 @@ export function ProviderGrid({ items }: { items: Provider[] }) {
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {items.map((p) => (
-        <ProviderCard key={p.id} provider={p} />
-      ))}
+      {items.map((p) =>
+        providerCardVariant(p) === "funds" ? (
+          <FundCard key={p.id} provider={p} />
+        ) : (
+          <ResourceCard key={p.id} provider={p} />
+        )
+      )}
     </div>
   );
 }

@@ -16,7 +16,7 @@ from __future__ import annotations
 from datetime import date, datetime, timezone
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
 
 # === Locked enums ===
 # Keep in sync with provider-schema.md. Tests assert the membership lists
@@ -85,6 +85,36 @@ ParseConfidence = Literal["high", "medium", "low"]
 SourceMethod = Literal["api", "rss", "structured-html", "regex-html", "manual", "llm"]
 
 Status = Literal["active", "reduced", "ended", "unknown"]
+
+CardVariant = Literal["resource", "funds"]
+
+# Categories that route to the /funds view (programs that GIVE you money:
+# grants, startup credits, accelerators, partner perks). Everything else
+# routes to /resources (things you USE: cloud / GPU / DB / LLM-API / …).
+# Both canonical singular slugs AND legacy plural seed slugs are listed
+# so the discriminator works regardless of ingest path.
+_FUND_CATEGORIES: frozenset[str] = frozenset(
+    {
+        "grant",
+        "grants",
+        "startup-credit",
+        "startup-credits",
+        "accelerator",
+        "accelerators",
+        "perk",
+        "perks",
+    }
+)
+
+
+def category_card_variant(category: str) -> CardVariant:
+    """Map a category slug → card_variant ('resource' | 'funds').
+
+    Pure function — single source of truth shared by ProviderRecord,
+    backend/main.py's Provider model, and any future frontend codepath
+    that needs to discriminate at ingest time.
+    """
+    return "funds" if category in _FUND_CATEGORIES else "resource"
 
 
 # === Eligibility sub-shape ===
@@ -166,6 +196,22 @@ class ProviderRecord(BaseModel):
     supersedes_id: str | None = None
     notes: str | None = None
 
+    # --- Computed discriminator ---
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def card_variant(self) -> CardVariant:
+        """Routes the record to the right UI view + card schema.
+
+        `funds` → things that GIVE you money (grants, credits,
+        accelerators, perks) → /funds page, FundCard layout.
+        `resource` → things you USE (cloud, GPU, DB, AI APIs, …) →
+        /resources page, ResourceCard layout.
+
+        Derived (not stored) — frontend reads `record.card_variant`.
+        """
+        return category_card_variant(self.category)
+
     # --- Validators ---
 
     @field_validator("currency")
@@ -211,6 +257,7 @@ class ProviderRecord(BaseModel):
             "id": self.provider_id,
             "name": self.provider_name,
             "category": self.category,
+            "card_variant": self.card_variant,
             "headline": self.headline or self.offer_summary,
             "free_tier_summary": self.offer_summary,
             "quota_summary": self.quota_summary,

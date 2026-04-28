@@ -116,6 +116,47 @@ def test_filter_offer_type_grant_returns_only_grants():
         assert p["offer_type"] == "grant"
 
 
+# ---------- card_variant discriminator (Sprint #5 / CRITICAL #5) ----------
+
+
+def test_every_provider_response_includes_card_variant():
+    """Frontend reads `provider.card_variant` to switch between
+    ResourceCard and FundCard. Without it, the dual-view UI breaks."""
+    body = client.get("/api/providers").json()
+    assert len(body["items"]) > 0
+    for p in body["items"]:
+        assert "card_variant" in p, f"missing card_variant on {p['id']}"
+        assert p["card_variant"] in {"resource", "funds"}
+
+
+def test_card_variant_funds_for_grant_records():
+    body = client.get("/api/providers?offer_type=grant").json()
+    for p in body["items"]:
+        # Grant offer_type rides on grant / accelerator categories.
+        assert p["card_variant"] == "funds", (
+            f"{p['id']} category={p['category']} should be funds"
+        )
+
+
+def test_card_variant_resource_for_ai_api_records():
+    body = client.get("/api/providers?category=ai-api").json()
+    assert len(body["items"]) > 0
+    for p in body["items"]:
+        assert p["card_variant"] == "resource"
+
+
+def test_card_variant_funds_for_startup_credits_records():
+    body = client.get("/api/providers?category=startup-credits").json()
+    for p in body["items"]:
+        assert p["card_variant"] == "funds"
+
+
+def test_card_variant_funds_for_accelerators_records():
+    body = client.get("/api/providers?category=accelerators").json()
+    for p in body["items"]:
+        assert p["card_variant"] == "funds"
+
+
 def test_filter_offer_type_invalid_returns_422():
     r = client.get("/api/providers?offer_type=enterprise")
     assert r.status_code == 422
