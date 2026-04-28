@@ -106,7 +106,20 @@ export function ResourceCard({ provider }: { provider: Provider }) {
 
   return (
     <>
-      <Card className="flex h-full flex-col overflow-hidden">
+      <Card
+        role="button"
+        tabIndex={0}
+        onClick={() => setDetailOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setDetailOpen(true);
+          }
+        }}
+        aria-haspopup="dialog"
+        aria-label={`Open details for ${provider.name}`}
+        className="flex h-full cursor-pointer flex-col overflow-hidden transition-colors hover:border-border-strong hover:bg-bg-tile/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      >
         <CardHeader>
           {/* Row 1 — logo + name + India badge + tier badges + save */}
           <div className="flex items-start justify-between gap-3">
@@ -151,6 +164,7 @@ export function ResourceCard({ provider }: { provider: Provider }) {
               aria-label="Save (coming soon)"
               disabled
               title="Save (coming soon)"
+              onClick={(e) => e.stopPropagation()}
               className="text-fg-subtle hover:text-warn disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Star className="h-4 w-4" />
@@ -280,6 +294,7 @@ export function ResourceCard({ provider }: { provider: Provider }) {
               href={provider.source_url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
               className="inline-flex items-center gap-1 text-xs text-fg-muted hover:text-accent"
             >
               Source
@@ -287,7 +302,10 @@ export function ResourceCard({ provider }: { provider: Provider }) {
             </a>
             <button
               type="button"
-              onClick={() => setDetailOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setDetailOpen(true);
+              }}
               className="inline-flex items-center gap-1 rounded-md border border-border-strong bg-bg-tile px-2.5 py-1 text-xs font-medium text-fg hover:bg-bg-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               aria-haspopup="dialog"
             >

@@ -121,11 +121,23 @@ export function FundCard({ provider }: { provider: Provider }) {
   return (
     <>
       <Card
+        role="button"
+        tabIndex={0}
+        onClick={() => setDetailOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setDetailOpen(true);
+          }
+        }}
+        aria-haspopup="dialog"
+        aria-label={`Open details for ${provider.name}`}
         className={cn(
-          "relative flex h-full flex-col overflow-hidden",
+          "relative flex h-full cursor-pointer flex-col overflow-hidden transition-colors",
           // Amber left-edge accent — visual differentiation from
           // ResourceCard. `border-l-warn` is the warn (amber) token.
-          "border-l-4 border-l-warn"
+          "border-l-4 border-l-warn",
+          "hover:bg-warn/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warn",
         )}
       >
         <CardHeader>
@@ -170,6 +182,7 @@ export function FundCard({ provider }: { provider: Provider }) {
               aria-label="Save (coming soon)"
               disabled
               title="Save (coming soon)"
+              onClick={(e) => e.stopPropagation()}
               className="text-fg-subtle hover:text-warn disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Star className="h-4 w-4" />
@@ -299,6 +312,7 @@ export function FundCard({ provider }: { provider: Provider }) {
               href={provider.source_url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
               className="inline-flex items-center gap-1 text-xs text-fg-muted hover:text-accent"
             >
               Source
@@ -306,7 +320,10 @@ export function FundCard({ provider }: { provider: Provider }) {
             </a>
             <button
               type="button"
-              onClick={() => setDetailOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setDetailOpen(true);
+              }}
               className="inline-flex items-center gap-1 rounded-md border border-warn/40 bg-warn/10 px-2.5 py-1 text-xs font-medium text-warn hover:bg-warn/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-warn"
               aria-haspopup="dialog"
             >
