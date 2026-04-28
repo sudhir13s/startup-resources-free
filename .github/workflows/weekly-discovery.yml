@@ -1,0 +1,154 @@
+name: weekly-discovery
+
+# Discovery — finds NEW providers we don't yet track. Runs ONCE A WEEK
+# (Sunday 02:00 UTC + jitter) to stay well under search-API monthly free
+# tiers. Two candidate sources: (1) search-API chain across Tavily / Exa
+# / Jina / Linkup / SerpAPI with `-site:` exclusions of every domain we
+# already know, and (2) curated aggregator pages (e.g.
+# grants.startupspeedrun.org).
+#
+# Output: data/discovery_candidates/<date>.json + a draft PR adding
+# high-scoring URLs to collectors/catalog.yaml. The next weekly-refresh
+# cycle picks them up and runs the extractor against them.
+#
+# Required secrets — discovery proceeds with whatever subset is set;
+# missing keys silently drop their provider from the chain. If ALL are
+# missing, the run logs "no search providers configured" and exits 0
+# (only the aggregator hop will run).
+#   TAVILY_API_KEY        (1,000 / mo free, primary)
+#   EXA_API_KEY           (1,000 / mo free)
+#   JINA_API_KEY          (~10M tokens / mo, heavy reserve)
+#   LINKUP_API_KEY        (1,000 / mo free)
+#   SERPAPI_API_KEY       (100 / mo free, last resort)
+#   GROQ_API_KEY / GEMINI_API_KEY / HF_TOKEN / OMNIROUTE_API_TOKEN
+#     (already configured — used by the LLM ranker step)
+
+on:
+  schedule:
+    - cron: "0 2 * * 0"  # Sunday 02:00 UTC
+  workflow_dispatch:
+    inputs:
+      max_per_category:
+        description: "Max candidates to keep per category (default 5)"
+        type: string
+        default: "5"
+      categories:
+        description: "Comma-separated subset (default: all)"
+        type: string
+        default: ""
+
+permissions:
+  contents: write       # commits the candidates JSON + catalog.yaml diff
+  pull-requests: write  # opens the PR
+
+concurrency:
+  group: weekly-discovery
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      MAX_PER_CATEGORY: ${{ github.event.inputs.max_per_category || '5' }}
+      CATEGORIES: ${{ github.event.inputs.categories || '' }}
+      TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+      EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
+      JINA_API_KEY: ${{ secrets.JINA_API_KEY }}
+      LINKUP_API_KEY: ${{ secrets.LINKUP_API_KEY }}
+      SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      OMNIROUTE_API_TOKEN: ${{ secrets.OMNIROUTE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: jitter
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            sleep $(( RANDOM % 900 ))   # 0-15 min
+          fi
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12.3"
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+
+      - name: install deps
+        run: |
+          pip install -r backend/requirements-dev.txt
+          pip install -r backend/requirements-agents.txt
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20.12.2"
+
+      - name: bootstrap OmniRoute (LLM ranker dependency)
+        run: |
+          set -e
+          omniroutectl env-sync
+          npx -y omniroute@latest --version > /tmp/npx-warm.log 2>&1 || true
+          nohup npx -y omniroute@latest --no-open --port 20128 \
+            > /tmp/omniroute.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:20128/api/init >/dev/null 2>&1; then
+              echo "OmniRoute reachable after $((i * 5))s"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::OmniRoute did not become reachable within 5 minutes"
+          tail -200 /tmp/omniroute.log || true
+          exit 1
+
+      - name: run discovery
+        run: |
+          ARGS="--max-per-category $MAX_PER_CATEGORY"
+          if [ -n "$CATEGORIES" ]; then
+            ARGS="$ARGS --categories $CATEGORIES"
+          fi
+          mkdir -p data/discovery_candidates
+          python -m agents.discovery_cli $ARGS
+
+      - name: tear down OmniRoute
+        if: always()
+        run: omniroutectl down || true
+
+      - name: open PR with candidates
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          today=$(date -u +%Y-%m-%d)
+          git config user.name  "resourceos-bot"
+          git config user.email "resourceos-bot@users.noreply.github.com"
+
+          if ! git diff --quiet data/discovery_candidates/ collectors/catalog.yaml 2>/dev/null; then
+            branch="discovery/${today}"
+            git checkout -b "$branch"
+            git add data/discovery_candidates/${today}.json collectors/catalog.yaml 2>/dev/null || true
+            git commit -m "discovery: weekly candidates ${today}" || exit 0
+            git push origin "$branch"
+            gh pr create \
+              --title "discovery: weekly candidates ${today}" \
+              --body "Auto-generated by weekly-discovery.yml. Top ranked candidates per category landed in collectors/catalog.yaml. Review the JSON for full evidence; merge when satisfied. Next weekly-refresh will extract structured records." \
+              --base main \
+              --head "$branch" \
+              --label "auto-discovery"
+          else
+            echo "::notice::no new candidates this run"
+          fi
+
+      - name: upload run summary
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: discovery-${{ github.run_id }}
+          path: |
+            data/discovery_candidates/
+            data/search/quotas.json
+          if-no-files-found: ignore
+          retention-days: 14
