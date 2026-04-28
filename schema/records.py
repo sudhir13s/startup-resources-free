@@ -247,6 +247,33 @@ class ProviderRecord(BaseModel):
             )
         return v
 
+    @field_validator("limits", mode="before")
+    @classmethod
+    def _coerce_limits(cls, v: Any, info) -> dict[str, Any]:
+        """Run raw `limits` through the per-category typed model.
+
+        Resolves Architect B1 (9/10) + B2 (8/10) from the 2026-04-28
+        schema-flexibility roundtable: the canonical-key registry
+        (`schema.limits.LIMITS_MODELS`) coerces declared keys to their
+        typed shapes and lets non-canonical keys pass through unchanged.
+
+        Numeric strings are coerced to numbers; booleans coerced from
+        truthy strings; arrays preserved. This catches extractor
+        artifacts at write time rather than at sort/filter query time.
+
+        `mode='before'` runs against the raw input dict. `category` is
+        read from `info.data` — only valid because `category` is declared
+        before `limits` in the model.
+        """
+        from schema.limits import validate_limits
+
+        if v is None:
+            return {}
+        if not isinstance(v, dict):
+            return v
+        category = info.data.get("category", "")
+        return validate_limits(category, v)
+
     # --- Adapters ---
 
     def to_seed_shape(self) -> dict[str, Any]:
