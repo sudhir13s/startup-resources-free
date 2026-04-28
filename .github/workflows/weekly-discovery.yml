@@ -29,9 +29,9 @@ on:
   workflow_dispatch:
     inputs:
       max_per_category:
-        description: "Max candidates to keep per category (default 5)"
+        description: "Max candidates to keep per category (default 20)"
         type: string
-        default: "5"
+        default: "20"
       categories:
         description: "Comma-separated subset (default: all)"
         type: string
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      MAX_PER_CATEGORY: ${{ github.event.inputs.max_per_category || '5' }}
+      MAX_PER_CATEGORY: ${{ github.event.inputs.max_per_category || '20' }}
       CATEGORIES: ${{ github.event.inputs.categories || '' }}
       TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
       EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
