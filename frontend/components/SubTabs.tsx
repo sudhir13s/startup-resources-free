@@ -12,8 +12,8 @@ type Tab = {
 };
 
 const TABS: readonly Tab[] = [
-  { key: "catalog", label: "Catalog", href: "/", soon: false },
-  { key: "grants", label: "Grants & Credits", href: "/grants", soon: false },
+  { key: "catalog", label: "Resources", href: "/resources", soon: false },
+  { key: "grants", label: "Funds & Credits", href: "/funds", soon: false },
   { key: "compare", label: "Compare", href: "/compare", soon: false },
 ] as const;
 
@@ -27,7 +27,7 @@ export function SubTabs({ matchedCount }: { matchedCount?: number }) {
       className="flex items-center gap-1 border-b border-border"
     >
       {TABS.map((t) => {
-        const active = t.href === "/" ? pathname === "/" : pathname.startsWith(t.href);
+        const active = pathname.startsWith(t.href);
         const className = cn(
           "-mb-px flex items-center gap-2 border-b-2 px-3 py-2 text-sm transition-colors",
           active ? "border-accent text-fg" : "border-transparent text-fg-subtle",
