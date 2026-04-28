@@ -54,6 +54,7 @@ export type ParseConfidence = "high" | "medium" | "low";
 
 export type OfferType =
   | "always-free"
+  | "free-tier"
   | "free-credits"
   | "free-trial"
   | "free-quota"
@@ -63,6 +64,7 @@ export type OfferType =
 
 export const OFFER_TYPES: OfferType[] = [
   "always-free",
+  "free-tier",
   "free-credits",
   "free-trial",
   "free-quota",
@@ -136,6 +138,16 @@ export type Provider = {
   parse_confidence: ParseConfidence;
   last_verified_at: string;
   notes?: string | null;
+  // Extended detail fields — backend may omit any of these on older
+  // snapshots. Frontend renders them only when present.
+  limits?: Record<string, unknown> | null;
+  restrictions?: string | null;
+  access_method?: string | null;
+  subcategory?: string | null;
+  tier_fit_rationale?: string | null;
+  credit_amount?: number | null;
+  credit_duration_days?: number | null;
+  currency?: string | null;
 };
 
 /** Categories that route to the /funds view. Both canonical singular
@@ -196,6 +208,17 @@ export type ChangesResponse = {
   items: Change[];
   snapshot_dates: string[];
   latest_snapshot: string | null;
+};
+
+// /api/cron-status — drives TopBar "Run now" button + freshness pill.
+export type CronStatus = {
+  last_refresh: string | null;
+  last_discovery: string | null;
+  refresh_age_days: number | null;
+  discovery_age_days: number | null;
+  is_stale: boolean;
+  workflow_url_discovery: string;
+  workflow_url_refresh: string;
 };
 
 export function isTier(value: string | undefined | null): value is Tier {
