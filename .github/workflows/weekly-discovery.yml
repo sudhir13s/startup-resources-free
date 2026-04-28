@@ -114,6 +114,24 @@ jobs:
           mkdir -p data/discovery_candidates
           python -m agents.discovery_cli $ARGS
 
+      - name: dump OmniRoute log on failure
+        if: failure()
+        run: |
+          echo "=== /tmp/omniroute.log (last 200 lines) ==="
+          tail -200 /tmp/omniroute.log 2>/dev/null || echo "(no /tmp/omniroute.log)"
+          echo ""
+          echo "=== /tmp/npx-warm.log ==="
+          cat /tmp/npx-warm.log 2>/dev/null || echo "(no /tmp/npx-warm.log)"
+          echo ""
+          echo "=== probing /api/init ==="
+          curl -fsSv http://localhost:20128/api/init 2>&1 | head -40 || true
+          echo ""
+          echo "=== sample chat completion (raw response) ==="
+          curl -sS -X POST http://localhost:20128/api/v1/chat/completions \
+            -H 'content-type: application/json' \
+            -d '{"model":"groq/llama-3.1-8b-instant","messages":[{"role":"user","content":"ping"}],"max_tokens":4}' \
+            2>&1 | head -40 || true
+
       - name: tear down OmniRoute
         if: always()
         run: omniroutectl down || true
