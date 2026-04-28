@@ -148,6 +148,17 @@ export type Provider = {
   credit_amount?: number | null;
   credit_duration_days?: number | null;
   currency?: string | null;
+  sub_offerings?: SubOffering[] | null;
+  always_on?: boolean | null;
+};
+
+/** Multi-service breakdown — AWS Free Tier carries 3 sub-offerings
+ * (Always Free / 12-Month Free / Trials), each with its own headline +
+ * limits dict. Single-service providers have null. */
+export type SubOffering = {
+  service_name: string;
+  headline: string;
+  limits: Record<string, unknown>;
 };
 
 /** Categories that route to the /funds view. Both canonical singular

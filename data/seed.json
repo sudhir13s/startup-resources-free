@@ -49,7 +49,8 @@
       "commercial_use_allowed": false,
       "ssl_certificates": "Auto Let's Encrypt",
       "custom_domain": true
-    }
+    },
+    "always_on": true
   },
   {
     "id": "render",
@@ -100,7 +101,8 @@
       "custom_domain": true,
       "background_workers": "Available on free",
       "cron_jobs": "Available on free"
-    }
+    },
+    "always_on": false
   },
   {
     "id": "cloudflare-workers",
@@ -146,7 +148,8 @@
       "regions": "Global edge (>300 PoPs)",
       "custom_domain": true,
       "ssl_certificates": "Auto"
-    }
+    },
+    "always_on": true
   },
   {
     "id": "fly-io",
@@ -168,7 +171,8 @@
     "source_url": "https://fly.io/docs/about/pricing/",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-22",
-    "notes": "No always-free tier as of 2026. Trial credit only."
+    "notes": "No always-free tier as of 2026. Trial credit only.",
+    "always_on": false
   },
   {
     "id": "google-colab",
@@ -190,7 +194,8 @@
     "source_url": "https://colab.research.google.com/",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-22",
-    "notes": "Best free GPU for ML experimentation. Sessions terminate on idle."
+    "notes": "Best free GPU for ML experimentation. Sessions terminate on idle.",
+    "always_on": false
   },
   {
     "id": "kaggle",
@@ -212,7 +217,8 @@
     "source_url": "https://www.kaggle.com/docs/notebooks",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-20",
-    "notes": "Most stable free GPU; persistent sessions."
+    "notes": "Most stable free GPU; persistent sessions.",
+    "always_on": false
   },
   {
     "id": "groq",
@@ -264,7 +270,8 @@
         "US"
       ],
       "openai_compatible_api": true
-    }
+    },
+    "always_on": true
   },
   {
     "id": "openrouter",
@@ -287,7 +294,8 @@
     "source_url": "https://openrouter.ai/models?supported_parameters=free",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-24",
-    "notes": "Drop-in OpenAI-compatible. Free models are rate-limited."
+    "notes": "Drop-in OpenAI-compatible. Free models are rate-limited.",
+    "always_on": true
   },
   {
     "id": "google-ai-studio",
@@ -338,7 +346,8 @@
       "image_generation": "Imagen 3 (paid only)",
       "data_used_for_training": "Free tier inputs may be used to improve models",
       "regions": "Global (with regional residency on paid tier)"
-    }
+    },
+    "always_on": true
   },
   {
     "id": "huggingface",
@@ -360,7 +369,8 @@
     "source_url": "https://huggingface.co/docs/api-inference/index",
     "parse_confidence": "medium",
     "last_verified_at": "2026-04-19",
-    "notes": "Best for trying many models without lock-in."
+    "notes": "Best for trying many models without lock-in.",
+    "always_on": true
   },
   {
     "id": "supabase",
@@ -413,7 +423,8 @@
       ],
       "ssl_certificates": "Auto",
       "custom_domain": "Paid only"
-    }
+    },
+    "always_on": true
   },
   {
     "id": "neon",
@@ -437,7 +448,8 @@
     "source_url": "https://neon.tech/pricing",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-25",
-    "notes": "Auto-scales to zero. Branching makes preview-env Postgres trivial."
+    "notes": "Auto-scales to zero. Branching makes preview-env Postgres trivial.",
+    "always_on": true
   },
   {
     "id": "mongodb-atlas",
@@ -460,7 +472,8 @@
     "source_url": "https://www.mongodb.com/pricing",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-21",
-    "notes": "Standard for document-store free tier."
+    "notes": "Standard for document-store free tier.",
+    "always_on": true
   },
   {
     "id": "cloudflare-r2",
@@ -503,7 +516,8 @@
       "presigned_urls": true,
       "lifecycle_rules": true,
       "versioning": true
-    }
+    },
+    "always_on": true
   },
   {
     "id": "github-actions",
@@ -529,7 +543,8 @@
     "source_url": "https://github.com/pricing",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-25",
-    "notes": "Default cron runner for free agentic pipelines."
+    "notes": "Default cron runner for free agentic pipelines.",
+    "always_on": true
   },
   {
     "id": "aws-activate",
@@ -1015,7 +1030,8 @@
     "source_url": "https://www.backblaze.com/cloud-storage/pricing",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-20",
-    "notes": "Cheaper-than-S3 cold storage. Pairs well with Cloudflare R2."
+    "notes": "Cheaper-than-S3 cold storage. Pairs well with Cloudflare R2.",
+    "always_on": true
   },
   {
     "id": "clerk",
@@ -1038,7 +1054,8 @@
     "source_url": "https://clerk.com/pricing",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-21",
-    "notes": "Pre-built React components; fastest path to working auth."
+    "notes": "Pre-built React components; fastest path to working auth.",
+    "always_on": true
   },
   {
     "id": "auth0",
@@ -1061,7 +1078,8 @@
     "source_url": "https://auth0.com/pricing",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-22",
-    "notes": "Most generous MAU on a free tier among hosted auth."
+    "notes": "Most generous MAU on a free tier among hosted auth.",
+    "always_on": true
   },
   {
     "id": "sentry",
@@ -1084,7 +1102,8 @@
     "source_url": "https://sentry.io/pricing/",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-22",
-    "notes": "Default for JS / Python error monitoring."
+    "notes": "Default for JS / Python error monitoring.",
+    "always_on": true
   },
   {
     "id": "grafana-cloud",
@@ -1108,7 +1127,8 @@
     "source_url": "https://grafana.com/pricing/",
     "parse_confidence": "high",
     "last_verified_at": "2026-04-22",
-    "notes": "Best free metrics + logs combo. 14-day retention is the catch."
+    "notes": "Best free metrics + logs combo. 14-day retention is the catch.",
+    "always_on": true
   },
   {
     "id": "microsoft-startups",
@@ -1476,50 +1496,65 @@
     "tier_fit_rationale": "Always-free is genuinely always-free; 12-month is the bigger win for hobby + personal. Startup-mvp can run a real product on it for the first year. Past year-1 you must qualify for AWS Activate credits or move to a smaller cloud.",
     "restrictions": "Only US East (N. Virginia) for some services. Many free quotas are per-region, not global. Crossing into paid usage doesn't trigger a hard stop — set billing alerts.",
     "limits": {
-      "always_free_layer": {
-        "lambda_requests_per_month": 1000000,
-        "lambda_compute_seconds_per_month": 400000,
-        "dynamodb_storage_gb": 25,
-        "dynamodb_read_capacity_units": 25,
-        "dynamodb_write_capacity_units": 25,
-        "cloudfront_data_transfer_out_gb_per_month": 1024,
-        "cloudfront_https_requests_per_month": 10000000,
-        "sns_publishes_per_month": 1000000,
-        "sqs_requests_per_month": 1000000,
-        "ses_emails_per_day": 200,
-        "cognito_mau": 50000,
-        "x_ray_traces_per_month": 100000
-      },
-      "12_month_layer": {
-        "ec2_t2_micro_hours_per_month": 750,
-        "ec2_t3_micro_hours_per_month": 750,
-        "ec2_supported_regions": "Most regions; check per region",
-        "s3_storage_gb": 5,
-        "s3_get_requests_per_month": 20000,
-        "s3_put_requests_per_month": 2000,
-        "rds_db_t2_micro_hours_per_month": 750,
-        "rds_storage_gb": 20,
-        "rds_engines": [
-          "MySQL",
-          "PostgreSQL",
-          "MariaDB",
-          "SQL Server Express"
-        ],
-        "elb_hours_per_month": 750,
-        "elb_data_processed_gb_per_month": 15,
-        "ebs_storage_gb": 30,
-        "ebs_io_requests_per_month": 2000000,
-        "cloudwatch_metrics": 10,
-        "cloudwatch_alarms": 10,
-        "data_transfer_out_gb_per_month": 100
-      },
-      "trials_short_lived": {
-        "sagemaker_studio_hours_per_month_for_2_months": 250,
-        "redshift_dc2_large_hours_for_2_months": 750
-      },
       "regions": "All public AWS regions including ap-south-1 (Mumbai)",
       "billing_alerts_recommended": true
-    }
+    },
+    "always_on": false,
+    "sub_offerings": [
+      {
+        "service_name": "Always Free",
+        "headline": "Lambda 1M req/mo, DynamoDB 25 GB, CloudFront 1 TB egress, SNS/SQS/SES",
+        "limits": {
+          "lambda_requests_per_month": 1000000,
+          "lambda_compute_seconds_per_month": 400000,
+          "dynamodb_storage_gb": 25,
+          "dynamodb_read_capacity_units": 25,
+          "dynamodb_write_capacity_units": 25,
+          "cloudfront_data_transfer_out_gb_per_month": 1024,
+          "cloudfront_https_requests_per_month": 10000000,
+          "sns_publishes_per_month": 1000000,
+          "sqs_requests_per_month": 1000000,
+          "ses_emails_per_day": 200,
+          "cognito_mau": 50000,
+          "x_ray_traces_per_month": 100000
+        }
+      },
+      {
+        "service_name": "12-Month Free",
+        "headline": "EC2 t2.micro 750h, S3 5 GB, RDS 750h, EBS 30 GB, ELB 750h",
+        "limits": {
+          "ec2_t2_micro_hours_per_month": 750,
+          "ec2_t3_micro_hours_per_month": 750,
+          "ec2_supported_regions": "Most regions; check per region",
+          "s3_storage_gb": 5,
+          "s3_get_requests_per_month": 20000,
+          "s3_put_requests_per_month": 2000,
+          "rds_db_t2_micro_hours_per_month": 750,
+          "rds_storage_gb": 20,
+          "rds_engines": [
+            "MySQL",
+            "PostgreSQL",
+            "MariaDB",
+            "SQL Server Express"
+          ],
+          "elb_hours_per_month": 750,
+          "elb_data_processed_gb_per_month": 15,
+          "ebs_storage_gb": 30,
+          "ebs_io_requests_per_month": 2000000,
+          "cloudwatch_metrics": 10,
+          "cloudwatch_alarms": 10,
+          "data_transfer_out_gb_per_month": 100
+        }
+      },
+      {
+        "service_name": "Short Trials",
+        "headline": "SageMaker 250h/mo for 2 mo, Redshift dc2.large 750h for 2 mo",
+        "limits": {
+          "sagemaker_studio_hours_per_month_for_2_months": 250,
+          "redshift_dc2_large_hours_for_2_months": 750
+        }
+      }
+    ]
   },
   {
     "id": "gcp-free-tier",
@@ -1548,47 +1583,58 @@
     "tier_fit_rationale": "Always-free is small but stable. The $300 / 90-day credit is the real win — enough to run a Series-A-quality stack for 3 months while you decide.",
     "restrictions": "Always-free Compute Engine + Storage are US-only. Crossing $300 credit triggers paid billing if you opted in. Free Compute requires manual upgrade-to-paid choice at credit-end.",
     "limits": {
-      "signup_credit": {
-        "credit_usd": 300,
-        "duration_days": 90,
-        "auto_charge_after_credit": "Only if you upgraded to paid during the trial"
-      },
-      "always_free": {
-        "compute_engine_e2_micro_instance": 1,
-        "compute_engine_e2_micro_regions": [
-          "us-west1",
-          "us-central1",
-          "us-east1"
-        ],
-        "compute_engine_e2_micro_hours_per_month": 720,
-        "compute_engine_disk_gb_standard": 30,
-        "compute_engine_egress_gb_per_month_out_of_north_america": 1,
-        "cloud_storage_gb_standard_us_only": 5,
-        "cloud_storage_class_a_ops_per_month": 5000,
-        "cloud_storage_class_b_ops_per_month": 50000,
-        "cloud_storage_egress_to_us_china_australia_gb_per_month": 1,
-        "cloud_functions_invocations_per_month": 2000000,
-        "cloud_functions_compute_time_gb_seconds_per_month": 400000,
-        "cloud_run_requests_per_month": 2000000,
-        "cloud_run_cpu_seconds_per_month": 180000,
-        "cloud_run_memory_gb_seconds_per_month": 360000,
-        "firestore_storage_gb": 1,
-        "firestore_document_reads_per_day": 50000,
-        "firestore_document_writes_per_day": 20000,
-        "firestore_document_deletes_per_day": 20000,
-        "bigquery_storage_gb": 10,
-        "bigquery_query_processing_tb_per_month": 1,
-        "vertex_ai_text_embedding_requests_per_month": 1000,
-        "pubsub_messages_gb_per_month": 10,
-        "logs_gb_per_month": 50
-      },
       "regions_for_always_free": [
         "us-west1",
         "us-central1",
         "us-east1"
       ],
       "regions_for_credits": "All GCP regions including asia-south1 (Mumbai)"
-    }
+    },
+    "always_on": false,
+    "sub_offerings": [
+      {
+        "service_name": "Always Free",
+        "headline": "Compute e2-micro (US), Cloud Storage 5 GB, Functions 2M req, Run 2M req, Firestore 1 GB",
+        "limits": {
+          "compute_engine_e2_micro_instance": 1,
+          "compute_engine_e2_micro_regions": [
+            "us-west1",
+            "us-central1",
+            "us-east1"
+          ],
+          "compute_engine_e2_micro_hours_per_month": 720,
+          "compute_engine_disk_gb_standard": 30,
+          "compute_engine_egress_gb_per_month_out_of_north_america": 1,
+          "cloud_storage_gb_standard_us_only": 5,
+          "cloud_storage_class_a_ops_per_month": 5000,
+          "cloud_storage_class_b_ops_per_month": 50000,
+          "cloud_storage_egress_to_us_china_australia_gb_per_month": 1,
+          "cloud_functions_invocations_per_month": 2000000,
+          "cloud_functions_compute_time_gb_seconds_per_month": 400000,
+          "cloud_run_requests_per_month": 2000000,
+          "cloud_run_cpu_seconds_per_month": 180000,
+          "cloud_run_memory_gb_seconds_per_month": 360000,
+          "firestore_storage_gb": 1,
+          "firestore_document_reads_per_day": 50000,
+          "firestore_document_writes_per_day": 20000,
+          "firestore_document_deletes_per_day": 20000,
+          "bigquery_storage_gb": 10,
+          "bigquery_query_processing_tb_per_month": 1,
+          "vertex_ai_text_embedding_requests_per_month": 1000,
+          "pubsub_messages_gb_per_month": 10,
+          "logs_gb_per_month": 50
+        }
+      },
+      {
+        "service_name": "$300 Signup Credit",
+        "headline": "$300 USD usable across all services for 90 days",
+        "limits": {
+          "credit_usd": 300,
+          "duration_days": 90,
+          "auto_charge_after_credit": "Only if you upgraded to paid during the trial"
+        }
+      }
+    ]
   },
   {
     "id": "azure-free",
@@ -1617,40 +1663,55 @@
     "tier_fit_rationale": "Best free-tier for AI features (Cognitive Services). 12-month VM + DB is solid for a real MVP. $200 / 30 days is tighter than GCP's $300 / 90 days but Azure's always-free Cognitive Services last forever.",
     "restrictions": "$200 credit valid only for first 30 days. After 30 days, free-tier services continue but anything outside free tier requires upgrading to pay-as-you-go.",
     "limits": {
-      "signup_credit": {
-        "credit_usd": 200,
-        "duration_days": 30
-      },
-      "12_month_free": {
-        "vm_b1s_linux_hours_per_month": 750,
-        "vm_b1s_windows_hours_per_month": 750,
-        "managed_disk_p6_64gb_count": 2,
-        "blob_storage_lrs_gb": 5,
-        "file_storage_lrs_gb": 5,
-        "sql_database_s0_dtu": 250,
-        "sql_database_storage_gb": 250,
-        "data_transfer_out_gb_per_month": 15
-      },
-      "always_free": {
-        "app_service_apps_linux_or_windows": 10,
-        "azure_functions_invocations_per_month": 1000000,
-        "azure_functions_compute_gb_seconds_per_month": 400000,
-        "cosmos_db_storage_gb": 25,
-        "cosmos_db_request_units_per_second": 1000,
-        "ad_b2c_mau": 50000,
-        "monitor_data_ingested_gb": 5,
-        "active_directory_users": 50000,
-        "translator_text_chars_per_month": 2000000,
-        "computer_vision_transactions_per_month": 5000,
-        "speech_transcription_hours_per_month": 5,
-        "language_understanding_text_requests_per_month": 5000,
-        "form_recognizer_pages_per_month": 500,
-        "container_apps_vcpu_seconds_per_month": 180000,
-        "container_apps_gib_seconds_per_month": 360000,
-        "container_apps_requests_per_month": 2000000
-      },
       "regions_supported_for_free": "All Azure regions including Central / South / West India"
-    }
+    },
+    "always_on": false,
+    "sub_offerings": [
+      {
+        "service_name": "Always Free",
+        "headline": "App Service 10 apps, Functions 1M req, Cosmos DB 25 GB + 1k RU/s, Cognitive Services free quotas",
+        "limits": {
+          "app_service_apps_linux_or_windows": 10,
+          "azure_functions_invocations_per_month": 1000000,
+          "azure_functions_compute_gb_seconds_per_month": 400000,
+          "cosmos_db_storage_gb": 25,
+          "cosmos_db_request_units_per_second": 1000,
+          "ad_b2c_mau": 50000,
+          "monitor_data_ingested_gb": 5,
+          "active_directory_users": 50000,
+          "translator_text_chars_per_month": 2000000,
+          "computer_vision_transactions_per_month": 5000,
+          "speech_transcription_hours_per_month": 5,
+          "language_understanding_text_requests_per_month": 5000,
+          "form_recognizer_pages_per_month": 500,
+          "container_apps_vcpu_seconds_per_month": 180000,
+          "container_apps_gib_seconds_per_month": 360000,
+          "container_apps_requests_per_month": 2000000
+        }
+      },
+      {
+        "service_name": "12-Month Free",
+        "headline": "B1S Linux/Win VM 750h, Blob 5 GB, SQL DB 250 GB, 64 GB managed disks",
+        "limits": {
+          "vm_b1s_linux_hours_per_month": 750,
+          "vm_b1s_windows_hours_per_month": 750,
+          "managed_disk_p6_64gb_count": 2,
+          "blob_storage_lrs_gb": 5,
+          "file_storage_lrs_gb": 5,
+          "sql_database_s0_dtu": 250,
+          "sql_database_storage_gb": 250,
+          "data_transfer_out_gb_per_month": 15
+        }
+      },
+      {
+        "service_name": "$200 Signup Credit",
+        "headline": "$200 USD usable across all services for 30 days",
+        "limits": {
+          "credit_usd": 200,
+          "duration_days": 30
+        }
+      }
+    ]
   },
   {
     "id": "oracle-always-free",
@@ -1680,32 +1741,6 @@
     "tier_fit_rationale": "Best free-tier compute by an order of magnitude. 4 ARM cores + 24 GB RAM trivially runs FastAPI + Next.js + Postgres + Redis + scrapers all on one VM. Can host pre-seed startups for $0 forever — provided you accept Oracle's signup friction and reclamation policy.",
     "restrictions": "ARM A1 capacity reclaimed if idle 30+ days. Some regions occasionally reject A1 provisioning due to capacity. Account suspension reported (rare) when sustained 100% CPU looks abusive.",
     "limits": {
-      "always_free": {
-        "compute_arm_ampere_a1_ocpu": 4,
-        "compute_arm_ampere_a1_ram_gb": 24,
-        "compute_arm_ampere_a1_max_vms": 4,
-        "compute_amd_vm_e2_1_micro_count": 2,
-        "compute_amd_vm_e2_1_micro_ram_gb": 1,
-        "block_storage_gb": 200,
-        "object_storage_gb": 10,
-        "object_storage_archive_gb": 10,
-        "egress_tb_per_month": 10,
-        "autonomous_databases_count": 2,
-        "autonomous_database_storage_gb_each": 20,
-        "load_balancer_flexible_count": 1,
-        "load_balancer_bandwidth_mbps": 10,
-        "vault_keys_count": 20,
-        "vault_secrets_count": 150,
-        "monitoring_metrics_per_month": 500000,
-        "logs_per_month_gb": 10,
-        "vpn_ipsec_tunnels_count": 50,
-        "site_to_site_vpn": true,
-        "free_dns_zones": "Always free"
-      },
-      "signup_credit": {
-        "credit_usd": 300,
-        "duration_days": 30
-      },
       "regions_supported_for_free": [
         "us-ashburn-1",
         "us-phoenix-1",
@@ -1720,6 +1755,43 @@
         "and many more"
       ],
       "reclaim_policy_idle_days": 30
-    }
+    },
+    "always_on": true,
+    "sub_offerings": [
+      {
+        "service_name": "Always Free",
+        "headline": "4 ARM cores + 24 GB RAM, 200 GB block, 10 TB egress, 2 Autonomous DBs, Load Balancer",
+        "limits": {
+          "compute_arm_ampere_a1_ocpu": 4,
+          "compute_arm_ampere_a1_ram_gb": 24,
+          "compute_arm_ampere_a1_max_vms": 4,
+          "compute_amd_vm_e2_1_micro_count": 2,
+          "compute_amd_vm_e2_1_micro_ram_gb": 1,
+          "block_storage_gb": 200,
+          "object_storage_gb": 10,
+          "object_storage_archive_gb": 10,
+          "egress_tb_per_month": 10,
+          "autonomous_databases_count": 2,
+          "autonomous_database_storage_gb_each": 20,
+          "load_balancer_flexible_count": 1,
+          "load_balancer_bandwidth_mbps": 10,
+          "vault_keys_count": 20,
+          "vault_secrets_count": 150,
+          "monitoring_metrics_per_month": 500000,
+          "logs_per_month_gb": 10,
+          "vpn_ipsec_tunnels_count": 50,
+          "site_to_site_vpn": true,
+          "free_dns_zones": "Always free"
+        }
+      },
+      {
+        "service_name": "$300 Signup Credit",
+        "headline": "$300 USD usable across all services for 30 days",
+        "limits": {
+          "credit_usd": 300,
+          "duration_days": 30
+        }
+      }
+    ]
   }
 ]
