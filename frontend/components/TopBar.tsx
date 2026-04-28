@@ -1,15 +1,36 @@
 "use client";
 
-import Link from "next/link";
 import { Search, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import type { CronStatus } from "@/lib/utils";
+
+function freshnessText(status: CronStatus | null | undefined): string {
+  if (!status) return "—";
+  const ages = [status.refresh_age_days, status.discovery_age_days].filter(
+    (a): a is number => typeof a === "number",
+  );
+  if (ages.length === 0) return "never run";
+  const youngest = Math.min(...ages);
+  if (youngest === 0) return "today";
+  if (youngest === 1) return "1 day ago";
+  return `${youngest} days ago`;
+}
 
 export function TopBar({
   lastUpdated = "2h ago",
+  cronStatus,
 }: {
   lastUpdated?: string;
+  cronStatus?: CronStatus | null;
 }) {
+  const stale = cronStatus?.is_stale ?? true;
+  const freshness = cronStatus ? freshnessText(cronStatus) : lastUpdated;
+  const runUrl =
+    cronStatus?.workflow_url_discovery ??
+    "https://github.com/sudhir13s/startup-resources-free/actions/workflows/weekly-discovery.yml";
+  const tooltip = stale
+    ? "Trigger the weekly-discovery workflow on GitHub Actions (opens in a new tab)"
+    : `Last run ${freshness} — cron is up-to-date. Click anyway to force-run.`;
   return (
     <header
       role="banner"
@@ -29,33 +50,12 @@ export function TopBar({
         </div>
       </div>
 
-      <nav aria-label="Primary" className="flex items-center gap-1 shrink-0">
-        <Link
-          href="/"
-          className="rounded-md border border-border-strong bg-bg-surface px-3 py-1.5 text-xs font-medium text-fg"
-        >
-          Catalog
-        </Link>
-        <Link
-          href="/freellm"
-          className="rounded-md px-3 py-1.5 text-xs font-medium text-fg-muted hover:text-fg"
-        >
-          Free-LLM Chain
-        </Link>
-        <Link
-          href="/media-benchmark"
-          className="rounded-md px-3 py-1.5 text-xs font-medium text-fg-muted hover:text-fg"
-        >
-          Media Benchmark
-        </Link>
-        <span
-          className="cursor-not-allowed rounded-md px-3 py-1.5 text-xs text-fg-subtle"
-          title="Coming soon"
-        >
-          Settings
-        </span>
-      </nav>
-
+      {/* Top-level nav lives in SubTabs (Resources / Compare / Funds &
+          Credits). The legacy "Catalog / Free-LLM Chain / Media
+          Benchmark / Settings" pills are removed per the 2026-04-28
+          roundtable — Free-LLM Chain + Media Benchmark were demoted to
+          utility URLs only (no nav entry), and Settings was always a
+          placeholder. */}
       <div className="order-last flex w-full items-center sm:order-none sm:flex-1 sm:max-w-md">
         <button
           type="button"
@@ -78,13 +78,34 @@ export function TopBar({
 
       <div className="ml-auto flex items-center gap-2 shrink-0">
         <span className="hidden items-center gap-2 rounded-full border border-border bg-bg-surface px-3 py-1.5 text-[11px] text-fg-muted sm:inline-flex">
-          <span className="h-1.5 w-1.5 rounded-full bg-ok" aria-hidden="true" />
-          updated {lastUpdated}
+          <span
+            className={
+              "h-1.5 w-1.5 rounded-full " + (stale ? "bg-warn" : "bg-ok")
+            }
+            aria-hidden="true"
+          />
+          updated {freshness}
         </span>
-        <Button size="sm" className="h-9" disabled title="Coming soon">
+        {/* Run now: enabled when cron output is stale (>7 days OR never).
+            Click opens the GitHub Actions workflow_dispatch UI in a new
+            tab — uses GitHub's auth, no PAT round-trip needed from the
+            dashboard. */}
+        <a
+          href={runUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-disabled={!stale}
+          title={tooltip}
+          className={
+            "inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors " +
+            (stale
+              ? "border-accent/40 bg-accent/10 text-accent hover:bg-accent/15"
+              : "pointer-events-none border-border bg-bg-surface text-fg-subtle opacity-60")
+          }
+        >
           <RefreshCw className="h-3.5 w-3.5" />
           Run now
-        </Button>
+        </a>
         <ThemeToggle />
       </div>
     </header>

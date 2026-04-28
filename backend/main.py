@@ -294,3 +294,79 @@ async def list_providers(
         tier_counts=tier_counts,
         category_counts=category_counts,
     )
+
+
+# =====================================================================
+# Cron status — drives the TopBar "Run now" button + freshness pill
+# =====================================================================
+#
+# Filesystem-only. No GitHub API. Reads:
+#   data/snapshots/<YYYY-MM-DD>.json
+#   data/discovery_candidates/<YYYY-MM-DD>.json
+# and returns the most recent date for each, plus an `is_stale` flag
+# the frontend uses to enable/disable the Run now button.
+
+from datetime import date as _date  # noqa: E402
+
+
+class CronStatus(BaseModel):
+    last_refresh: str | None = None
+    last_discovery: str | None = None
+    refresh_age_days: int | None = None
+    discovery_age_days: int | None = None
+    is_stale: bool = True
+    workflow_url_discovery: str = (
+        "https://github.com/sudhir13s/startup-resources-free/actions/"
+        "workflows/weekly-discovery.yml"
+    )
+    workflow_url_refresh: str = (
+        "https://github.com/sudhir13s/startup-resources-free/actions/"
+        "workflows/weekly-refresh.yml"
+    )
+
+
+def _latest_dated_filename(directory: Path) -> str | None:
+    if not directory.exists():
+        return None
+    candidates: list[str] = []
+    for p in directory.iterdir():
+        name = p.name
+        if name.endswith(".json") and len(name) >= 10:
+            candidates.append(name[:10])
+    if not candidates:
+        return None
+    candidates.sort()
+    return candidates[-1]
+
+
+@app.get("/api/cron-status", response_model=CronStatus)
+async def cron_status() -> CronStatus:
+    repo_root = Path(__file__).resolve().parent.parent
+    last_refresh = _latest_dated_filename(repo_root / "data" / "snapshots")
+    last_discovery = _latest_dated_filename(
+        repo_root / "data" / "discovery_candidates"
+    )
+
+    today = _date.today()
+
+    def _age(iso: str | None) -> int | None:
+        if iso is None:
+            return None
+        try:
+            return (today - _date.fromisoformat(iso)).days
+        except ValueError:
+            return None
+
+    ref_age = _age(last_refresh)
+    disc_age = _age(last_discovery)
+    ages = [a for a in (ref_age, disc_age) if a is not None]
+    youngest = min(ages) if ages else None
+    is_stale = youngest is None or youngest > 7
+
+    return CronStatus(
+        last_refresh=last_refresh,
+        last_discovery=last_discovery,
+        refresh_age_days=ref_age,
+        discovery_age_days=disc_age,
+        is_stale=is_stale,
+    )

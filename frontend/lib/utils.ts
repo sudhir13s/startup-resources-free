@@ -198,6 +198,17 @@ export type ChangesResponse = {
   latest_snapshot: string | null;
 };
 
+// /api/cron-status — drives TopBar "Run now" button + freshness pill.
+export type CronStatus = {
+  last_refresh: string | null;
+  last_discovery: string | null;
+  refresh_age_days: number | null;
+  discovery_age_days: number | null;
+  is_stale: boolean;
+  workflow_url_discovery: string;
+  workflow_url_refresh: string;
+};
+
 export function isTier(value: string | undefined | null): value is Tier {
   return value !== undefined && value !== null && (TIERS as string[]).includes(value);
 }

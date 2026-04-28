@@ -32,6 +32,20 @@ function getAll(
   return Array.isArray(v) ? v : [v];
 }
 
+async function fetchCronStatus(): Promise<import("@/lib/utils").CronStatus | null> {
+  try {
+    const url = new URL("/api/cron-status", BACKEND_URL);
+    const res = await fetch(url.toString(), {
+      headers: { accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as import("@/lib/utils").CronStatus;
+  } catch {
+    return null;
+  }
+}
+
 async function fetchProviders(
   params: URLSearchParams
 ): Promise<ProvidersResponse | null> {
@@ -78,7 +92,10 @@ export default async function HomePage({
   offerTypes.forEach((o) => filtered.append("offer_type", o));
   filtered.set("min_confidence", minConfidence);
 
-  const filteredResp = await fetchProviders(filtered);
+  const [filteredResp, cronStatus] = await Promise.all([
+    fetchProviders(filtered),
+    fetchCronStatus(),
+  ]);
 
   // Tier counts come from the backend (computed across the full dataset).
   const tierCountsArr = filteredResp?.tier_counts ?? [];
@@ -103,7 +120,7 @@ export default async function HomePage({
 
   return (
     <div className="flex min-h-screen flex-col bg-bg-base text-fg">
-      <TopBar />
+      <TopBar cronStatus={cronStatus} />
 
       {/* Filters LEFT, content CENTER, slide-over RIGHT — per locked layout convention. */}
       <div className="flex flex-1 flex-col md:flex-row">
@@ -111,9 +128,15 @@ export default async function HomePage({
 
         <main
           id="main"
-          className="flex-1 px-4 py-6 sm:px-6 lg:px-8"
+          // Tight against the sidebar's right edge on the left, mild
+          // breathing room on the right (no centered max-width — fills
+          // viewport on MBP 14"/16").
+          className="flex-1 px-4 py-6 sm:px-5 lg:pl-6 lg:pr-8"
         >
-          <div className="mx-auto flex max-w-6xl flex-col gap-5">
+          {/* Drop the centered max-w-6xl: with sidebar on left, the main
+              column should fill the remaining viewport width on MBP
+              14"/16" so cards don't render with empty gutters. */}
+          <div className="flex flex-col gap-5">
             <header className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
               <h1 className="text-2xl font-semibold tracking-tight text-fg">
                 Resources

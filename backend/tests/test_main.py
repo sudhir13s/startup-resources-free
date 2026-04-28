@@ -289,3 +289,59 @@ def test_cors_falls_back_to_wildcard(monkeypatch: pytest.MonkeyPatch):
 
     importlib.reload(fresh)
     assert fresh.allow_origins == ["*"]
+
+
+# ---------- /api/cron-status ----------
+
+
+def test_cron_status_when_no_runs_exist(monkeypatch):
+    """Empty data dirs -> never run, is_stale=true, ages=null."""
+    import main as fresh
+
+    monkeypatch.setattr(
+        fresh, "_latest_dated_filename", lambda _path: None, raising=True
+    )
+    r = client.get("/api/cron-status")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["last_refresh"] is None
+    assert body["last_discovery"] is None
+    assert body["refresh_age_days"] is None
+    assert body["discovery_age_days"] is None
+    assert body["is_stale"] is True
+    assert "weekly-discovery" in body["workflow_url_discovery"]
+    assert "weekly-refresh" in body["workflow_url_refresh"]
+
+
+def test_cron_status_when_runs_recent(monkeypatch):
+    """Today's run -> not stale, ages = 0."""
+    from datetime import date
+
+    import main as fresh
+
+    today = date.today().isoformat()
+    monkeypatch.setattr(
+        fresh, "_latest_dated_filename", lambda _path: today, raising=True
+    )
+    r = client.get("/api/cron-status")
+    body = r.json()
+    assert body["last_refresh"] == today
+    assert body["last_discovery"] == today
+    assert body["refresh_age_days"] == 0
+    assert body["is_stale"] is False
+
+
+def test_cron_status_when_runs_stale(monkeypatch):
+    """8-day-old runs -> is_stale=true."""
+    from datetime import date, timedelta
+
+    import main as fresh
+
+    eight_days_ago = (date.today() - timedelta(days=8)).isoformat()
+    monkeypatch.setattr(
+        fresh, "_latest_dated_filename", lambda _path: eight_days_ago, raising=True
+    )
+    r = client.get("/api/cron-status")
+    body = r.json()
+    assert body["refresh_age_days"] == 8
+    assert body["is_stale"] is True

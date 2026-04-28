@@ -54,7 +54,7 @@ const SheetContent = React.forwardRef<
         // Non-modal panels must NOT cover the whole viewport. ~45vw on
         // desktop leaves the grid usable to the side; mobile goes full
         // width below md.
-        "w-full md:w-[45vw] md:max-w-[600px] overflow-y-auto",
+        "w-full md:w-[55vw] md:max-w-[720px] overflow-y-auto",
         side === "right"
           ? "right-0 top-0 border-l data-[state=open]:animate-in data-[state=open]:slide-in-from-right data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right"
           : "left-0 top-0 border-r data-[state=open]:animate-in data-[state=open]:slide-in-from-left data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left",

@@ -122,10 +122,9 @@ export function FundCard({ provider }: { provider: Provider }) {
     <>
       <Card
         className={cn(
-          "relative h-full max-h-[360px] overflow-hidden",
-          // Amber left-edge accent — designer's call for visual
-          // differentiation from ResourceCard. `bg-warn` is the warn
-          // (amber) token in the project palette.
+          "relative flex h-full flex-col overflow-hidden",
+          // Amber left-edge accent — visual differentiation from
+          // ResourceCard. `border-l-warn` is the warn (amber) token.
           "border-l-4 border-l-warn"
         )}
       >
@@ -187,12 +186,34 @@ export function FundCard({ provider }: { provider: Provider }) {
             </Badge>
           </div>
 
-          {/* Row 3 — headline (1-line truncate) */}
+          {/* Row 3 — headline (2-line clamp; fills horizontal width
+              instead of truncating in the middle of a thought). */}
           <p
-            className="truncate text-sm font-medium text-fg"
+            className="text-sm font-medium leading-snug text-fg"
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
             title={provider.headline}
           >
             {provider.headline}
+          </p>
+
+          {/* Row 3b — free-tier summary (3-line clamp; the empty area
+              below the amount tile was wasted on the v0.1 card). */}
+          <p
+            className="text-[12px] leading-snug text-fg-muted"
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+            title={provider.free_tier_summary}
+          >
+            {provider.free_tier_summary}
           </p>
         </CardHeader>
 
@@ -217,15 +238,63 @@ export function FundCard({ provider }: { provider: Provider }) {
             </span>
           </div>
 
-          {/* Row 6 — decision timeline */}
-          <div className="flex items-baseline gap-1.5 text-[11px]">
-            <span className="font-mono uppercase tracking-wider text-fg-subtle">
-              Decision
-            </span>
-            <span className="text-fg-muted">{decisionTimeline(provider)}</span>
+          {/* Row 6 — decision timeline + geo pill */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-mono uppercase tracking-wider text-fg-subtle">
+                Decision
+              </span>
+              <span className="text-fg-muted">{decisionTimeline(provider)}</span>
+            </div>
+            <Badge variant="muted" className="capitalize">
+              {provider.geo_priority.replace(/-/g, " ")}
+            </Badge>
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-0.5">
+          {/* Row 7 — notes preview when present (uses up the bottom
+              whitespace that was wasted on the v0.1 card). */}
+          {provider.notes ? (
+            <p
+              className="text-[11px] leading-snug text-fg-subtle"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+              title={provider.notes}
+            >
+              <span className="font-mono uppercase tracking-wider text-fg-subtle">
+                Note
+              </span>{" "}
+              <span className="text-fg-muted">{provider.notes}</span>
+            </p>
+          ) : null}
+
+        </CardContent>
+
+        {/* Single dense footer (same pattern as ResourceCard) — kills
+            the wasted left-side whitespace on the bottom of the card. */}
+        <CardFooter className="flex items-center justify-between gap-3 pt-2">
+          <div className="flex min-w-0 items-center gap-3">
+            <span
+              className="flex items-center gap-1.5 font-mono text-[10px] text-fg-subtle"
+              title={`${CONFIDENCE_LABEL[provider.parse_confidence]} confidence`}
+            >
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  CONFIDENCE_DOT[provider.parse_confidence]
+                )}
+                aria-hidden="true"
+              />
+              {CONFIDENCE_LABEL[provider.parse_confidence]}
+            </span>
+            <span className="truncate font-mono text-[10px] text-fg-subtle">
+              verified {relativeTime(provider.last_verified_at)}
+            </span>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
             <a
               href={provider.source_url}
               target="_blank"
@@ -244,22 +313,6 @@ export function FundCard({ provider }: { provider: Provider }) {
               Apply / Details
             </button>
           </div>
-        </CardContent>
-
-        <CardFooter>
-          <span className="flex items-center gap-2 font-mono text-[10px] text-fg-subtle">
-            <span
-              className={cn(
-                "h-1.5 w-1.5 rounded-full",
-                CONFIDENCE_DOT[provider.parse_confidence]
-              )}
-              aria-hidden="true"
-            />
-            {CONFIDENCE_LABEL[provider.parse_confidence]}
-          </span>
-          <span className="font-mono text-[10px] text-fg-subtle">
-            verified {relativeTime(provider.last_verified_at)}
-          </span>
         </CardFooter>
       </Card>
 

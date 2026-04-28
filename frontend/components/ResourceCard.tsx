@@ -106,7 +106,7 @@ export function ResourceCard({ provider }: { provider: Provider }) {
 
   return (
     <>
-      <Card className="h-full max-h-[360px] overflow-hidden">
+      <Card className="flex h-full flex-col overflow-hidden">
         <CardHeader>
           {/* Row 1 — logo + name + India badge + tier badges + save */}
           <div className="flex items-start justify-between gap-3">
@@ -157,17 +157,28 @@ export function ResourceCard({ provider }: { provider: Provider }) {
             </button>
           </div>
 
-          {/* Row 2 — headline (1-line truncate) */}
-          <p className="truncate text-sm font-medium text-fg" title={provider.headline}>
+          {/* Row 2 — headline (2-line clamp instead of truncate so we use the
+              available width fully without hiding signal). */}
+          <p
+            className="text-sm font-medium leading-snug text-fg"
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+            title={provider.headline}
+          >
             {provider.headline}
           </p>
 
-          {/* Row 3 — free-tier summary (2-line truncate via webkit clamp) */}
+          {/* Row 3 — free-tier summary (3-line clamp; fills the area below
+              the headline so the card doesn't end up half-empty). */}
           <p
             className="text-[12px] leading-snug text-fg-muted"
             style={{
               display: "-webkit-box",
-              WebkitLineClamp: 2,
+              WebkitLineClamp: 3,
               WebkitBoxOrient: "vertical",
               overflow: "hidden",
             }}
@@ -208,7 +219,63 @@ export function ResourceCard({ provider }: { provider: Provider }) {
             </span>
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-0.5">
+          {/* Row 7 — geo + offer-type pills (was hidden on the v0.1 card) */}
+          <div className="flex flex-wrap items-center gap-1 text-[10px]">
+            <Badge variant="muted" className="capitalize">
+              {provider.geo_priority.replace(/-/g, " ")}
+            </Badge>
+            <Badge variant="outline" className="font-mono">
+              {provider.offer_type}
+            </Badge>
+          </div>
+
+          {/* Row 8 — notes preview (only when we have notes; uses up the
+              bottom whitespace that was wasted before). */}
+          {provider.notes ? (
+            <p
+              className="text-[11px] leading-snug text-fg-subtle"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+              title={provider.notes}
+            >
+              <span className="font-mono uppercase tracking-wider text-fg-subtle">
+                Note
+              </span>{" "}
+              <span className="text-fg-muted">{provider.notes}</span>
+            </p>
+          ) : null}
+
+        </CardContent>
+
+        {/* Single dense footer — confidence + verified date on the LEFT,
+            Source link + Details on the RIGHT. The v0.1 card put these
+            on TWO separate rows with the bottom row mostly empty —
+            consolidating saves ~32 px and stops the wasted whitespace
+            on the left side of the card bottom. */}
+        <CardFooter className="flex items-center justify-between gap-3 pt-2">
+          <div className="flex min-w-0 items-center gap-3">
+            <span
+              className="flex items-center gap-1.5 font-mono text-[10px] text-fg-subtle"
+              title={`${CONFIDENCE_LABEL[provider.parse_confidence]} confidence`}
+            >
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  CONFIDENCE_DOT[provider.parse_confidence]
+                )}
+                aria-hidden="true"
+              />
+              {CONFIDENCE_LABEL[provider.parse_confidence]}
+            </span>
+            <span className="truncate font-mono text-[10px] text-fg-subtle">
+              verified {relativeTime(provider.last_verified_at)}
+            </span>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
             <a
               href={provider.source_url}
               target="_blank"
@@ -227,22 +294,6 @@ export function ResourceCard({ provider }: { provider: Provider }) {
               Details
             </button>
           </div>
-        </CardContent>
-
-        <CardFooter>
-          <span className="flex items-center gap-2 font-mono text-[10px] text-fg-subtle">
-            <span
-              className={cn(
-                "h-1.5 w-1.5 rounded-full",
-                CONFIDENCE_DOT[provider.parse_confidence]
-              )}
-              aria-hidden="true"
-            />
-            {CONFIDENCE_LABEL[provider.parse_confidence]}
-          </span>
-          <span className="font-mono text-[10px] text-fg-subtle">
-            verified {relativeTime(provider.last_verified_at)}
-          </span>
         </CardFooter>
       </Card>
 
