@@ -86,21 +86,21 @@ export function TopBar({
           />
           updated {freshness}
         </span>
-        {/* Run now: enabled when cron output is stale (>7 days OR never).
-            Click opens the GitHub Actions workflow_dispatch UI in a new
-            tab — uses GitHub's auth, no PAT round-trip needed from the
-            dashboard. */}
+        {/* Run now: ALWAYS clickable (user override 2026-04-28).
+            Opens GitHub Actions workflow_dispatch UI in a new tab — uses
+            GitHub's own auth, no PAT round-trip from the dashboard.
+            Visual emphasis stronger when cron is stale; muted-but-clickable
+            when fresh so the user can still force-run anytime. */}
         <a
           href={runUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-disabled={!stale}
           title={tooltip}
           className={
             "inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors " +
             (stale
               ? "border-accent/40 bg-accent/10 text-accent hover:bg-accent/15"
-              : "pointer-events-none border-border bg-bg-surface text-fg-subtle opacity-60")
+              : "border-border bg-bg-surface text-fg-muted hover:bg-bg-tile hover:text-fg")
           }
         >
           <RefreshCw className="h-3.5 w-3.5" />
