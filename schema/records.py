@@ -59,8 +59,25 @@ AccessMethod = Literal[
     "github-auth",
     "manual-apply",
     "invite-only",
+    "contact-sales",  # enterprise / sales-led signup (added 2026-04-28 after refresh extractor surfaced this for enterprise providers)
     "unknown",
 ]
+
+# Known canonical AccessMethod values — used by the validator to coerce
+# unknown LLM emissions to "unknown" instead of crashing the run.
+_KNOWN_ACCESS_METHODS: frozenset[str] = frozenset(
+    {
+        "api-key",
+        "oauth",
+        "signup",
+        "email-verify",
+        "github-auth",
+        "manual-apply",
+        "invite-only",
+        "contact-sales",
+        "unknown",
+    }
+)
 
 GeoPriority = Literal[
     "india-native",
@@ -286,6 +303,27 @@ class ProviderRecord(BaseModel):
                 f"stat-tile field exceeds 40 chars ({len(v)}): {v!r}. "
                 "Tile layout truncates; aim for ≤ 30."
             )
+        return v
+
+    @field_validator("access_method", mode="before")
+    @classmethod
+    def _coerce_access_method(cls, v: Any) -> str:
+        """Map LLM-emitted unknown access methods to 'unknown' instead of
+        crashing the run.
+
+        The extractor's prompt enumerates the canonical values, but the
+        LLM occasionally invents new ones (e.g. 'contact-sales' surfaced
+        in the 2026-04-28 weekly-refresh run). Coercing instead of
+        raising keeps the rest of the record valid and lets the operator
+        decide whether the new value deserves promotion to a canonical
+        enum slot via PR.
+        """
+        if v is None:
+            return "unknown"
+        if isinstance(v, str) and v not in _KNOWN_ACCESS_METHODS:
+            # Use stderr-style emit; logger may not be configured here.
+            # Caller-side log (extractor.py) gets parse_confidence=low.
+            return "unknown"
         return v
 
     @field_validator("limits", mode="before")
