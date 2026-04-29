@@ -1,0 +1,14 @@
+{
+  "started_at": "2026-04-29T08:04:34.361515+00:00",
+  "finished_at": "2026-04-29T08:23:37.124759+00:00",
+  "walked": 24,
+  "changed": 17,
+  "unchanged": 0,
+  "extract_failed": 7,
+  "fetch_failed": 0,
+  "inserted_change_reports": 17,
+  "pages_fetched": 46,
+  "follow_hits": 4,
+  "snapshot_path": null,
+  "db_path": null
+}
