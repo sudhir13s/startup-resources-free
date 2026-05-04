@@ -5,5 +5,5 @@ ruff==0.15.12
 # Sprint #6 — agents/aggregators.py imports selectolax at module top, so
 # CI test collection needs it even though it's part of the agent stack.
 # respx mocks httpx in search-chain + aggregator tests; no live API calls.
-selectolax==0.3.21
+selectolax==0.4.7
 respx==0.23.1
