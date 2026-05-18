@@ -6,7 +6,7 @@
 #
 # OmniRouteConfig pin: matches the commit verified locally on 2026-04-27.
 OmniRouteConfig @ git+https://github.com/sudhir13s/OmniRouteConfig.git@7bdce4dbdbde5d0c3d511f1f54e4ee660099c1b9
-openai==1.59.8
+openai==2.37.0
 httpx==0.28.1
 # Sprint #6 — search-chain agent + aggregator scraping. selectolax is a
 # fast HTML parser (lxml-bound C). All search providers are called via
