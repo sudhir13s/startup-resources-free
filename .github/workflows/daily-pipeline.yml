@@ -70,7 +70,7 @@ jobs:
       OMNIROUTE_API_TOKEN: ${{ secrets.OMNIROUTE_API_TOKEN }}
       RESOURCEOS_DB_PATH: ${{ github.workspace }}/data/resourceos.db
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
