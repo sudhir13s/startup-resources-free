@@ -95,7 +95,7 @@ jobs:
         if: env.MODE != 'heuristic'
         run: pip install -r backend/requirements-agents.txt
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         if: env.MODE != 'heuristic'
         with:
           node-version: "22.22.2"

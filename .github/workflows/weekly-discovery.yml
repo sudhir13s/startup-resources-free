@@ -83,7 +83,7 @@ jobs:
           pip install -r backend/requirements-dev.txt
           pip install -r backend/requirements-agents.txt
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: "22.22.2"
 
