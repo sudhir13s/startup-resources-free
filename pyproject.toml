@@ -1,0 +1,5 @@
+[tool.pytest.ini_options]
+testpaths = ["domain", "storage", "freellm", "refresh", "api"]
+
+[tool.ruff]
+target-version = "py312"
