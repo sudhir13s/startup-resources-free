@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import time
 
-from api.tests.conftest import RESOURCEOS_PASSPHRASE, FakeRunner, FakeSync, make_client
+from api.tests.conftest import FakeRunner, FakeSync, make_client
 from domain.runs import RefreshOptions, RunReport
 
 
@@ -25,7 +25,7 @@ def test_should_202_and_run_in_background_then_push(repository, seed_file):
     )
     client = next(client_gen)
     try:
-        response = client.post("/api/refresh", json={}, headers={"X-ResourceOS-Passphrase": RESOURCEOS_PASSPHRASE})
+        response = client.post("/api/refresh", json={})
         assert response.status_code == 202
         run_id = response.json()["run_id"]
 
@@ -46,23 +46,30 @@ def test_should_409_when_run_already_active(repository, seed_file):
     client_gen = make_client(repository, seed_file)
     client = next(client_gen)
     try:
-        response = client.post("/api/refresh", json={}, headers={"X-ResourceOS-Passphrase": RESOURCEOS_PASSPHRASE})
+        response = client.post("/api/refresh", json={})
         assert response.status_code == 409
         assert response.json()["detail"] == "A refresh is already running"
     finally:
         client_gen.close()
 
 
-def test_should_401_when_passphrase_missing(client):
-    response = client.post("/api/refresh", json={})
+def test_should_401_when_key_missing(client):
+    # `client` sends X-ResourceOS-Key by default (see conftest.make_client);
+    # override it with an empty value here to exercise the "missing header" path.
+    response = client.post("/api/refresh", json={}, headers={"X-ResourceOS-Key": ""})
     assert response.status_code == 401
 
 
-def test_should_503_when_passphrase_not_configured(repository, seed_file):
-    client_gen = make_client(repository, seed_file, passphrase=None)
+def test_should_401_when_key_wrong(client):
+    response = client.post("/api/refresh", json={}, headers={"X-ResourceOS-Key": "wrong"})
+    assert response.status_code == 401
+
+
+def test_should_503_when_password_not_configured(repository, seed_file):
+    client_gen = make_client(repository, seed_file, password=None)
     client = next(client_gen)
     try:
-        response = client.post("/api/refresh", json={}, headers={"X-ResourceOS-Passphrase": "anything"})
+        response = client.post("/api/refresh", json={}, headers={"X-ResourceOS-Key": "anything"})
         assert response.status_code == 503
     finally:
         client_gen.close()
@@ -73,7 +80,7 @@ def test_should_mark_run_failed_when_runner_raises(repository, seed_file):
     client_gen = make_client(repository, seed_file, runner_factory=lambda repo: runner)
     client = next(client_gen)
     try:
-        response = client.post("/api/refresh", json={}, headers={"X-ResourceOS-Passphrase": RESOURCEOS_PASSPHRASE})
+        response = client.post("/api/refresh", json={})
         run_id = response.json()["run_id"]
         assert _wait_until(lambda: repository.get_run(run_id).status == "failed")
         report = repository.get_run(run_id)
@@ -97,7 +104,7 @@ def test_should_finish_run_when_push_raises_unexpected_error(repository, seed_fi
     )
     client = next(client_gen)
     try:
-        response = client.post("/api/refresh", json={}, headers={"X-ResourceOS-Passphrase": RESOURCEOS_PASSPHRASE})
+        response = client.post("/api/refresh", json={})
         run_id = response.json()["run_id"]
 
         assert _wait_until(lambda: repository.get_run(run_id).status != "running")
