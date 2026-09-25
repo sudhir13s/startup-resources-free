@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Annotated, Literal, Union
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -75,7 +75,7 @@ class AlwaysFreeWithLimits(BaseModel):
 
 
 FreeTier = Annotated[
-    Union[RpmRpd, TokensPerMonth, RequestsPerDay, OneTimeCredits, AlwaysFreeWithLimits],
+    RpmRpd | TokensPerMonth | RequestsPerDay | OneTimeCredits | AlwaysFreeWithLimits,
     Field(discriminator="kind"),
 ]
 
@@ -88,10 +88,11 @@ class ProviderEntry(BaseModel):
 
     model_config = _NO_PROTECTED_NS
 
-    provider: str  # litellm slug, e.g. "groq", "gemini", "openrouter"
-    model: str  # litellm model id, e.g. "llama-3.3-70b-versatile"
+    provider: str  # provider slug, e.g. "groq", "gemini", "openrouter"
+    model: str  # provider-native model id, e.g. "llama-3.3-70b-versatile"
     free_tier: FreeTier
     env_var: str  # API key env var, e.g. "GROQ_API_KEY"
+    base_url: str  # OpenAI-compatible chat-completions base URL for this provider
     speed_tier: SpeedTier = "medium"
     last_verified: date
     geo_restrictions: list[str] = Field(default_factory=list)  # ISO codes
@@ -126,6 +127,7 @@ class PlanOption(BaseModel):
     quota_remaining: str  # human-readable; full state in `quotas.py`
     speed_tier: SpeedTier
     free_tier_kind: str  # discriminator value
+    cooldown_until: str | None = None  # ISO timestamp; None when not cooling down
 
 
 class Plan(BaseModel):

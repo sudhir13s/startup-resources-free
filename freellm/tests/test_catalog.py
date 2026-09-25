@@ -7,15 +7,14 @@ from pathlib import Path
 import pytest
 
 from freellm import (
-    AllProvidersExhaustedError,
     PROVIDERS,
+    AllProvidersExhaustedError,
     call_text,
     list_providers,
     plan,
     quotas,
 )
 from freellm.schemas import ALL_MODALITIES, ProviderEntry
-
 
 # ---------- catalog integrity ----------
 
@@ -99,7 +98,7 @@ def test_plan_dry_run_via_call_text(monkeypatch: pytest.MonkeyPatch):
     )
     # dry_run returns Plan, not Result
     assert hasattr(result, "options")
-    assert getattr(result, "chosen").provider == "groq"
+    assert result.chosen.provider == "groq"
 
 
 def test_call_image_gen_runtime_still_deferred(monkeypatch: pytest.MonkeyPatch):
@@ -125,11 +124,11 @@ def test_quotas_save_and_load_roundtrip(tmp_path: Path, monkeypatch: pytest.Monk
     state = quotas.load()
     assert state.entries == {}
     quotas.record_success(
-        state, provider="groq", model="llama-3.3-70b-versatile", tokens_in=10, tokens_out=20
+        state, provider="groq", model="openai/gpt-oss-120b", tokens_in=10, tokens_out=20
     )
     quotas.save(state)
     reloaded = quotas.load()
-    key = quotas.key_of("groq", "llama-3.3-70b-versatile")
+    key = quotas.key_of("groq", "openai/gpt-oss-120b")
     assert key in reloaded.entries
     assert reloaded.entries[key].requests_used == 1
     assert reloaded.entries[key].tokens_used == 30

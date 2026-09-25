@@ -1,36 +1,51 @@
-"""Quota-aware fallback chain executor.
+"""Quota-aware fallback chain executor with rate-limit rotation.
 
 Public API:
-- `plan(modality, task_name)` — pure preview, no network.
+- `plan(modality, task_name)` — pure preview, no network. Reflects cooldowns
+  and missing keys.
 - `call_text/_vision/_image_gen/_video_gen/_embed/_stt/_tts(...)` — async,
   walk the chain, hit the backend for each candidate, record quota state.
 - `dry_run=True` on any call_* returns the same Plan as `plan()`.
 
-Chain semantics (per `agentic-pipeline.md`):
+Chain semantics (per `agentic-pipeline.md` + `freellm-router.md`):
 - Try each candidate in `plan().options` order.
 - On success: record_success in quotas, return Result with
   `chain_attempted` populated.
-- On failure: record_failure in quotas, move to next candidate.
+- On `RateLimitedError`: cool the provider:model down until
+  `now + retry_after_s` (default 60s), or until the provider's reported
+  daily reset when the error looks like a daily-quota exhaustion. Fall
+  through to the next candidate — never retry the same provider in this
+  call.
+- On `AuthError`: disable the provider:model for the rest of the day
+  (a bad key won't fix itself mid-run).
+- On `TransientProviderError` / `ProviderRequestError` / any other
+  exception: record a generic failure, fall through.
 - All exhausted: raise `AllProvidersExhaustedError(chain_attempted)`.
 
 The router NEVER imports an LLM SDK directly — it delegates to the
-`Backend` resolved by `freellm.backend.get_backend()`. Swapping
-backends (mock for tests, OmniRoute in prod, future LiteLLM-direct)
-needs zero changes here.
+`Backend` resolved by `freellm.backend.get_backend()`, and resolves
+`api_key` / `base_url` from the catalog entry + `os.environ`.
 
 `call_image_gen / call_video_gen / call_stt / call_tts` are scoped out
-of B1: the agents and dashboard surfaces shipping next don't need them.
-They raise `NotImplementedError` with a pointer to the v0.3 work.
+of the runtime chain: the agents and dashboard surfaces shipping next
+don't need them. They raise `NotImplementedError` with a pointer to the
+v0.3 work.
 """
 
 from __future__ import annotations
 
 import os
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from freellm import quotas
 from freellm.backend import Backend, get_backend
-from freellm.providers import PROVIDERS, list_providers
+from freellm.errors import (
+    AllProvidersExhaustedError,
+    AuthError,
+    RateLimitedError,
+)
+from freellm.providers import PROVIDERS
 from freellm.schemas import (
     Modality,
     Plan,
@@ -39,21 +54,13 @@ from freellm.schemas import (
     Result,
 )
 
-
-class AllProvidersExhaustedError(RuntimeError):
-    """Raised when every provider in the chain has been tried + failed."""
-
-    def __init__(self, chain_attempted: list[str]):
-        self.chain_attempted = chain_attempted
-        super().__init__(
-            f"All free providers exhausted. Attempted: {', '.join(chain_attempted)}"
-        )
+_DEFAULT_COOLDOWN_S = 60.0
 
 
 def _filter_chain(
     entries: list[ProviderEntry], state: quotas.QuotaState, allow_paid: bool
 ) -> tuple[list[tuple[ProviderEntry, PlanOption]], dict[str, str]]:
-    """Apply env-var + disable + quota filters. Returns (kept, reason_skipped)."""
+    """Apply env-var + disable + cooldown filters. Returns (kept, reason_skipped)."""
     kept: list[tuple[ProviderEntry, PlanOption]] = []
     skipped: dict[str, str] = {}
     for e in entries:
@@ -65,6 +72,9 @@ def _filter_chain(
         if quotas.is_disabled(usage):
             skipped[key] = f"disabled until {usage.disabled_until}"
             continue
+        if quotas.is_cooling_down(usage):
+            skipped[key] = f"cooling down until {usage.cooldown_until}"
+            continue
         opt = PlanOption(
             provider=e.provider,
             model=e.model,
@@ -72,6 +82,7 @@ def _filter_chain(
             quota_remaining=quotas.remaining_hint(usage),
             speed_tier=e.speed_tier,
             free_tier_kind=e.free_tier.kind,  # type: ignore[union-attr]
+            cooldown_until=usage.cooldown_until,
         )
         kept.append((e, opt))
     return kept, skipped
@@ -109,6 +120,39 @@ def plan(
 # ============================================================
 
 
+def _cooldown_until_for(err: RateLimitedError) -> datetime:
+    now = datetime.now(tz=timezone.utc)
+    seconds = err.retry_after_s if err.retry_after_s is not None else _DEFAULT_COOLDOWN_S
+    # Daily-exhaustion signals get a full-day cooldown (reset at next UTC
+    # midnight) rather than the short RPM-style backoff.
+    if err.daily_exhausted:
+        tomorrow = (now + timedelta(days=1)).date()
+        return datetime.combine(tomorrow, datetime.min.time(), tzinfo=timezone.utc)
+    return now + timedelta(seconds=seconds)
+
+
+def _record_provider_error(
+    state: quotas.QuotaState, *, provider: str, model: str, error: BaseException
+) -> None:
+    """Route each error type to its quotas.py handler (cooldown vs disable
+    vs generic failure) so the NEXT plan() reflects the right skip reason.
+    """
+    reason = f"{type(error).__name__}: {error}"[:200]
+    if isinstance(error, RateLimitedError):
+        quotas.record_cooldown(
+            state,
+            provider=provider,
+            model=model,
+            reason=reason,
+            cooldown_until=_cooldown_until_for(error),
+        )
+        return
+    if isinstance(error, AuthError):
+        quotas.record_auth_disable(state, provider=provider, model=model, reason=reason)
+        return
+    quotas.record_failure(state, provider=provider, model=model, reason=reason)
+
+
 async def _execute_chain(
     *,
     modality: Modality,
@@ -119,8 +163,8 @@ async def _execute_chain(
 ) -> Result:
     """Run plan() then walk options against `one_call`.
 
-    `one_call(*, provider, model)` -> Result. Caller closes over its
-    modality-specific kwargs (messages, inputs, etc.).
+    `one_call(*, provider, model, api_key, base_url)` -> Result. Caller
+    closes over its modality-specific kwargs (messages, inputs, etc.).
     """
     p = plan(modality=modality, task_name=task_name, allow_paid=allow_paid)
     if not p.options:
@@ -133,8 +177,18 @@ async def _execute_chain(
         for opt in p.options:
             tag = f"{opt.provider}/{opt.model}"
             chain_attempted.append(tag)
+            entry = next(
+                e
+                for e in PROVIDERS[modality]
+                if e.provider == opt.provider and e.model == opt.model
+            )
             try:
-                result = await one_call(provider=opt.provider, model=opt.model)
+                result = await one_call(
+                    provider=opt.provider,
+                    model=opt.model,
+                    api_key=os.environ.get(entry.env_var, ""),
+                    base_url=entry.base_url,
+                )
                 quotas.record_success(
                     state,
                     provider=opt.provider,
@@ -144,13 +198,10 @@ async def _execute_chain(
                 )
                 result.chain_attempted = chain_attempted
                 return result
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 — every provider failure falls through
                 last_error = e
-                quotas.record_failure(
-                    state,
-                    provider=opt.provider,
-                    model=opt.model,
-                    reason=f"{type(e).__name__}: {e}"[:200],
+                _record_provider_error(
+                    state, provider=opt.provider, model=opt.model, error=e
                 )
                 continue
     finally:
@@ -185,13 +236,15 @@ async def call_text(
     backend: Backend | None = None,
     allow_paid: bool | None = None,
     persist_quotas: bool = True,
+    json_mode: bool = False,
 ) -> Result | Plan:
     if dry_run:
         return plan(modality="text", task_name=task_name, allow_paid=allow_paid)
-    _ = (model_chain, response_model)  # B2 will use response_model for structured output
+    _ = (model_chain, response_model)  # structured-output validation is caller-side
     be = _resolve_backend(backend)
+    response_format = {"type": "json_object"} if json_mode else None
 
-    async def one(*, provider: str, model: str) -> Result:
+    async def one(*, provider: str, model: str, api_key: str, base_url: str) -> Result:
         return await be.call_text_one(
             provider=provider,
             model=model,
@@ -199,6 +252,9 @@ async def call_text(
             max_tokens=max_tokens,
             temperature=temperature,
             timeout_s=timeout_s,
+            api_key=api_key,
+            base_url=base_url,
+            response_format=response_format,
         )
 
     return await _execute_chain(
@@ -225,10 +281,10 @@ async def call_vision(
 ) -> Result | Plan:
     if dry_run:
         return plan(modality="vision", task_name=task_name, allow_paid=allow_paid)
-    _ = image_bytes  # caller embeds image_url parts in `messages`; reserved for B6
+    _ = image_bytes  # caller embeds image_url parts in `messages`
     be = _resolve_backend(backend)
 
-    async def one(*, provider: str, model: str) -> Result:
+    async def one(*, provider: str, model: str, api_key: str, base_url: str) -> Result:
         return await be.call_vision_one(
             provider=provider,
             model=model,
@@ -236,6 +292,8 @@ async def call_vision(
             max_tokens=max_tokens,
             temperature=temperature,
             timeout_s=timeout_s,
+            api_key=api_key,
+            base_url=base_url,
         )
 
     return await _execute_chain(
@@ -261,12 +319,14 @@ async def call_embed(
         return plan(modality="embed", task_name=task_name, allow_paid=allow_paid)
     be = _resolve_backend(backend)
 
-    async def one(*, provider: str, model: str) -> Result:
+    async def one(*, provider: str, model: str, api_key: str, base_url: str) -> Result:
         return await be.call_embed_one(
             provider=provider,
             model=model,
             inputs=inputs,
             timeout_s=timeout_s,
+            api_key=api_key,
+            base_url=base_url,
         )
 
     return await _execute_chain(
@@ -279,8 +339,8 @@ async def call_embed(
 
 
 # ============================================================
-# Scoped out of B1 — agents/pipeline don't need these yet.
-# Land with B6/B7/B8 (Media Benchmark v0.3+).
+# Scoped out of the runtime chain — agents/pipeline don't need
+# these yet. Land with the Media Benchmark (v0.3+).
 # ============================================================
 
 
@@ -344,7 +404,7 @@ async def call_tts(
 
 
 # ============================================================
-# Catalog inspection helpers — unchanged from v0.1.
+# Catalog inspection helpers.
 # ============================================================
 
 
@@ -357,4 +417,6 @@ def total_entries() -> int:
 
 
 def list_all() -> list[ProviderEntry]:
+    from freellm.providers import list_providers
+
     return list_providers()

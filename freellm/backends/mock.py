@@ -4,7 +4,7 @@ No network, no LLM. Returns a canned Result whose `content` echoes the
 last user message (text/vision) or a placeholder embedding marker.
 
 Useful in two places:
-1. CI tests — exercise router chain logic without spinning OmniRoute.
+1. CI tests — exercise router chain logic without a real network call.
 2. Local dev offline — run agents end-to-end against canned output.
 
 Failure injection: set `MOCK_FAIL_PROVIDERS=groq,gemini` to make those
@@ -53,11 +53,17 @@ class MockBackend:
         max_tokens: int = 2000,
         temperature: float = 0.0,
         timeout_s: int = 60,
+        api_key: str = "",
+        base_url: str = "",
+        response_format: dict[str, str] | None = None,
     ) -> Result:
         self._maybe_fail(provider)
         echo = self._last_user_text(messages)
+        content = f"[mock:{provider}/{model}] {echo}"
+        if response_format is not None:
+            content = f'{{"echo": {echo!r}}}'
         return Result(
-            content=f"[mock:{provider}/{model}] {echo}",
+            content=content,
             provider_used=provider,
             model_used=model,
             latency_ms=1,
@@ -75,6 +81,8 @@ class MockBackend:
         max_tokens: int = 2000,
         temperature: float = 0.0,
         timeout_s: int = 60,
+        api_key: str = "",
+        base_url: str = "",
     ) -> Result:
         self._maybe_fail(provider)
         echo = self._last_user_text(messages)
@@ -95,6 +103,8 @@ class MockBackend:
         model: str,
         inputs: list[str],
         timeout_s: int = 60,
+        api_key: str = "",
+        base_url: str = "",
     ) -> Result:
         self._maybe_fail(provider)
         # Embedding "content" is a JSON-serializable hint, not the vector.
