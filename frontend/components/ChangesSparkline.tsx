@@ -1,4 +1,4 @@
-import type { Change } from "@/lib/utils";
+import type { FieldChange } from "@/lib/types";
 
 const WEEKS = 12;
 const WIDTH = 320;
@@ -23,10 +23,10 @@ function isoWeek(d: Date): string {
 }
 
 /** Tiny inline-SVG sparkline: stacked reduced (down) + improved (up) per week. */
-export function ChangesSparkline({ items }: { items: Change[] }) {
+export function ChangesSparkline({ items }: { items: FieldChange[] }) {
   const buckets = new Map<string, { reduced: number; improved: number }>();
   for (const c of items) {
-    const wk = isoWeek(new Date(`${c.snapshot_date}T00:00:00Z`));
+    const wk = isoWeek(new Date(c.detected_at));
     const slot = buckets.get(wk) ?? { reduced: 0, improved: 0 };
     if (c.severity === "reduced" || c.severity === "ended") slot.reduced += 1;
     if (c.severity === "improved" || c.severity === "new") slot.improved += 1;
