@@ -78,8 +78,13 @@ async def _push_snapshot(
         if on_synced is not None:
             on_synced(synced_at)
         return report.model_copy(update={"data_pushed": True})
-    except DataSyncError as exc:
-        logger.warning("refresh_data_push_failed", extra={"run_id": report.run_id})
+    except Exception as exc:  # noqa: BLE001 - any push failure must still let update_run persist the run
+        # Catching only DataSyncError left disk/SQLite/HTTP errors unhandled, so
+        # the run stayed `running` and blocked the next refresh for 2 hours.
+        logger.warning(
+            "refresh_data_push_failed",
+            extra={"run_id": report.run_id, "error_type": type(exc).__name__},
+        )
         return report.model_copy(update={"errors": [*report.errors, f"data push failed: {exc}"]})
 
 
