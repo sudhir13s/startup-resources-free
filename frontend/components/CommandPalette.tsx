@@ -10,11 +10,12 @@ import type { ProviderRecord, ProvidersResponse } from "@/lib/types";
 
 const NAV_ITEMS = [
   { label: "Resources", href: "/resources" },
-  { label: "Compare", href: "/compare" },
   { label: "Funds & Credits", href: "/funds" },
+  { label: "Compare", href: "/compare" },
   { label: "Changes", href: "/changes" },
-  { label: "Free-LLM Chain", href: "/freellm" },
-  { label: "Media Benchmark", href: "/media-benchmark" },
+  { label: "Runs", href: "/runs" },
+  { label: "Candidates", href: "/candidates" },
+  { label: "Free LLMs", href: "/freellm" },
 ] as const;
 
 export function CommandPalette() {
