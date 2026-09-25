@@ -38,7 +38,6 @@ BASE_URLS: dict[str, str] = {
     "nvidia_nim": "https://integrate.api.nvidia.com/v1",
     "together_ai": "https://api.together.xyz/v1",
     "huggingface": "https://router.huggingface.co/v1",
-    "github_models": "https://models.github.ai/inference",
 }
 
 # Providers not on the OpenAI-compat transport (image/video/embed-only
@@ -198,19 +197,6 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             last_verified=date(2026, 4, 21),
             docs_url="https://build.nvidia.com/",
             notes="Not re-verified 2026-09-25 — recheck credit terms before relying on it.",
-        ),
-        ProviderEntry(
-            provider="github_models",
-            model="openai/gpt-4o-mini",
-            free_tier=_free_with_limits(
-                "Free with a GitHub account; rate-limited by usage tier."
-            ),
-            env_var="GITHUB_MODELS_TOKEN",
-            base_url=_base_url("github_models"),
-            speed_tier="medium",
-            last_verified=date(2026, 4, 21),
-            docs_url="https://docs.github.com/en/github-models",
-            notes="Not re-verified 2026-09-25 — recheck rate limits before relying on it.",
         ),
         ProviderEntry(
             provider="together_ai",

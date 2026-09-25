@@ -1,48 +1,38 @@
 import { NextResponse } from "next/server";
-import { resolveBackendUrl, type ProvidersResponse } from "@/lib/utils";
+import { backendGet } from "@/lib/api";
+import type { ProviderDetailResponse, ProvidersResponse } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-const BACKEND_URL = resolveBackendUrl();
+const FORWARD_LIST_KEYS = ["variant", "tier", "category", "offer_type", "geo", "min_confidence", "q"];
 
-const FORWARD_KEYS = [
-  "tier",
-  "india",
-  "category",
-  "offer_type",
-  "min_confidence",
-];
-
+/**
+ * Proxies `/api/providers` (list, with the catalog filters) and, when an
+ * `id` query param is present, `/api/providers/{id}` (single-record
+ * detail — used by ProviderDetail's client-side "related offers" fetch
+ * and by CommandPalette search results).
+ */
 export async function GET(request: Request) {
   const incoming = new URL(request.url);
-  const upstream = new URL("/api/providers", BACKEND_URL);
-  for (const key of FORWARD_KEYS) {
-    incoming.searchParams.getAll(key).forEach((v) => {
-      upstream.searchParams.append(key, v);
-    });
+  const id = incoming.searchParams.get("id");
+
+  if (id) {
+    const result = await backendGet<ProviderDetailResponse>(`/api/providers/${encodeURIComponent(id)}`);
+    if (!result.ok) {
+      return NextResponse.json({ error: result.detail }, { status: result.status || 502 });
+    }
+    return NextResponse.json(result.data);
   }
 
-  try {
-    const res = await fetch(upstream.toString(), {
-      headers: { accept: "application/json" },
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      return NextResponse.json(
-        { error: "upstream_error", status: res.status },
-        { status: 502 }
-      );
-    }
-    const data = (await res.json()) as ProvidersResponse;
-    return NextResponse.json(data);
-  } catch (e) {
-    return NextResponse.json(
-      {
-        error: "upstream_unreachable",
-        backend_url: BACKEND_URL,
-        detail: e instanceof Error ? e.message : String(e),
-      },
-      { status: 502 }
-    );
+  const query: Record<string, string[]> = {};
+  for (const key of FORWARD_LIST_KEYS) {
+    const values = incoming.searchParams.getAll(key);
+    if (values.length > 0) query[key] = values;
   }
+
+  const result = await backendGet<ProvidersResponse>("/api/providers", query);
+  if (!result.ok) {
+    return NextResponse.json({ error: result.detail }, { status: result.status || 502 });
+  }
+  return NextResponse.json(result.data);
 }

@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { Provider } from "@/lib/utils";
+import type { ProviderRecord } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const MAX_PINS = 6;
@@ -14,7 +14,7 @@ export function CompareSelector({
   allProviders,
   pinnedIds,
 }: {
-  allProviders: Provider[];
+  allProviders: ProviderRecord[];
   pinnedIds: string[];
 }) {
   const router = useRouter();
@@ -40,24 +40,18 @@ export function CompareSelector({
     setOpenPicker(false);
   };
 
-  const available = allProviders.filter((p) => !pinnedSet.has(p.id));
+  const available = allProviders.filter((p) => !pinnedSet.has(p.provider_id));
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
         {pinnedIds.length === 0 ? (
-          <span className="text-sm text-fg-muted">
-            No providers pinned yet. Pick up to {MAX_PINS}.
-          </span>
+          <span className="text-sm text-fg-muted">No providers pinned yet. Pick up to {MAX_PINS}.</span>
         ) : (
           pinnedIds.map((id) => {
-            const p = allProviders.find((x) => x.id === id);
+            const p = allProviders.find((x) => x.provider_id === id);
             return (
-              <Badge
-                key={id}
-                variant="default"
-                className="gap-1 px-2 py-1 text-xs"
-              >
+              <Badge key={id} variant="default" className="gap-1 px-2 py-1 text-xs">
                 {p ? p.name : id}
                 <button
                   type="button"
@@ -94,18 +88,14 @@ export function CompareSelector({
 
       {openPicker ? (
         <div className="rounded-lg border border-border bg-bg-surface p-3">
-          <ul
-            role="listbox"
-            aria-label="Available providers"
-            className="grid max-h-72 grid-cols-1 gap-1 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3"
-          >
+          <ul role="listbox" aria-label="Available providers" className="grid max-h-72 grid-cols-1 gap-1 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3">
             {available.map((p) => (
-              <li key={p.id}>
+              <li key={p.provider_id}>
                 <button
                   type="button"
                   role="option"
                   aria-selected={false}
-                  onClick={() => add(p.id)}
+                  onClick={() => add(p.provider_id)}
                   className={cn(
                     "flex w-full items-start gap-2 rounded-md px-3 py-2 text-left text-xs",
                     "hover:bg-bg-tile focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
@@ -116,9 +106,7 @@ export function CompareSelector({
                   </span>
                   <span className="flex flex-col gap-0.5">
                     <span className="font-medium text-fg">{p.name}</span>
-                    <span className="font-mono text-[9px] uppercase tracking-wider text-fg-subtle">
-                      {p.category}
-                    </span>
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-fg-subtle">{p.category}</span>
                   </span>
                 </button>
               </li>
