@@ -80,8 +80,8 @@ takes 30–60 s).
 | `RESOURCEOS_PASSPHRASE` | API **and** frontend (same value) | Refresh button | Any long random string, e.g. `openssl rand -hex 24` |
 | `RESOURCEOS_R2_ENDPOINT` | API | Keeping data across restarts | S3 endpoint from the R2 overview page, `https://<account-id>.r2.cloudflarestorage.com` |
 | `RESOURCEOS_R2_BUCKET` | API | Keeping data across restarts | R2 bucket name, e.g. `resourceos-data` |
-| `RESOURCEOS_R2_ACCESS_KEY_ID` | API | Keeping data across restarts | R2 API token access key |
-| `RESOURCEOS_R2_SECRET_ACCESS_KEY` | API | Keeping data across restarts | R2 API token secret |
+| `CF_USER_ACCESS_KEY_ID` | API | Keeping data across restarts | R2 API token access key |
+| `CF_USER_R2_SECRET_ACCESS_KEY` | API | Keeping data across restarts | R2 API token secret |
 | `GROQ_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, `CEREBRAS_API_KEY`, `MISTRAL_API_KEY`, `SAMBANOVA_API_KEY`, `NVIDIA_API_KEY`, `TOGETHER_API_KEY`, `HF_TOKEN` | API | Refresh (AI extraction) | Free-tier keys; any subset works, more keys = more free quota |
 | `TAVILY_API_KEY`, `EXA_API_KEY`, `JINA_API_KEY`, `LINKUP_API_KEY`, `SERPAPI_API_KEY` | API | Discovering new providers | Free-tier keys; optional |
 

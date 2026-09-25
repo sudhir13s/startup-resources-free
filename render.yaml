@@ -30,9 +30,9 @@ services:
         sync: false
       - key: RESOURCEOS_R2_BUCKET
         sync: false
-      - key: RESOURCEOS_R2_ACCESS_KEY_ID
+      - key: CF_USER_ACCESS_KEY_ID
         sync: false
-      - key: RESOURCEOS_R2_SECRET_ACCESS_KEY
+      - key: CF_USER_R2_SECRET_ACCESS_KEY
         sync: false
       - key: GROQ_API_KEY
         sync: false
