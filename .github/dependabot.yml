@@ -1,8 +1,8 @@
 version: 2
 updates:
-  # Backend (FastAPI / Pydantic / pytest)
+  # Python (FastAPI / Pydantic / pytest) — root, single repo-wide toolchain
   - package-ecosystem: pip
-    directory: /backend
+    directory: /
     schedule:
       interval: weekly
       day: monday
