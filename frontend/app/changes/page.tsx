@@ -3,36 +3,16 @@ import { TopBar } from "@/components/TopBar";
 import { SubTabs } from "@/components/SubTabs";
 import { ChangesTimeline } from "@/components/ChangesTimeline";
 import { ChangesSparkline } from "@/components/ChangesSparkline";
-import { resolveBackendUrl, type ChangesResponse } from "@/lib/utils";
+import { backendGet } from "@/lib/api";
+import type { ChangesResponse } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
-
-const BACKEND_URL = resolveBackendUrl();
-
-async function fetchChanges(since?: string): Promise<ChangesResponse | null> {
-  const url = new URL("/api/changes", BACKEND_URL);
-  if (since) url.searchParams.set("since", since);
-  url.searchParams.set("limit", "200");
-  try {
-    const res = await fetch(url.toString(), {
-      headers: { accept: "application/json" },
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as ChangesResponse;
-  } catch {
-    return null;
-  }
-}
 
 function ChangesSkeleton() {
   return (
     <div role="status" aria-busy="true" className="flex flex-col gap-3">
       {[0, 1, 2].map((i) => (
-        <div
-          key={i}
-          className="skeleton h-20 rounded-lg border border-border"
-        />
+        <div key={i} className="skeleton h-20 rounded-lg border border-border" />
       ))}
     </div>
   );
@@ -44,7 +24,7 @@ export default async function ChangesPage({
   searchParams?: { since?: string };
 }) {
   const since = typeof searchParams?.since === "string" ? searchParams.since : undefined;
-  const data = await fetchChanges(since);
+  const result = await backendGet<ChangesResponse>("/api/changes", { since, limit: 200 });
 
   return (
     <div className="flex min-h-screen flex-col bg-bg-base text-fg">
@@ -57,45 +37,36 @@ export default async function ChangesPage({
               Changes
             </h1>
             <p className="text-sm text-fg-muted">
-              Field-level changes between daily snapshots. Reduced quotas
-              flagged in amber/red; improvements + new providers in green.
+              Field-level changes detected between refresh runs. Reduced
+              quotas flagged in amber/red; improvements + new providers in
+              green.
             </p>
           </header>
 
           <SubTabs />
 
-          {data ? (
+          {result.ok ? (
             <>
               <section
                 aria-label="Weekly trend"
                 className="rounded-xl border border-border bg-bg-surface p-4"
               >
-                <ChangesSparkline items={data.items} />
+                <ChangesSparkline items={result.data.items} />
               </section>
 
               <div className="flex items-center justify-between text-xs text-fg-subtle font-mono">
-                <span>
-                  {data.snapshot_dates.length} snapshot
-                  {data.snapshot_dates.length === 1 ? "" : "s"} on file
-                  {data.latest_snapshot ? ` · latest ${data.latest_snapshot}` : ""}
-                </span>
-                <span>
-                  showing {data.items.length} of {data.total} change events
-                </span>
+                <span>{result.data.total} total change events</span>
+                <span>showing {result.data.items.length}</span>
               </div>
 
               <Suspense fallback={<ChangesSkeleton />}>
-                <ChangesTimeline items={data.items} />
+                <ChangesTimeline items={result.data.items} />
               </Suspense>
             </>
           ) : (
             <div className="rounded-xl border border-bad/30 bg-bad/10 p-6 text-sm text-bad">
               <p className="font-semibold">Backend unreachable.</p>
-              <p className="mt-1 text-bad/80">
-                FastAPI service at{" "}
-                <code className="font-mono text-xs">{BACKEND_URL}</code>{" "}
-                not responding.
-              </p>
+              <p className="mt-1 text-bad/80">{result.detail}</p>
             </div>
           )}
         </div>

@@ -11,13 +11,16 @@ type Tab = {
   soon: boolean;
 };
 
-// Order locked 2026-04-28: Resources first (the broad catalog) → Compare
-// (action you take on Resources rows) → Funds & Credits (narrower
-// "where to get money" view).
+// Order locked AV2-3b (2026-09-25): Resources first (the broad catalog) →
+// Funds & Credits → Compare → Changes → Runs → Candidates → Free LLMs.
 const TABS: readonly Tab[] = [
   { key: "catalog", label: "Resources", href: "/resources", soon: false },
+  { key: "funds", label: "Funds & Credits", href: "/funds", soon: false },
   { key: "compare", label: "Compare", href: "/compare", soon: false },
-  { key: "grants", label: "Funds & Credits", href: "/funds", soon: false },
+  { key: "changes", label: "Changes", href: "/changes", soon: false },
+  { key: "runs", label: "Runs", href: "/runs", soon: false },
+  { key: "candidates", label: "Candidates", href: "/candidates", soon: false },
+  { key: "freellm", label: "Free LLMs", href: "/freellm", soon: false },
 ] as const;
 
 export function SubTabs({ matchedCount }: { matchedCount?: number }) {

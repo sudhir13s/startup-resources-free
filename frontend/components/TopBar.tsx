@@ -1,38 +1,10 @@
 "use client";
 
-import { Search, RefreshCw } from "lucide-react";
+import { Search } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import type { CronStatus } from "@/lib/utils";
+import { RefreshButton } from "@/components/refresh/RefreshButton";
 
-function freshnessText(status: CronStatus | null | undefined): string {
-  if (!status) return "—";
-  const ages = [status.refresh_age_days, status.discovery_age_days].filter(
-    (a): a is number => typeof a === "number",
-  );
-  if (ages.length === 0) return "never run";
-  const youngest = Math.min(...ages);
-  if (youngest === 0) return "today";
-  if (youngest === 1) return "1 day ago";
-  return `${youngest} days ago`;
-}
-
-export function TopBar({
-  lastUpdated = "2h ago",
-  cronStatus,
-}: {
-  lastUpdated?: string;
-  cronStatus?: CronStatus | null;
-}) {
-  const stale = cronStatus?.is_stale ?? true;
-  const freshness = cronStatus ? freshnessText(cronStatus) : lastUpdated;
-  // manual-full-run.yml fans out to BOTH weekly-discovery (find new
-  // providers) AND weekly-refresh (re-validate existing rows for drift)
-  // in one click. Single dispatch URL beats opening two Actions tabs.
-  const runUrl =
-    "https://github.com/sudhir13s/startup-resources-free/actions/workflows/manual-full-run.yml";
-  const tooltip = stale
-    ? "Trigger discovery + refresh on GitHub Actions (opens in a new tab)"
-    : `Last run ${freshness} — cron is up-to-date. Click to force-run discovery + refresh.`;
+export function TopBar() {
   return (
     <header
       role="banner"
@@ -47,17 +19,11 @@ export function TopBar({
             ResourceOS
           </span>
           <span className="font-mono text-[10px] text-fg-subtle">
-            v0.1 · catalog
+            v2 · catalog
           </span>
         </div>
       </div>
 
-      {/* Top-level nav lives in SubTabs (Resources / Compare / Funds &
-          Credits). The legacy "Catalog / Free-LLM Chain / Media
-          Benchmark / Settings" pills are removed per the 2026-04-28
-          roundtable — Free-LLM Chain + Media Benchmark were demoted to
-          utility URLs only (no nav entry), and Settings was always a
-          placeholder. */}
       <div className="order-last flex w-full items-center sm:order-none sm:flex-1 sm:max-w-md">
         <button
           type="button"
@@ -79,35 +45,7 @@ export function TopBar({
       </div>
 
       <div className="ml-auto flex items-center gap-2 shrink-0">
-        <span className="hidden items-center gap-2 rounded-full border border-border bg-bg-surface px-3 py-1.5 text-[11px] text-fg-muted sm:inline-flex">
-          <span
-            className={
-              "h-1.5 w-1.5 rounded-full " + (stale ? "bg-warn" : "bg-ok")
-            }
-            aria-hidden="true"
-          />
-          updated {freshness}
-        </span>
-        {/* Run now: ALWAYS clickable (user override 2026-04-28).
-            Opens GitHub Actions workflow_dispatch UI in a new tab — uses
-            GitHub's own auth, no PAT round-trip from the dashboard.
-            Visual emphasis stronger when cron is stale; muted-but-clickable
-            when fresh so the user can still force-run anytime. */}
-        <a
-          href={runUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          title={tooltip}
-          className={
-            "inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors " +
-            (stale
-              ? "border-accent/40 bg-accent/10 text-accent hover:bg-accent/15"
-              : "border-border bg-bg-surface text-fg-muted hover:bg-bg-tile hover:text-fg")
-          }
-        >
-          <RefreshCw className="h-3.5 w-3.5" />
-          Run now
-        </a>
+        <RefreshButton />
         <ThemeToggle />
       </div>
     </header>

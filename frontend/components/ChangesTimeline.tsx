@@ -1,18 +1,14 @@
+import Link from "next/link";
 import {
   ArrowDown,
   ArrowUp,
   Sparkles,
   CircleX,
-  CircleDashed,
+  Info,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  CATEGORY_LABELS,
-  relativeTime,
-  type Change,
-  type ChangeSeverity,
-} from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import type { ChangeSeverity, FieldChange } from "@/lib/types";
 
 const SEVERITY_META: Record<
   ChangeSeverity,
@@ -22,22 +18,21 @@ const SEVERITY_META: Record<
   improved: { label: "Improved", variant: "success", Icon: ArrowUp },
   reduced: { label: "Reduced", variant: "warning", Icon: ArrowDown },
   ended: { label: "Ended", variant: "danger", Icon: CircleX },
-  unchanged: { label: "—", variant: "muted", Icon: CircleDashed },
+  metadata: { label: "Metadata", variant: "muted", Icon: Info },
 };
 
 const FIELD_LABELS: Record<string, string> = {
   __provider__: "Provider listing",
   headline: "Headline",
-  free_tier_summary: "Free-tier summary",
   quota_summary: "Free quota",
   duration_summary: "Duration",
   region_summary: "Region",
   offer_type: "Offer type",
   eligibility_summary: "Eligibility",
   use_case_tiers: "Project tiers",
-  india_accessible: "India accessibility",
   geo_priority: "Geo priority",
   parse_confidence: "Parse confidence",
+  status: "Status",
 };
 
 function formatValue(v: unknown): string {
@@ -47,32 +42,32 @@ function formatValue(v: unknown): string {
   return String(v);
 }
 
-export function ChangesTimeline({ items }: { items: Change[] }) {
+function dayKey(isoDateTime: string): string {
+  return isoDateTime.slice(0, 10);
+}
+
+export function ChangesTimeline({ items }: { items: FieldChange[] }) {
   if (items.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-border bg-bg-surface p-12 text-center">
         <h3 className="text-base font-semibold text-fg">No changes yet</h3>
         <p className="mt-2 max-w-md mx-auto text-sm text-fg-muted">
-          The Changes tab fills in once the daily refresh cron writes its
-          first delta snapshot. The cron starts running once at least one
-          free-LLM provider key (e.g. <code className="font-mono">GROQ_API_KEY</code>) is
-          set in the API service&apos;s environment.
-        </p>
-        <p className="mt-3 text-xs text-fg-subtle">
-          Until then, today&apos;s seed snapshot is the baseline.
+          The Changes tab fills in once a refresh run detects a field-level
+          difference against the previous version of a record. Trigger a
+          refresh from the TopBar to get started.
         </p>
       </div>
     );
   }
 
-  // Group by snapshot_date for visual rhythm.
-  const byDate: { date: string; items: Change[] }[] = [];
+  const byDate: { date: string; items: FieldChange[] }[] = [];
   for (const c of items) {
+    const date = dayKey(c.detected_at);
     const last = byDate[byDate.length - 1];
-    if (last && last.date === c.snapshot_date) {
+    if (last && last.date === date) {
       last.items.push(c);
     } else {
-      byDate.push({ date: c.snapshot_date, items: [c] });
+      byDate.push({ date, items: [c] });
     }
   }
 
@@ -84,9 +79,6 @@ export function ChangesTimeline({ items }: { items: Change[] }) {
             <h2 className="font-mono text-xs font-semibold uppercase tracking-wider text-fg-subtle">
               {g.date}
             </h2>
-            <span className="text-[10px] text-fg-subtle">
-              {relativeTime(`${g.date}T00:00:00Z`)}
-            </span>
             <span className="font-mono text-[10px] text-fg-subtle">
               · {g.items.length} {g.items.length === 1 ? "change" : "changes"}
             </span>
@@ -109,9 +101,14 @@ export function ChangesTimeline({ items }: { items: Change[] }) {
                   </Badge>
                   <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm">
-                      <span className="font-semibold text-fg">{c.provider_name}</span>
+                      <Link
+                        href={`/resources?q=${encodeURIComponent(c.provider_name)}`}
+                        className="font-semibold text-fg hover:text-accent hover:underline"
+                      >
+                        {c.provider_name}
+                      </Link>
                       <span className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle">
-                        {CATEGORY_LABELS[c.category] ?? c.category}
+                        {c.category}
                       </span>
                       <span className="text-fg-subtle">·</span>
                       <span className="text-xs text-fg-muted">
