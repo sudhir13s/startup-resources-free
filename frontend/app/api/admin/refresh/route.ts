@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "X-Admin-Token": adminToken,
+        "X-ResourceOS-Passphrase": adminToken,
       },
       body: JSON.stringify(body),
       cache: "no-store",

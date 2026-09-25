@@ -107,7 +107,7 @@ of dependency:
   to the `data` branch.
 - **`frontend/`** — Next.js 14 App Router + Tailwind. Service-aware filters with live facet
   counts, a sectioned detail dialog per offer, a Refresh button gated by a passphrase login
-  (via Next.js server routes so the admin token never reaches the browser), and Runs /
+  (via Next.js server routes so the passphrase never reaches the browser), and Runs /
   Candidates / Changes pages.
 
 ```mermaid
@@ -138,7 +138,7 @@ flowchart TB
     DataBranch[("data" git branch<br/>resourceos.db)]
 
     UI -->|GET /api/providers, /api/changes| Routers
-    AdminRoutes -->|X-Admin-Token| Routers
+    AdminRoutes -->|X-ResourceOS-Passphrase| Routers
     Routers --> Domain
     Routers --> RefreshSvc
     RefreshSvc --> RefreshPkg
@@ -237,15 +237,15 @@ expected to survive on the Render filesystem between deploys.
 
 | Name | Where | Required? | Purpose |
 |---|---|---|---|
-| `ADMIN_TOKEN` | API + Frontend | No (refresh disabled without it) | Shared secret. The API checks it on the `X-Admin-Token` header for admin endpoints; the frontend's Next.js server routes hold the same value and forward it after the browser authenticates via an httpOnly session cookie — the token never reaches client-side JS. |
+| `RESOURCEOS_PASSPHRASE` | API + Frontend | No (refresh disabled without it) | Shared secret. The API checks it on the `X-ResourceOS-Passphrase` header for admin endpoints; the frontend's Next.js server routes hold the same value and forward it after the browser authenticates via an httpOnly session cookie — the token never reaches client-side JS. |
 
 **Data-branch sync**
 
 | Name | Where | Required? | Purpose |
 |---|---|---|---|
-| `GITHUB_DATA_TOKEN` | API | No (falls back to seed-only, no persistence across deploys) | Fine-grained GitHub token, Contents read/write scoped to this repo only. Used to pull/push `resourceos.db` on the `data` branch. |
-| `GITHUB_REPO` | API | No (default `sudhir13s/startup-resources-free`) | `owner/repo` slug the sync client targets. |
-| `DATA_BRANCH` | API | No (default `data`) | Branch the database is pulled from and pushed to. |
+| `RESOURCEOS_GITHUB_TOKEN` | API | No (falls back to seed-only, no persistence across deploys) | Fine-grained GitHub token, Contents read/write scoped to this repo only. Used to pull/push `resourceos.db` on the `data` branch. |
+| `RESOURCEOS_DATA_REPO` | API | No (default `sudhir13s/startup-resources-free`) | `owner/repo` slug the sync client targets. |
+| `RESOURCEOS_DATA_BRANCH` | API | No (default `data`) | Branch the database is pulled from and pushed to. |
 
 **Free-LLM provider keys** (used by `freellm/`; any subset works — missing keys are dropped
 from the rotation at startup with a log line, never a crash)
@@ -278,16 +278,25 @@ behavior)
 | Name | Where | Required? | Purpose |
 |---|---|---|---|
 | `BACKEND_URL` or `BACKEND_HOST` | Frontend | Yes (one of the two) | Where the frontend's server routes reach the API. Render sets `BACKEND_HOST` via `fromService`; local dev uses `BACKEND_URL=http://localhost:8000`. |
-| `ADMIN_TOKEN` | Frontend | No (refresh disabled without it) | Same value as the API's `ADMIN_TOKEN` — used server-side only, never exposed to the browser. |
+| `RESOURCEOS_PASSPHRASE` | Frontend | No (refresh disabled without it) | Same value as the API's `RESOURCEOS_PASSPHRASE` — used server-side only, never exposed to the browser. |
 | `NEXT_PUBLIC_APP_ENV` | Frontend | No | Environment label surfaced in the UI (e.g. `production`). |
 
 ---
 
 ## Contributing
 
-This is a personal project, not currently accepting outside contributions. Issues and PRs from
-the maintainer flow through the standard GitHub PR loop — branch, PR, review, merge — with CI
-(`.github/workflows/ci.yml`) running lint, type-check, and tests on every PR.
+This is a personal project, not currently accepting outside contributions. Changes flow through
+the standard GitHub PR loop — branch, PR, review, merge.
+
+**CI is manual.** It never runs on push or PR. To run lint, type-check, tests and the frontend
+build against a branch:
+
+```bash
+gh workflow run ci.yml --ref <branch>
+gh run watch
+```
+
+Or open GitHub → **Actions** → **CI** → **Run workflow**.
 
 ---
 

@@ -163,8 +163,8 @@ These remain identical regardless of host:
 - `data/providers_seed.json` schema.
 - FastAPI routes.
 - Next.js pages + components.
-- env-var names (`BACKEND_URL`/`BACKEND_HOST`, `CORS_ORIGINS`, `ADMIN_TOKEN`,
-  `GITHUB_DATA_TOKEN`, `DATA_BRANCH`, all `*_API_KEY` — see the README's env var table).
+- env-var names (`BACKEND_URL`/`BACKEND_HOST`, `CORS_ORIGINS`, `RESOURCEOS_PASSPHRASE`,
+  `RESOURCEOS_GITHUB_TOKEN`, `RESOURCEOS_DATA_BRANCH`, all `*_API_KEY` — see the README's env var table).
 - GitHub Actions CI (lint + test).
 - Refresh stays button-triggered, in-process — no cron to move. The database's persistence
   mechanism (the `data` git branch) is unaffected by which host runs the API.
@@ -194,7 +194,7 @@ Migration cost = ops setup + DNS, not code rewrites. Should fit a single Saturda
 - [ ] Open ports 80/443 in VCN security list.
 - [ ] DNS: A/AAAA records to public IP.
 - [ ] Caddy + systemd units in place. Smoke-test on `https://resourceos.<domain>`.
-- [ ] Confirm the new host can pull the `data` branch (`GITHUB_DATA_TOKEN` set, `git fetch
+- [ ] Confirm the new host can pull the `data` branch (`RESOURCEOS_GITHUB_TOKEN` set, `git fetch
       origin data` succeeds) — this replaces any manual database export/import.
 - [ ] Update GH Actions deploy workflow to SSH-deploy to Oracle.
 - [ ] Run `python -m pytest` + `npm run build` against new host.

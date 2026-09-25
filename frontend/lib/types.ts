@@ -17,7 +17,7 @@
  *   POST /api/candidates/{id}/reject  [admin] → 200 Candidate
  *   GET  /api/freellm/catalog · /api/freellm/plan?modality=   (unchanged)
  *
- * [admin] = header `X-Admin-Token: <ADMIN_TOKEN>`. The browser never sees the token:
+ * [admin] = header `X-ResourceOS-Passphrase: <RESOURCEOS_PASSPHRASE>`. The browser never sees the token:
  * Next.js route handlers under `app/api/admin/*` add it server-side after the
  * passphrase login sets an httpOnly session cookie.
  * Errors: `{ detail: string }` with 400 / 401 / 404 / 409 / 422.

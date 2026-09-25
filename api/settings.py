@@ -19,21 +19,21 @@ DEFAULT_SEED_PATH = "data/providers_seed.json"
 class Settings(BaseModel):
     """Validated application configuration, resolved once at process start."""
 
-    admin_token: str | None = None
+    passphrase: str | None = None
     cors_origins: list[str] = Field(default_factory=lambda: ["*"])
     db_path: str = DEFAULT_DB_PATH
     seed_path: str = DEFAULT_SEED_PATH
     github_repo: str = "sudhir13s/startup-resources-free"
-    github_data_token: str | None = None
+    github_token: str | None = None
     data_branch: str = "data"
 
     def build_sync(self) -> GitHubDataSync | None:
         """Construct the data-branch sync client, or None when no token is set."""
-        if not self.github_data_token:
+        if not self.github_token:
             return None
         return GitHubDataSync(
             repo_slug=self.github_repo,
-            token=self.github_data_token,
+            token=self.github_token,
             branch=self.data_branch,
         )
 
@@ -62,11 +62,11 @@ def _resolve_cors_origins() -> list[str]:
 def load_settings() -> Settings:
     """Build `Settings` from the process environment. Called once at startup."""
     return Settings(
-        admin_token=os.environ.get("ADMIN_TOKEN") or None,
+        passphrase=os.environ.get("RESOURCEOS_PASSPHRASE") or None,
         cors_origins=_resolve_cors_origins(),
         db_path=os.environ.get("RESOURCEOS_DB_PATH", DEFAULT_DB_PATH),
         seed_path=os.environ.get("SEED_PATH", DEFAULT_SEED_PATH),
-        github_repo=os.environ.get("GITHUB_REPO", "sudhir13s/startup-resources-free"),
-        github_data_token=os.environ.get("GITHUB_DATA_TOKEN") or None,
-        data_branch=os.environ.get("DATA_BRANCH", "data"),
+        github_repo=os.environ.get("RESOURCEOS_DATA_REPO", "sudhir13s/startup-resources-free"),
+        github_token=os.environ.get("RESOURCEOS_GITHUB_TOKEN") or None,
+        data_branch=os.environ.get("RESOURCEOS_DATA_BRANCH", "data"),
     )
