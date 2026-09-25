@@ -185,6 +185,31 @@ def test_should_report_partial_status_when_some_providers_fail(repo, groq_record
     assert finished.status == "partial"
 
 
+def test_should_continue_other_providers_when_one_raises_unexpectedly(
+    repo, groq_record, monkeypatch
+):
+    _seed(repo, groq_record)
+    for url in groq_record.source_urls:
+        repo.set_page_hash(url, content_hash(html_to_text(PRICING_HTML)))
+    real_get = repo.get_provider
+
+    def exploding_get(provider_id):
+        if provider_id == "boom":
+            raise RuntimeError("corrupt row")
+        return real_get(provider_id)
+
+    monkeypatch.setattr(repo, "get_provider", exploding_get)
+    runner = create_runner(repo, fetcher_factory=_fetcher_factory(_pricing_handler))
+    report = _report(RefreshOptions(provider_ids=["boom", "groq"]))
+    repo.create_run(report)
+
+    finished = asyncio.run(runner.run(report))
+
+    statuses = {o.provider_id: o.status for o in finished.outcomes}
+    assert statuses == {"boom": "failed", "groq": "unchanged"}
+    assert finished.status == "partial"
+
+
 def test_should_report_failed_status_when_all_providers_fail(repo):
     runner = create_runner(repo, fetcher_factory=_fetcher_factory(_pricing_handler))
     report = _report(RefreshOptions(provider_ids=["no-such-provider"]))

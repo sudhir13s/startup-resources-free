@@ -84,11 +84,22 @@ class Runner:
 
         async def _bounded(provider_id: str) -> None:
             async with semaphore:
-                await self._process_one(report, provider_id, fetcher, llm_budget)
-
-        for provider_id in provider_ids:
-            await _bounded(provider_id)
+                try:
+                    await self._process_one(report, provider_id, fetcher, llm_budget)
+                except Exception as exc:  # noqa: BLE001 - one provider must never abort the run
+                    report.outcomes.append(
+                        ProviderOutcome(
+                            provider_id=provider_id,
+                            status="failed",
+                            message=f"unexpected error: {type(exc).__name__}: {exc}",
+                        )
+                    )
             self._repo.update_run(report)
+
+        # gather (not a sequential loop) so the semaphore actually allows
+        # MAX_CONCURRENT_PROVIDERS providers in flight; per-host politeness
+        # is still enforced inside PoliteFetcher.
+        await asyncio.gather(*(_bounded(provider_id) for provider_id in provider_ids))
 
     async def _process_one(
         self,
