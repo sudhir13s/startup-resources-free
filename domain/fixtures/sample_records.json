@@ -1,0 +1,138 @@
+[
+  {
+    "provider_id": "aws-free-tier",
+    "name": "AWS Free Tier",
+    "vendor": "AWS",
+    "category": "cloud",
+    "source_urls": ["https://aws.amazon.com/free/"],
+    "offer_type": "free-tier",
+    "headline": "Up to $200 in credits for 6 months plus always-free services",
+    "highlights": [
+      "New accounts: $100 credit at sign-up, up to $100 more for trying services",
+      "Free plan lasts 6 months or until credits run out",
+      "Lambda, DynamoDB and more stay free forever within limits"
+    ],
+    "services": [
+      {
+        "name": "AWS Lambda",
+        "category": "cloud",
+        "service_type": "serverless",
+        "pricing_layer": "always-free",
+        "summary": "1M requests and 400,000 GB-seconds of compute per month",
+        "limits": [
+          {"label": "Requests", "value": 1000000, "unit": "requests", "period": "month"},
+          {"label": "Compute", "value": 400000, "unit": "GB-seconds", "period": "month"}
+        ]
+      },
+      {
+        "name": "Amazon DynamoDB",
+        "category": "database",
+        "service_type": "nosql",
+        "pricing_layer": "always-free",
+        "summary": "25 GB of storage with provisioned capacity for small apps",
+        "limits": [
+          {"label": "Storage", "value": 25, "unit": "GB", "period": "total"}
+        ]
+      },
+      {
+        "name": "Sign-up credits",
+        "category": "cloud",
+        "service_type": "credits",
+        "pricing_layer": "credit",
+        "summary": "Credits usable on EC2, RDS, S3 and most other services",
+        "limits": [
+          {"label": "Credit at sign-up", "value": 100, "unit": "USD", "period": "once"},
+          {"label": "Extra credit for activities", "value": 100, "unit": "USD", "period": "once"}
+        ]
+      }
+    ],
+    "credits": [
+      {"label": "Free plan credits", "amount": 200, "currency": "USD", "duration_days": 183}
+    ],
+    "quota_summary": "$200 credits + always-free",
+    "duration_summary": "6 months + always-free",
+    "region_summary": "All public regions",
+    "eligibility_summary": "New AWS accounts",
+    "access_method": "signup",
+    "claim_steps": [
+      "Create an AWS account and choose the Free plan",
+      "Add a payment card for identity verification",
+      "Set a zero-spend budget alert in AWS Budgets"
+    ],
+    "restrictions": ["Free plan accounts cannot use some paid-only services"],
+    "gotchas": ["Resources left running after the free plan ends are billed"],
+    "after_free_period": "Upgrade to a paid plan to keep the account; unused credits expire.",
+    "links": [{"label": "Free Tier overview", "url": "https://aws.amazon.com/free/"}],
+    "geo_priority": "accessible-from-india",
+    "always_on": true,
+    "use_case_tiers": ["hobby", "personal", "startup-mvp", "pre-seed"],
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "status": "active"
+  },
+  {
+    "provider_id": "groq",
+    "name": "Groq",
+    "vendor": "Groq",
+    "category": "ai-api",
+    "source_urls": ["https://console.groq.com/docs/rate-limits"],
+    "offer_type": "free-quota",
+    "headline": "Fast open-model inference with a daily free quota",
+    "highlights": ["No card required", "Per-model request and token caps reset daily"],
+    "services": [
+      {
+        "name": "Llama 3.3 70B Versatile",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "quota",
+        "summary": "Chat completions within free rate limits",
+        "limits": [
+          {"label": "Requests", "value": 30, "unit": "requests", "period": "minute"},
+          {"label": "Requests", "value": 1000, "unit": "requests", "period": "day"}
+        ]
+      }
+    ],
+    "quota_summary": "Rate-limited free quota",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any developer",
+    "access_method": "api-key",
+    "claim_steps": ["Sign in at console.groq.com", "Create an API key"],
+    "links": [{"label": "Rate limits", "url": "https://console.groq.com/docs/rate-limits"}],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": ["hobby", "personal", "startup-mvp"],
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "status": "active"
+  },
+  {
+    "provider_id": "startup-india-seed-fund",
+    "name": "Startup India Seed Fund Scheme",
+    "vendor": "Government of India (DPIIT)",
+    "category": "grant",
+    "source_urls": ["https://seedfund.startupindia.gov.in/"],
+    "offer_type": "grant",
+    "headline": "Seed funding for DPIIT-recognised startups via incubators",
+    "highlights": ["Up to ₹20 lakh grant for proof of concept", "Up to ₹50 lakh as convertible debentures or debt"],
+    "credits": [
+      {"label": "Proof-of-concept grant", "amount": 2000000, "currency": "INR"},
+      {"label": "Market-entry investment", "amount": 5000000, "currency": "INR"}
+    ],
+    "quota_summary": "Up to ₹50 lakh",
+    "duration_summary": "Application-based",
+    "region_summary": "India",
+    "eligibility_summary": "DPIIT-recognised startups",
+    "access_method": "manual-apply",
+    "claim_steps": ["Get DPIIT recognition", "Apply to a partner incubator on the portal"],
+    "links": [{"label": "Scheme portal", "url": "https://seedfund.startupindia.gov.in/"}],
+    "geo_priority": "india-native",
+    "use_case_tiers": ["pre-seed"],
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "status": "active"
+  }
+]
