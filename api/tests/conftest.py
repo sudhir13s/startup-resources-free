@@ -1,6 +1,6 @@
 """Shared fixtures: a real SqliteRepository seeded from the domain fixture,
 a fake refresh runner (the injected boundary per `refresh/contracts.py`),
-and a fake `GitHubDataSync`-shaped push target — never mocks of the
+and a fake `R2DataSync`-shaped push target — never mocks of the
 repository itself.
 """
 
@@ -59,7 +59,7 @@ class FakeRunner:
 
 
 class FakeSync:
-    """Same public shape as `storage.github_sync.GitHubDataSync` (pull/push/aclose)."""
+    """Same public shape as `storage.r2_sync.R2DataSync` (pull/push/aclose)."""
 
     def __init__(
         self, *, push_should_fail: bool = False, push_error: Exception | None = None
@@ -73,7 +73,7 @@ class FakeSync:
 
     async def push(self, src: Path, message: str) -> str:
         if self.push_should_fail:
-            from storage.github_sync import DataSyncError
+            from storage.r2_sync import DataSyncError
 
             raise DataSyncError("push failed")
         if self.push_error is not None:

@@ -14,7 +14,8 @@ Five Python packages plus a Next.js frontend. Each has one job, and dependencies
   `card_variant`, `india_accessible`) are derived, never stored. Also holds filters/facets, the
   field-level change diff, and the run / candidate / verify models.
 - **`storage/`** — `SqliteRepository` (implements `storage/repository.py`), schema migrations,
-  seed import, and `github_sync.py`, which pulls and pushes the SQLite file on the `data` branch.
+  seed import, and `r2_sync.py`, which pulls and pushes the SQLite file in the R2 bucket
+  (signed with `sigv4.py`, a from-scratch AWS Signature Version 4 implementation).
 - **`freellm/`** — the free-LLM router: a curated catalog of free-tier providers behind one
   OpenAI-compatible `httpx` backend (chosen over LiteLLM to fit Render's 512 MB free instance).
   Quota state goes through an injected `StateStore`, so `freellm/` imports nothing project-specific.
@@ -23,8 +24,8 @@ Five Python packages plus a Next.js frontend. Each has one job, and dependencies
   quota-rotated search chain (`search.py`). The API runs `runner.py` in-process;
   `python -m refresh` is a local CLI.
 - **`api/`** — FastAPI: providers (with facets), provider detail, changes, runs, refresh
-  start/status, candidate approve/reject, freellm catalog/plan. Pulls the DB from the `data`
-  branch on boot and pushes it back after each refresh.
+  start/status, candidate approve/reject, freellm catalog/plan. Pulls the DB from the R2
+  bucket on boot and pushes it back after each refresh.
 - **`frontend/`** — Next.js 14 + Tailwind: service-aware filters with live counts, a sectioned
   detail dialog, a passphrase-gated Refresh button (the passphrase stays on the server), and
   Runs / Candidates / Changes pages.
@@ -54,7 +55,7 @@ flowchart TB
         Discover[discover.py — search-chain candidates]
     end
 
-    DataBranch[("data" git branch<br/>resourceos.db)]
+    R2Bucket[("R2 bucket<br/>resourceos.db")]
 
     UI -->|GET /api/providers, /api/changes| Routers
     AdminRoutes -->|X-ResourceOS-Passphrase| Routers
@@ -65,7 +66,7 @@ flowchart TB
     Discover --> Merge
     RefreshPkg --> FreeLLM
     RefreshPkg --> Storage
-    Storage <-->|pull on boot, push after refresh| DataBranch
+    Storage <-->|pull on boot, push after refresh| R2Bucket
     Storage --> Domain
 ```
 

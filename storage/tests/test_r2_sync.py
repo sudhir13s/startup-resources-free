@@ -1,4 +1,4 @@
-"""GitHubDataSync — httpx.MockTransport covers pull/push without live API calls.
+"""R2DataSync — httpx.MockTransport covers pull/push without live R2 calls.
 
 Uses `asyncio.run(...)` inside plain sync test functions (matches the
 `agents/tests/*` convention) rather than pytest-asyncio, which is not a
@@ -8,24 +8,40 @@ declared project dependency.
 from __future__ import annotations
 
 import asyncio
+import logging
 from pathlib import Path
 
 import httpx
 import pytest
 
-from storage.github_sync import DataSyncError, GitHubDataSync
+from storage.r2_sync import DataSyncError, R2DataSync
 
-REPO_SLUG = "acme/repo"
+ACCOUNT_ID = "test-account-id"
+BUCKET = "resourceos-data-test"
+ACCESS_KEY_ID = "AKIDFAKEACCESSKEY"
+SECRET_ACCESS_KEY = "fake/secret/access/key/never/real"  # noqa: S105 - obviously fake test fixture
+OBJECT_KEY = "resourceos.db"
+EXPECTED_PATH = f"/{BUCKET}/{OBJECT_KEY}"
 
 
-def _sync(handler) -> GitHubDataSync:
-    client = httpx.AsyncClient(transport=httpx.MockTransport(handler), base_url="https://api.github.com")
-    return GitHubDataSync(repo_slug=REPO_SLUG, token="test-token", client=client)
+def _sync(handler) -> R2DataSync:
+    client = httpx.AsyncClient(
+        transport=httpx.MockTransport(handler),
+        base_url=f"https://{ACCOUNT_ID}.r2.cloudflarestorage.com",
+    )
+    return R2DataSync(
+        account_id=ACCOUNT_ID,
+        bucket=BUCKET,
+        access_key_id=ACCESS_KEY_ID,
+        secret_access_key=SECRET_ACCESS_KEY,
+        object_key=OBJECT_KEY,
+        client=client,
+    )
 
 
 def test_should_pull_file_when_it_exists(tmp_path):
     def handler(request: httpx.Request) -> httpx.Response:
-        assert request.url.params["ref"] == "data"
+        assert request.url.path == EXPECTED_PATH
         return httpx.Response(200, content=b"db-bytes")
 
     sync = _sync(handler)
@@ -40,9 +56,9 @@ def test_should_pull_file_when_it_exists(tmp_path):
     assert dest.read_bytes() == b"db-bytes"
 
 
-def test_should_return_false_when_file_missing(tmp_path):
+def test_should_return_false_when_object_missing(tmp_path):
     def handler(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(404, json={"message": "Not Found"})
+        return httpx.Response(404, content=b"<Error><Code>NoSuchKey</Code></Error>")
 
     sync = _sync(handler)
 
@@ -70,66 +86,31 @@ def test_should_write_pulled_file_atomically(tmp_path):
     assert leftovers == []
 
 
-def test_should_push_to_existing_branch(tmp_path):
+def test_should_push_with_signed_put_and_return_etag(tmp_path):
     src = tmp_path / "src.db"
     src.write_bytes(b"source-bytes")
 
     def handler(request: httpx.Request) -> httpx.Response:
-        path, method = request.url.path, request.method
-        if path == f"/repos/{REPO_SLUG}/git/blobs":
-            return httpx.Response(201, json={"sha": "blobsha"})
-        if path == f"/repos/{REPO_SLUG}/git/refs/heads/data" and method == "GET":
-            return httpx.Response(200, json={"object": {"sha": "oldcommit"}})
-        if path == f"/repos/{REPO_SLUG}/git/commits/oldcommit":
-            return httpx.Response(200, json={"tree": {"sha": "oldtree"}})
-        if path == f"/repos/{REPO_SLUG}/git/trees":
-            assert b"oldtree" in request.content
-            return httpx.Response(201, json={"sha": "newtree"})
-        if path == f"/repos/{REPO_SLUG}/git/commits" and method == "POST":
-            return httpx.Response(201, json={"sha": "newcommit"})
-        if path == f"/repos/{REPO_SLUG}/git/refs/heads/data" and method == "PATCH":
-            assert b'"force":false' in request.content
-            return httpx.Response(200, json={"ref": "refs/heads/data"})
-        raise AssertionError(f"unexpected {method} {path}")
+        assert request.method == "PUT"
+        assert request.url.path == EXPECTED_PATH
+        assert request.content == b"source-bytes"
+        auth = request.headers["Authorization"]
+        assert auth.startswith(
+            f"AWS4-HMAC-SHA256 Credential={ACCESS_KEY_ID}/"
+        )
+        assert "/auto/s3/aws4_request" in auth
+        assert "x-amz-date" in request.headers
+        assert "x-amz-content-sha256" in request.headers
+        return httpx.Response(200, headers={"ETag": '"abc123etag"'})
 
     sync = _sync(handler)
 
     async def go():
-        sha = await sync.push(src, "update db")
+        etag = await sync.push(src, "update db")
         await sync.aclose()
-        return sha
+        return etag
 
-    assert asyncio.run(go()) == "newcommit"
-
-
-def test_should_push_creating_orphan_branch_when_missing(tmp_path):
-    src = tmp_path / "src.db"
-    src.write_bytes(b"source-bytes")
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        path, method = request.url.path, request.method
-        if path == f"/repos/{REPO_SLUG}/git/blobs":
-            return httpx.Response(201, json={"sha": "blobsha"})
-        if path == f"/repos/{REPO_SLUG}/git/refs/heads/data" and method == "GET":
-            return httpx.Response(404, json={"message": "Not Found"})
-        if path == f"/repos/{REPO_SLUG}/git/trees":
-            assert b"base_tree" not in request.content
-            return httpx.Response(201, json={"sha": "roottree"})
-        if path == f"/repos/{REPO_SLUG}/git/commits" and method == "POST":
-            assert b'"parents":[]' in request.content
-            return httpx.Response(201, json={"sha": "rootcommit"})
-        if path == f"/repos/{REPO_SLUG}/git/refs" and method == "POST":
-            return httpx.Response(201, json={"ref": "refs/heads/data"})
-        raise AssertionError(f"unexpected {method} {path}")
-
-    sync = _sync(handler)
-
-    async def go():
-        sha = await sync.push(src, "initial commit")
-        await sync.aclose()
-        return sha
-
-    assert asyncio.run(go()) == "rootcommit"
+    assert asyncio.run(go()) == "abc123etag"
 
 
 def test_should_retry_on_502_then_succeed(tmp_path):
@@ -168,9 +149,9 @@ def test_should_raise_after_max_retries_exhausted(tmp_path):
         asyncio.run(go())
 
 
-def test_should_raise_on_non_retryable_non_404_status(tmp_path):
+def test_should_raise_on_403_forbidden(tmp_path):
     def handler(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(403, json={"message": "forbidden"})
+        return httpx.Response(403, content=b"<Error><Code>AccessDenied</Code></Error>")
 
     sync = _sync(handler)
 
@@ -234,7 +215,7 @@ def test_should_not_retry_on_4xx(tmp_path):
 
     def handler(request: httpx.Request) -> httpx.Response:
         attempts.append(1)
-        return httpx.Response(422, json={"message": "invalid"})
+        return httpx.Response(422, content=b"invalid")
 
     sync = _sync(handler)
 
@@ -250,16 +231,54 @@ def test_should_not_retry_on_4xx(tmp_path):
     assert len(attempts) == 1
 
 
-def test_should_return_none_from_env_when_token_missing(monkeypatch):
-    monkeypatch.delenv("RESOURCEOS_GITHUB_TOKEN", raising=False)
-    assert GitHubDataSync.from_env() is None
+def test_should_return_none_from_env_when_any_var_missing(monkeypatch):
+    monkeypatch.delenv("RESOURCEOS_R2_ACCOUNT_ID", raising=False)
+    monkeypatch.setenv("RESOURCEOS_R2_BUCKET", BUCKET)
+    monkeypatch.setenv("RESOURCEOS_R2_ACCESS_KEY_ID", ACCESS_KEY_ID)
+    monkeypatch.setenv("RESOURCEOS_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
+    assert R2DataSync.from_env() is None
 
 
-def test_should_build_from_env_when_token_present(monkeypatch):
-    monkeypatch.setenv("RESOURCEOS_GITHUB_TOKEN", "secret-token")
-    monkeypatch.delenv("RESOURCEOS_DATA_REPO", raising=False)
-    monkeypatch.delenv("RESOURCEOS_DATA_BRANCH", raising=False)
-    sync = GitHubDataSync.from_env()
+def test_should_build_from_env_when_all_vars_present(monkeypatch):
+    monkeypatch.setenv("RESOURCEOS_R2_ACCOUNT_ID", ACCOUNT_ID)
+    monkeypatch.setenv("RESOURCEOS_R2_BUCKET", BUCKET)
+    monkeypatch.setenv("RESOURCEOS_R2_ACCESS_KEY_ID", ACCESS_KEY_ID)
+    monkeypatch.setenv("RESOURCEOS_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
+    monkeypatch.delenv("RESOURCEOS_R2_OBJECT_KEY", raising=False)
+    sync = R2DataSync.from_env()
     assert sync is not None
-    assert sync.repo_slug == "sudhir13s/startup-resources-free"
-    assert sync.branch == "data"
+    assert sync.account_id == ACCOUNT_ID
+    assert sync.bucket == BUCKET
+    assert sync.object_key == "resourceos.db"
+
+
+def test_should_use_custom_object_key_from_env_when_set(monkeypatch):
+    monkeypatch.setenv("RESOURCEOS_R2_ACCOUNT_ID", ACCOUNT_ID)
+    monkeypatch.setenv("RESOURCEOS_R2_BUCKET", BUCKET)
+    monkeypatch.setenv("RESOURCEOS_R2_ACCESS_KEY_ID", ACCESS_KEY_ID)
+    monkeypatch.setenv("RESOURCEOS_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
+    monkeypatch.setenv("RESOURCEOS_R2_OBJECT_KEY", "custom.db")
+    sync = R2DataSync.from_env()
+    assert sync is not None
+    assert sync.object_key == "custom.db"
+
+
+def test_should_never_log_secret_when_pushing(tmp_path, caplog):
+    src = tmp_path / "src.db"
+    src.write_bytes(b"source-bytes")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, headers={"ETag": '"etag1"'})
+
+    sync = _sync(handler)
+
+    async def go():
+        await sync.push(src, "update db")
+        await sync.aclose()
+
+    with caplog.at_level(logging.DEBUG):
+        asyncio.run(go())
+
+    log_text = caplog.text
+    assert SECRET_ACCESS_KEY not in log_text
+    assert "Authorization" not in log_text

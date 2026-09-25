@@ -68,8 +68,8 @@ BACKLOG.md
 project-idea.md
 docs/
 # SQLite write-ahead log + shared-memory/journal files — ephemeral, never
-# commit (the .db itself is also ignored above; it lives on the `data`
-# git branch, synced by api/ via storage/github_sync.py, not on `main`).
+# commit (the .db itself is also ignored above; in production it lives in
+# a Cloudflare R2 bucket, synced by api/ via storage/r2_sync.py).
 data/resourceos.db-wal
 data/resourceos.db-shm
 data/resourceos.db-journal

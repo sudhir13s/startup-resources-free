@@ -11,7 +11,7 @@ from tempfile import TemporaryDirectory
 
 from domain.runs import RefreshOptions, RunReport
 from refresh.contracts import RefreshRunner
-from storage.github_sync import DataSyncError, GitHubDataSync
+from storage.r2_sync import DataSyncError, R2DataSync
 from storage.repository import Repository
 
 logger = logging.getLogger(__name__)
@@ -37,11 +37,11 @@ async def execute_and_sync(
     repository: Repository,
     report: RunReport,
     runner_factory: RunnerFactory,
-    sync: GitHubDataSync | None,
+    sync: R2DataSync | None,
     db_path: Path,
     on_synced: Callable[[datetime], None] | None = None,
 ) -> RunReport:
-    """Run the refresh, then push the DB to the data branch on success.
+    """Run the refresh, then push the DB to the R2 bucket on success.
 
     Never raises: any exception during the run or the push is recorded on
     the report (`status=failed`, `errors=[...]`) and persisted via
@@ -64,7 +64,7 @@ async def execute_and_sync(
 async def _push_snapshot(
     repository: Repository,
     report: RunReport,
-    sync: GitHubDataSync,
+    sync: R2DataSync,
     db_path: Path,
     on_synced: Callable[[datetime], None] | None,
 ) -> RunReport:
