@@ -6,9 +6,10 @@ after each refresh via a plain signed PUT, so history lives in object
 storage rather than on the instance's disk.
 
 R2 speaks the S3 API, so requests are signed with AWS Signature Version 4
-(`storage/sigv4.py`) against the account's path-style endpoint
-`https://{account_id}.r2.cloudflarestorage.com/{bucket}/{object_key}`,
-region `auto`, service `s3`. No `boto3`/`botocore` dependency — the API
+(`storage/sigv4.py`) against the account's S3 endpoint, path-style:
+`{endpoint}/{bucket}/{object_key}` where endpoint is what the R2 dashboard
+shows (`https://<account-id>.r2.cloudflarestorage.com`, or a jurisdiction
+variant such as `.eu.`), region `auto`, service `s3`. No `boto3`/`botocore` dependency — the API
 runs on a 512 MB Render instance.
 """
 
@@ -22,6 +23,7 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 import httpx
 
@@ -36,7 +38,7 @@ _REGION = "auto"
 _SERVICE = "s3"
 _DEFAULT_OBJECT_KEY = "resourceos.db"
 
-_ENV_ACCOUNT_ID = "RESOURCEOS_R2_ACCOUNT_ID"
+_ENV_ENDPOINT = "RESOURCEOS_R2_ENDPOINT"
 _ENV_BUCKET = "RESOURCEOS_R2_BUCKET"
 _ENV_ACCESS_KEY_ID = "RESOURCEOS_R2_ACCESS_KEY_ID"
 _ENV_SECRET_ACCESS_KEY = "RESOURCEOS_R2_SECRET_ACCESS_KEY"
@@ -56,7 +58,7 @@ class DataSyncError(RuntimeError):
 class R2DataSync:
     """Pulls/pushes one object (`resourceos.db` by default) in an R2 bucket."""
 
-    account_id: str
+    endpoint: str
     bucket: str
     access_key_id: str
     secret_access_key: str
@@ -64,16 +66,20 @@ class R2DataSync:
     client: httpx.AsyncClient | None = None
 
     def __post_init__(self) -> None:
+        parsed = urlparse(self.endpoint.strip())
+        if parsed.scheme != "https" or not parsed.hostname:
+            raise ValueError("R2 endpoint must be an https URL, e.g. https://<account-id>.r2.cloudflarestorage.com")
+        self.endpoint = f"https://{parsed.netloc}"
         if self.client is None:
             self.client = httpx.AsyncClient(base_url=self._base_url, timeout=_TIMEOUT_S)
 
     @property
     def _base_url(self) -> str:
-        return f"https://{self.account_id}.r2.cloudflarestorage.com"
+        return self.endpoint
 
     @property
     def _host(self) -> str:
-        return f"{self.account_id}.r2.cloudflarestorage.com"
+        return urlparse(self.endpoint).netloc
 
     @property
     def _canonical_uri(self) -> str:
@@ -82,15 +88,15 @@ class R2DataSync:
     @classmethod
     def from_env(cls) -> R2DataSync | None:
         """Build from the four `RESOURCEOS_R2_*` env vars; None unless all are set."""
-        account_id = os.environ.get(_ENV_ACCOUNT_ID)
+        endpoint = os.environ.get(_ENV_ENDPOINT)
         bucket = os.environ.get(_ENV_BUCKET)
         access_key_id = os.environ.get(_ENV_ACCESS_KEY_ID)
         secret_access_key = os.environ.get(_ENV_SECRET_ACCESS_KEY)
-        if not (account_id and bucket and access_key_id and secret_access_key):
+        if not (endpoint and bucket and access_key_id and secret_access_key):
             return None
         object_key = os.environ.get(_ENV_OBJECT_KEY) or _DEFAULT_OBJECT_KEY
         return cls(
-            account_id=account_id,
+            endpoint=endpoint,
             bucket=bucket,
             access_key_id=access_key_id,
             secret_access_key=secret_access_key,

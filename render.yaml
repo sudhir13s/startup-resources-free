@@ -26,7 +26,7 @@ services:
       # Secrets — set once in the Render dashboard, never committed.
       - key: RESOURCEOS_PASSPHRASE
         sync: false
-      - key: RESOURCEOS_R2_ACCOUNT_ID
+      - key: RESOURCEOS_R2_ENDPOINT
         sync: false
       - key: RESOURCEOS_R2_BUCKET
         sync: false
