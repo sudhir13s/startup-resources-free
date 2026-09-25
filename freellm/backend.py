@@ -7,15 +7,15 @@ one. The backend executes ONE provider call and returns a `Result`
 
 Two implementations ship in `freellm/backends/`:
 
-- `omniroute` — production. Calls an OmniRoute proxy via the
-  OpenAI-compatible API at `localhost:20128/api/v1`. Lazy-imports
-  the `omni_route_config` package + spins OmniRoute up on first
-  call. Used by the daily pipeline + agents.
+- `openai_compat` — production. Plain async httpx against each
+  provider's OpenAI-compatible endpoint (`base_url` + `api_key` come
+  from the router, resolved from the catalog + env var). No sidecar
+  process, no heavy SDK — fits a 512 MB Render free web service.
 - `mock` — deterministic. No network. Used by tests + by callers
   who want a stable smoke result.
 
-Selection: env var `FREELLM_BACKEND` ("omniroute" | "mock").
-Default = "omniroute". Tests set FREELLM_BACKEND=mock.
+Selection: env var `FREELLM_BACKEND` ("openai_compat" | "mock").
+Default = "openai_compat". Tests set FREELLM_BACKEND=mock.
 
 Callers go through `get_backend()` (process-level singleton).
 """
@@ -30,7 +30,12 @@ from freellm.schemas import Result
 
 @runtime_checkable
 class Backend(Protocol):
-    """Executes a single-provider call. Router does the chain."""
+    """Executes a single-provider call. Router does the chain.
+
+    `api_key` / `base_url` are optional so `MockBackend` (no network) can
+    ignore them while `OpenAICompatBackend` requires them — the router
+    always passes both, resolved from the catalog entry + its env var.
+    """
 
     name: str
 
@@ -43,6 +48,9 @@ class Backend(Protocol):
         max_tokens: int = 2000,
         temperature: float = 0.0,
         timeout_s: int = 60,
+        api_key: str = "",
+        base_url: str = "",
+        response_format: dict[str, str] | None = None,
     ) -> Result: ...
 
     async def call_vision_one(
@@ -54,6 +62,8 @@ class Backend(Protocol):
         max_tokens: int = 2000,
         temperature: float = 0.0,
         timeout_s: int = 60,
+        api_key: str = "",
+        base_url: str = "",
     ) -> Result: ...
 
     async def call_embed_one(
@@ -63,6 +73,8 @@ class Backend(Protocol):
         model: str,
         inputs: list[str],
         timeout_s: int = 60,
+        api_key: str = "",
+        base_url: str = "",
     ) -> Result: ...
 
     async def aclose(self) -> None: ...
@@ -76,31 +88,30 @@ def get_backend() -> Backend:
 
     First call decides the backend kind from `FREELLM_BACKEND`.
     Subsequent calls return the same instance — important for the
-    OmniRoute backend, which caches the lifecycle (start, register,
-    OpenAI client) across calls.
+    openai_compat backend, which reuses one httpx.AsyncClient.
     """
     global _singleton
     if _singleton is not None:
         return _singleton
-    kind = os.environ.get("FREELLM_BACKEND", "omniroute").strip().lower()
+    kind = os.environ.get("FREELLM_BACKEND", "openai_compat").strip().lower()
     if kind == "mock":
         from freellm.backends.mock import MockBackend
 
         _singleton = MockBackend()
-    elif kind == "omniroute":
-        from freellm.backends.omniroute import OmniRouteBackend
+    elif kind == "openai_compat":
+        from freellm.backends.openai_compat import OpenAICompatBackend
 
-        _singleton = OmniRouteBackend()
+        _singleton = OpenAICompatBackend()
     else:
         raise ValueError(
-            f"Unknown FREELLM_BACKEND={kind!r}. Use 'omniroute' or 'mock'."
+            f"Unknown FREELLM_BACKEND={kind!r}. Use 'openai_compat' or 'mock'."
         )
     return _singleton
 
 
 def set_backend(backend: Backend | None) -> None:
     """Override the singleton. Used by tests + by callers that build
-    their own backend (e.g. with a custom OmniRoute base_url).
+    their own backend (e.g. with a custom base_url override).
 
     Pass None to clear so the next `get_backend()` rebuilds from env.
     """
