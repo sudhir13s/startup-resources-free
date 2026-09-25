@@ -55,7 +55,11 @@ def _numeric_direction(old: Service, new: Service) -> ChangeSeverity:
     def key(limit: Limit) -> tuple[str, str | None, str | None]:
         return (limit.label, limit.unit, limit.period)
 
-    old_values = {key(l): l.value for l in old.limits if isinstance(l.value, (int, float))}
+    old_values = {
+        key(old_limit): old_limit.value
+        for old_limit in old.limits
+        if isinstance(old_limit.value, (int, float))
+    }
     went_up = False
     for limit in new.limits:
         before = old_values.get(key(limit))
