@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-type CatalogEntry = {
+export type CatalogEntry = {
   provider: string;
   model: string;
   env_var: string;
@@ -17,7 +17,7 @@ type CatalogEntry = {
   notes: string | null;
 };
 
-type CatalogResponse = {
+export type CatalogResponse = {
   modalities: string[];
   total: number;
   by_modality: Record<string, CatalogEntry[]>;
