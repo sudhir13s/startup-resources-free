@@ -8,7 +8,7 @@ on:
 
 jobs:
   python:
-    name: python lint + tests (backend + freellm)
+    name: python lint + tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -16,21 +16,19 @@ jobs:
         with:
           python-version: "3.12.3"
           cache: pip
-          cache-dependency-path: backend/requirements-dev.txt
+          cache-dependency-path: requirements-dev.txt
       - name: install dev deps
-        run: pip install -r backend/requirements-dev.txt
+        run: pip install -r requirements-dev.txt
       - name: ruff
-        run: ruff check domain/ storage/ refresh/ backend/ freellm/ collectors/ pipeline/ agents/ schema/
+        run: ruff check domain storage freellm refresh api
       - name: pytest
-        run: pytest domain/tests backend/tests freellm/tests collectors/tests pipeline/tests agents/tests schema/tests storage/tests -v
+        run: pytest
       - name: freellm CLI smoke
         run: |
           python -m freellm version
           python -m freellm catalog
           python -m freellm catalog --modality text
           python -m freellm keys
-      - name: pipeline dry-run smoke
-        run: python -m pipeline --dry-run
 
   build-frontend:
     name: frontend lint + build

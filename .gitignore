@@ -41,7 +41,8 @@ next-env.d.ts
 *.key
 secrets/
 
-# Local data (only fixtures + snapshots + resourceos.db committed)
+# Local data (only fixtures + data/providers_seed.json committed — the DB
+# lives on the `data` git branch / Render's ephemeral /tmp, never `main`)
 data/raw/
 data/logs/
 data/runs/
@@ -49,6 +50,7 @@ data/verify-queue/
 data/freellm/quotas.json
 data/search/quotas.json
 data/benchmark_runs/
+data/*.db
 
 # Editor / OS / temp
 .DS_Store
@@ -61,8 +63,9 @@ data/benchmark_runs/
 # Claude Code runtime (rules stay tracked under .claude/rules/)
 .claude/scheduled_tasks.lock
 .claude/worktrees/
-# SQLite write-ahead log + shared-memory files — ephemeral, never commit.
-# The .db file itself IS committed by the daily cron so Render can read it.
+# SQLite write-ahead log + shared-memory/journal files — ephemeral, never
+# commit (the .db itself is also ignored above; it lives on the `data`
+# git branch, synced by api/ via storage/github_sync.py, not on `main`).
 data/resourceos.db-wal
 data/resourceos.db-shm
 data/resourceos.db-journal
