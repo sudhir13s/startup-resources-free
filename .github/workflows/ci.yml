@@ -22,7 +22,7 @@ jobs:
       - name: ruff
         run: ruff check domain/ storage/ refresh/ backend/ freellm/ collectors/ pipeline/ agents/ schema/
       - name: pytest
-        run: pytest domain/tests backend/tests freellm/tests collectors/tests pipeline/tests agents/tests schema/tests -v
+        run: pytest domain/tests backend/tests freellm/tests collectors/tests pipeline/tests agents/tests schema/tests storage/tests -v
       - name: freellm CLI smoke
         run: |
           python -m freellm version
