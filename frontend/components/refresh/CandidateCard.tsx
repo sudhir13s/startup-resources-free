@@ -1,22 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AdminLoginDialog } from "@/components/refresh/AdminLoginDialog";
 import type { Candidate } from "@/lib/types";
 
-async function checkAuthenticated(): Promise<boolean> {
-  try {
-    const res = await fetch("/api/admin/session");
-    if (!res.ok) return false;
-    const data = (await res.json()) as { authenticated: boolean };
-    return data.authenticated;
-  } catch {
-    return false;
-  }
-}
-
+/**
+ * Approve/reject actions require only a valid site-login session —
+ * `middleware.ts` already gates every `/api/*` request. A 401 here means
+ * the session expired between page load and this click, so we send the
+ * user back to `/login` rather than showing an inline login dialog.
+ */
 export function CandidateCard({
   candidate,
   onResolved,
@@ -24,12 +19,11 @@ export function CandidateCard({
   candidate: Candidate;
   onResolved: (id: string, status: Candidate["status"]) => void;
 }) {
+  const router = useRouter();
   const [busy, setBusy] = useState<"approve" | "reject" | null>(null);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [pendingAction, setPendingAction] = useState<"approve" | "reject" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function runAction(action: "approve" | "reject") {
+  async function handleAction(action: "approve" | "reject") {
     setBusy(action);
     setError(null);
     try {
@@ -37,8 +31,7 @@ export function CandidateCard({
         method: "POST",
       });
       if (res.status === 401) {
-        setPendingAction(action);
-        setLoginOpen(true);
+        router.push(`/login?next=${encodeURIComponent("/candidates")}`);
         return;
       }
       if (!res.ok) {
@@ -50,16 +43,6 @@ export function CandidateCard({
     } finally {
       setBusy(null);
     }
-  }
-
-  async function handleAction(action: "approve" | "reject") {
-    const authenticated = await checkAuthenticated();
-    if (!authenticated) {
-      setPendingAction(action);
-      setLoginOpen(true);
-      return;
-    }
-    await runAction(action);
   }
 
   return (
@@ -113,15 +96,6 @@ export function CandidateCard({
         </Badge>
       )}
       {error ? <p className="text-xs text-bad">{error}</p> : null}
-
-      <AdminLoginDialog
-        open={loginOpen}
-        onOpenChange={setLoginOpen}
-        onSuccess={() => {
-          if (pendingAction) void runAction(pendingAction);
-          setPendingAction(null);
-        }}
-      />
     </div>
   );
 }

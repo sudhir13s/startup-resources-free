@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { backendAuthHeader } from "@/lib/admin";
 import { backendUrl } from "@/lib/api";
 import type { RefreshStatus } from "@/lib/types";
 
@@ -6,7 +7,10 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const res = await fetch(backendUrl("/api/refresh/status"), { cache: "no-store" });
+    const res = await fetch(backendUrl("/api/refresh/status"), {
+      cache: "no-store",
+      headers: backendAuthHeader(),
+    });
     if (!res.ok) {
       const detail = await res.text().catch(() => res.statusText);
       return NextResponse.json({ detail }, { status: res.status });

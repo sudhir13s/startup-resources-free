@@ -17,9 +17,13 @@
  *   POST /api/candidates/{id}/reject  [admin] → 200 Candidate
  *   GET  /api/freellm/catalog · /api/freellm/plan?modality=   (unchanged)
  *
- * [admin] = header `X-ResourceOS-Passphrase: <RESOURCEOS_PASSPHRASE>`. The browser never sees the token:
- * Next.js route handlers under `app/api/admin/*` add it server-side after the
- * passphrase login sets an httpOnly session cookie.
+ * [admin] = every route but GET /api/health requires the header
+ * `X-ResourceOS-Key: hex HMAC-SHA256(key=RESOURCEOS_PASSWORD, msg="resourceos-api")`
+ * (see api/auth.py, frontend/lib/admin.ts). The browser never sees the
+ * password or the derived key: Next.js route handlers under `app/api/admin/*`
+ * (and every server-rendered page via `lib/api.ts`) add it server-side once
+ * the site login sets an httpOnly session cookie (see `lib/session.ts`,
+ * `middleware.ts`).
  * Errors: `{ detail: string }` with 400 / 401 / 404 / 409 / 422.
  */
 

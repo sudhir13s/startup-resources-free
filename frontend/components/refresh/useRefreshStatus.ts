@@ -7,8 +7,6 @@ import type { RefreshStatus } from "@/lib/types";
 const ACTIVE_POLL_MS = 5_000;
 const IDLE_POLL_MS = 60_000;
 
-export type SessionInfo = { authenticated: boolean; configured: boolean };
-
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T | null> {
   try {
     const res = await fetch(url, init);
@@ -24,10 +22,11 @@ function countUpdated(status: RefreshStatus["active"]): number {
   return status.outcomes.filter((o) => o.status === "updated" || o.status === "new").length;
 }
 
-/** Polls admin session + refresh status; drives the router refresh on run completion. */
+/** Polls refresh status; drives the router refresh on run completion. Every
+ * caller is already logged in — `middleware.ts` gates the whole site, so
+ * there is no separate admin session to check here. */
 export function useRefreshStatus() {
   const router = useRouter();
-  const [session, setSession] = useState<SessionInfo | null>(null);
   const [status, setStatus] = useState<RefreshStatus | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const wasActiveRef = useRef(false);
@@ -39,9 +38,6 @@ export function useRefreshStatus() {
   }, []);
 
   useEffect(() => {
-    void fetchJson<SessionInfo>("/api/admin/session").then((data) => {
-      if (data) setSession(data);
-    });
     void pollStatus();
   }, [pollStatus]);
 
@@ -64,8 +60,6 @@ export function useRefreshStatus() {
   }, [status, pollStatus, router]);
 
   return {
-    session,
-    setSession,
     status,
     pollStatus,
     message,

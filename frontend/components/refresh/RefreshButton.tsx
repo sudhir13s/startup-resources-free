@@ -4,17 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AdminLoginDialog } from "@/components/refresh/AdminLoginDialog";
 import { RunStatusPill } from "@/components/refresh/RunStatusPill";
 import { RefreshOptionsPopover } from "@/components/refresh/RefreshOptionsPopover";
 import { useRefreshStatus } from "@/components/refresh/useRefreshStatus";
 import type { RefreshOptions } from "@/lib/types";
 
-/** TopBar refresh control: login gate, options popover, progress pill, polling. */
+/**
+ * TopBar refresh control: options popover, progress pill, polling.
+ * No login gate here — `middleware.ts` already requires a valid site-login
+ * session for every page, so any signed-in user can trigger a refresh.
+ */
 export function RefreshButton() {
-  const { session, setSession, status, pollStatus, message, setMessage, activeUpdatedCount } =
-    useRefreshStatus();
-  const [loginOpen, setLoginOpen] = useState(false);
+  const { status, pollStatus, message, setMessage, activeUpdatedCount } = useRefreshStatus();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [discover, setDiscover] = useState(false);
   const [force, setForce] = useState(false);
@@ -56,21 +57,8 @@ export function RefreshButton() {
     }
   }
 
-  function handleTriggerClick() {
-    if (!session || !session.configured) return;
-    if (!session.authenticated) {
-      setLoginOpen(true);
-      return;
-    }
-    setOptionsOpen((v) => !v);
-  }
-
   const active = status?.active ?? null;
   const busy = starting || active != null;
-
-  if (session && !session.configured) {
-    return <RunStatusPill lastRun={status?.last ?? null} dataSyncedAt={status?.data_synced_at ?? null} />;
-  }
 
   return (
     <div className="relative flex items-center gap-2" ref={popoverRef}>
@@ -83,7 +71,13 @@ export function RefreshButton() {
           {active ? ` · ${active.outcomes.length} · ${activeUpdatedCount} updated` : "…"}
         </span>
       ) : (
-        <Button type="button" variant="outline" size="sm" onClick={handleTriggerClick} className="gap-1.5 text-xs">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setOptionsOpen((v) => !v)}
+          className="gap-1.5 text-xs"
+        >
           <RefreshCw className="h-3.5 w-3.5" />
           Refresh data
           <ChevronDown className="h-3 w-3" />
@@ -111,15 +105,6 @@ export function RefreshButton() {
           {message}
         </div>
       ) : null}
-
-      <AdminLoginDialog
-        open={loginOpen}
-        onOpenChange={setLoginOpen}
-        onSuccess={() => {
-          setSession({ authenticated: true, configured: true });
-          setOptionsOpen(true);
-        }}
-      />
     </div>
   );
 }
