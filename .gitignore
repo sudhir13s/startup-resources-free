@@ -60,9 +60,13 @@ data/*.db
 .vscode/
 *.tmp
 
-# Claude Code runtime (rules stay tracked under .claude/rules/)
-.claude/scheduled_tasks.lock
-.claude/worktrees/
+# Internal working files — kept locally, never published.
+# Public docs live in architecture/ and README.md only.
+.claude/
+CLAUDE.md
+BACKLOG.md
+project-idea.md
+docs/
 # SQLite write-ahead log + shared-memory/journal files — ephemeral, never
 # commit (the .db itself is also ignored above; it lives on the `data`
 # git branch, synced by api/ via storage/github_sync.py, not on `main`).

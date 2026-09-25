@@ -1,19 +1,7 @@
----
-type: architecture
-title: ResourceOS architecture notes
-slug: resourceos
-status: approved
-created: 2026-09-25T22-43
-revises: null
-source: docs/plans/architecture-v2/2026-09-25T20-44-modular-refresh-rebuild.md
-tasks: []
-milestone: M[av2]
----
-
 # ResourceOS architecture notes
 
 How the code is organised, how a refresh works, and how to hand-correct the catalog.
-Setup and deployment live in the [README](../../../README.md).
+Setup and deployment live in the [README](../README.md).
 
 ## Modules
 
