@@ -12,7 +12,7 @@ services:
       - key: PYTHON_VERSION
         value: "3.12.3"
       # Render's free disk is ephemeral — the DB lives under /tmp and is
-      # pulled from / pushed to the `data` branch each boot/refresh.
+      # pulled from / pushed to the R2 bucket each boot/refresh.
       - key: RESOURCEOS_DB_PATH
         value: /tmp/resourceos.db
       # Auto-resolved from the web service host. No manual entry needed
@@ -26,7 +26,13 @@ services:
       # Secrets — set once in the Render dashboard, never committed.
       - key: RESOURCEOS_PASSPHRASE
         sync: false
-      - key: RESOURCEOS_GITHUB_TOKEN
+      - key: RESOURCEOS_R2_ACCOUNT_ID
+        sync: false
+      - key: RESOURCEOS_R2_BUCKET
+        sync: false
+      - key: RESOURCEOS_R2_ACCESS_KEY_ID
+        sync: false
+      - key: RESOURCEOS_R2_SECRET_ACCESS_KEY
         sync: false
       - key: GROQ_API_KEY
         sync: false

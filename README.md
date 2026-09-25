@@ -71,23 +71,34 @@ Or GitHub → **Actions** → **CI** → **Run workflow**.
 `startup-resources` (Next.js). Deploy with **New → Blueprint → this repository**, then set the
 variables below in each service's **Environment** tab. Service-to-service URLs are wired automatically.
 
-Render's free disk is temporary, so the database is saved to this repo's `data` branch after each
+Render's free disk is temporary, so the database is saved to a Cloudflare R2 bucket after each
 refresh and restored on every boot. Free services sleep after 15 idle minutes (first request
 takes 30–60 s).
 
 | Variable | Service | Needed for | Value |
 |---|---|---|---|
 | `RESOURCEOS_PASSPHRASE` | API **and** frontend (same value) | Refresh button | Any long random string, e.g. `openssl rand -hex 24` |
-| `RESOURCEOS_GITHUB_TOKEN` | API | Keeping data across restarts | Fine-grained GitHub token: this repo only, **Contents: Read and write** |
+| `RESOURCEOS_R2_ACCOUNT_ID` | API | Keeping data across restarts | Cloudflare account id |
+| `RESOURCEOS_R2_BUCKET` | API | Keeping data across restarts | R2 bucket name, e.g. `resourceos-data` |
+| `RESOURCEOS_R2_ACCESS_KEY_ID` | API | Keeping data across restarts | R2 API token access key |
+| `RESOURCEOS_R2_SECRET_ACCESS_KEY` | API | Keeping data across restarts | R2 API token secret |
 | `GROQ_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, `CEREBRAS_API_KEY`, `MISTRAL_API_KEY`, `SAMBANOVA_API_KEY`, `NVIDIA_API_KEY`, `TOGETHER_API_KEY`, `HF_TOKEN` | API | Refresh (AI extraction) | Free-tier keys; any subset works, more keys = more free quota |
 | `TAVILY_API_KEY`, `EXA_API_KEY`, `JINA_API_KEY`, `LINKUP_API_KEY`, `SERPAPI_API_KEY` | API | Discovering new providers | Free-tier keys; optional |
 
-Optional overrides (defaults work on Render): `RESOURCEOS_DATA_REPO` (default
-`sudhir13s/startup-resources-free`), `RESOURCEOS_DATA_BRANCH` (default `data`),
-`RESOURCEOS_DB_PATH`, `SEED_PATH`, `CORS_ORIGINS`. For local runs, copy `.env.example`.
+**Create the R2 bucket:**
+
+1. Cloudflare dashboard → **R2** → **Create bucket** (e.g. `resourceos-data`).
+2. **R2** → **Manage API tokens** → **Create API token**, scoped to that bucket with
+   **Object Read & Write** permission.
+3. Copy the **Access Key ID**, **Secret Access Key**, and the **Account ID** into the four
+   variables above.
+
+Optional overrides (defaults work on Render): `RESOURCEOS_R2_OBJECT_KEY` (default
+`resourceos.db`), `RESOURCEOS_DB_PATH`, `SEED_PATH`, `CORS_ORIGINS`. For local runs, copy
+`.env.example`.
 
 **First refresh:** open the dashboard → **Refresh data** → enter the passphrase → follow the
-**Runs** page. The first successful run creates the `data` branch.
+**Runs** page. The first successful run writes the object into the R2 bucket.
 
 ---
 
