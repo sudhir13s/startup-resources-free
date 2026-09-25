@@ -1,33 +1,12 @@
 import { TopBar } from "@/components/TopBar";
 import { SubTabs } from "@/components/SubTabs";
-import { FreeLLMChain } from "@/components/FreeLLMChain";
-import { resolveBackendUrl } from "@/lib/utils";
+import { FreeLLMChain, type CatalogResponse } from "@/components/FreeLLMChain";
+import { backendGet } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
-const BACKEND_URL = resolveBackendUrl();
-
-type CatalogResponse = {
-  modalities: string[];
-  total: number;
-  by_modality: Record<string, unknown[]>;
-};
-
-async function fetchCatalog(): Promise<CatalogResponse | null> {
-  try {
-    const res = await fetch(new URL("/api/freellm/catalog", BACKEND_URL).toString(), {
-      headers: { accept: "application/json" },
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as CatalogResponse;
-  } catch {
-    return null;
-  }
-}
-
 export default async function FreeLLMChainPage() {
-  const catalog = await fetchCatalog();
+  const result = await backendGet<CatalogResponse>("/api/freellm/catalog");
 
   return (
     <div className="flex min-h-screen flex-col bg-bg-base text-fg">
@@ -40,8 +19,8 @@ export default async function FreeLLMChainPage() {
               Free-LLM Chain
             </h1>
             <p className="text-sm text-fg-muted">
-              The 28-entry catalog `freellm/` knows about, across 7 modalities.
-              Each tab shows the routing chain that fires when the dashboard
+              The catalog `freellm/` knows about, across 7 modalities. Each
+              tab shows the routing chain that fires when the dashboard
               calls an LLM — the router picks the first provider whose env
               var is present and quota intact, falling through on failure.
             </p>
@@ -49,23 +28,18 @@ export default async function FreeLLMChainPage() {
 
           <SubTabs />
 
-          {catalog ? (
+          {result.ok ? (
             <>
               <div className="font-mono text-[10px] text-fg-subtle">
-                {catalog.total} provider entries · {catalog.modalities.length}{" "}
-                modalities
+                {result.data.total} provider entries ·{" "}
+                {result.data.modalities.length} modalities
               </div>
-              {/* @ts-expect-error — server-fetched JSON has loose shape; component validates */}
-              <FreeLLMChain catalog={catalog} />
+              <FreeLLMChain catalog={result.data} />
             </>
           ) : (
             <div className="rounded-xl border border-bad/30 bg-bad/10 p-6 text-sm text-bad">
               <p className="font-semibold">Backend unreachable.</p>
-              <p className="mt-1 text-bad/80">
-                FastAPI service at{" "}
-                <code className="font-mono text-xs">{BACKEND_URL}</code>{" "}
-                not responding.
-              </p>
+              <p className="mt-1 text-bad/80">{result.detail}</p>
             </div>
           )}
         </div>
