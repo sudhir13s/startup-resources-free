@@ -39,6 +39,7 @@ class ScriptedBackend(MockBackend):
         max_tokens: int = 2000,
         temperature: float = 0.0,
         timeout_s: int = 60,
+        **_transport: Any,  # api_key / base_url / response_format — unused by the script
     ):
         self._maybe_fail(provider)
         # We tag the task via the user message content for visibility,
