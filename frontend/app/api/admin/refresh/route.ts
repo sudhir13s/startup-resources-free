@@ -1,19 +1,17 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { ADMIN_COOKIE_NAME, getAdminToken, isValidSessionCookie } from "@/lib/admin";
+import { backendAuthHeader, isBackendConfigured } from "@/lib/admin";
 import { backendUrl } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Starts a backend refresh run. No separate admin check here: `middleware.ts`
+ * already requires a valid site-login session on every `/api/*` request, so
+ * reaching this handler means the caller is logged in.
+ */
 export async function POST(request: Request) {
-  const adminToken = getAdminToken();
-  if (!adminToken) {
+  if (!isBackendConfigured()) {
     return NextResponse.json({ detail: "Refresh is not configured" }, { status: 503 });
-  }
-
-  const cookieValue = cookies().get(ADMIN_COOKIE_NAME)?.value;
-  if (!isValidSessionCookie(cookieValue)) {
-    return NextResponse.json({ detail: "Not authenticated" }, { status: 401 });
   }
 
   let body: unknown = {};
@@ -28,7 +26,7 @@ export async function POST(request: Request) {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "X-ResourceOS-Passphrase": adminToken,
+        ...backendAuthHeader(),
       },
       body: JSON.stringify(body),
       cache: "no-store",

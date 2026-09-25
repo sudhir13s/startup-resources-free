@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from api.tests.conftest import RESOURCEOS_PASSPHRASE
 from domain.runs import Candidate
 
 
@@ -22,34 +21,28 @@ def test_should_list_pending_candidates(client, repository):
     assert [c["candidate_id"] for c in response.json()] == ["cand-1"]
 
 
-def test_should_approve_candidate_with_passphrase(client, repository):
+def test_should_approve_candidate(client, repository):
     repository.add_candidates([_candidate()])
-    response = client.post(
-        "/api/candidates/cand-1/approve", headers={"X-ResourceOS-Passphrase": RESOURCEOS_PASSPHRASE}
-    )
+    response = client.post("/api/candidates/cand-1/approve")
     assert response.status_code == 200
     assert response.json()["status"] == "approved"
 
 
-def test_should_reject_candidate_with_passphrase(client, repository):
+def test_should_reject_candidate(client, repository):
     repository.add_candidates([_candidate()])
-    response = client.post(
-        "/api/candidates/cand-1/reject", headers={"X-ResourceOS-Passphrase": RESOURCEOS_PASSPHRASE}
-    )
+    response = client.post("/api/candidates/cand-1/reject")
     assert response.status_code == 200
     assert response.json()["status"] == "rejected"
 
 
 def test_should_404_when_candidate_unknown(client):
-    response = client.post(
-        "/api/candidates/missing/approve", headers={"X-ResourceOS-Passphrase": RESOURCEOS_PASSPHRASE}
-    )
+    response = client.post("/api/candidates/missing/approve")
     assert response.status_code == 404
 
 
-def test_should_401_when_passphrase_wrong(client, repository):
+def test_should_401_when_key_wrong(client, repository):
     repository.add_candidates([_candidate()])
     response = client.post(
-        "/api/candidates/cand-1/approve", headers={"X-ResourceOS-Passphrase": "wrong"}
+        "/api/candidates/cand-1/approve", headers={"X-ResourceOS-Key": "wrong"}
     )
     assert response.status_code == 401

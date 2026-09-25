@@ -15,9 +15,10 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from api.deps import require_admin
 from api.routers import candidates, changes, freellm_router, health, providers, refresh, runs
 from api.services.refresh_service import RunnerFactory, default_runner_factory
 from api.settings import Settings, load_settings
@@ -44,7 +45,19 @@ def create_app(
     let tests skip the real R2 pull/push and inject a fake runner.
     """
     resolved_settings = settings or load_settings()
-    app = FastAPI(title="ResourceOS API", version="0.2.0", lifespan=_lifespan)
+    # The API is private end-to-end: only the Next.js server ever calls it,
+    # sending a key derived from RESOURCEOS_PASSWORD on every request.
+    # `/docs`, `/redoc`, and `/openapi.json` would otherwise let anyone with
+    # the URL browse the schema without that key, so they're disabled
+    # outright rather than guarded.
+    app = FastAPI(
+        title="ResourceOS API",
+        version="0.2.0",
+        lifespan=_lifespan,
+        docs_url=None,
+        redoc_url=None,
+        openapi_url=None,
+    )
     app.state.settings = resolved_settings
     app.state.injected_repository = repository
     app.state.injected_sync = sync if sync is not None else _NOT_SET
@@ -59,9 +72,14 @@ def create_app(
         allow_headers=["*"],
     )
 
-    for router in (health.router, providers.router, changes.router, runs.router,
+    # `health.router` (GET /api/health, the Render health check) is the only
+    # unauthenticated route. Every other router requires the X-ResourceOS-Key
+    # header, applied once here rather than per-endpoint so a new route is
+    # private by default.
+    app.include_router(health.router)
+    for router in (providers.router, changes.router, runs.router,
                    refresh.router, candidates.router, freellm_router.router):
-        app.include_router(router)
+        app.include_router(router, dependencies=[Depends(require_admin)])
 
     return app
 

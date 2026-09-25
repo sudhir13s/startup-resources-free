@@ -7,12 +7,14 @@ repository itself.
 from __future__ import annotations
 
 import json
+from collections.abc import Generator
 from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 
+from api.auth import derive_api_key
 from api.main import create_app
 from api.settings import Settings
 from domain.records import ProviderRecord
@@ -20,7 +22,7 @@ from domain.runs import RunReport
 from storage.sqlite_repository import SqliteRepository
 
 FIXTURE = Path(__file__).resolve().parent.parent.parent / "domain" / "fixtures" / "sample_records.json"
-RESOURCEOS_PASSPHRASE = "test-admin-token"  # noqa: S105 - fixture constant, not a real secret
+RESOURCEOS_PASSWORD = "test-admin-token"  # noqa: S105 - fixture constant, not a real secret
 
 
 @pytest.fixture
@@ -99,15 +101,15 @@ def make_client(
     repository: SqliteRepository,
     seed_file: Path,
     *,
-    passphrase: str | None = RESOURCEOS_PASSPHRASE,
+    password: str | None = RESOURCEOS_PASSWORD,
     sync=None,
     runner_factory=None,
-) -> TestClient:
+) -> Generator[TestClient, None, None]:
     """Build a TestClient around a fully injected app: real repository +
     seed file, fake sync/runner so no network call ever happens in tests.
     """
     settings = Settings(
-        passphrase=passphrase,
+        password=password,
         cors_origins=["https://example.com"],
         db_path=str(repository._path),  # noqa: SLF001 - test-only introspection
         seed_path=str(seed_file),
@@ -118,7 +120,13 @@ def make_client(
         sync=sync,
         runner_factory=runner_factory or (lambda repo: FakeRunner()),
     )
-    with TestClient(app) as client:
+    # Every route but /api/health now requires X-ResourceOS-Key (see
+    # api/deps.py::require_admin, wired in api/main.py::create_app). Sending
+    # it as a client-level default header means existing tests keep working
+    # unchanged; a test that specifically covers the missing/wrong key path
+    # overrides this header per-request.
+    default_headers = {"X-ResourceOS-Key": derive_api_key(password)} if password else {}
+    with TestClient(app, headers=default_headers) as client:
         yield client
 
 

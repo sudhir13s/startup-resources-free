@@ -1,6 +1,5 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { ADMIN_COOKIE_NAME, getAdminToken, isValidSessionCookie } from "@/lib/admin";
+import { backendAuthHeader, isBackendConfigured } from "@/lib/admin";
 import { backendUrl } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
@@ -9,18 +8,17 @@ const ALLOWED_ACTIONS = new Set(["approve", "reject"]);
 // candidate_id format: opaque slug/uuid-ish token — letters, digits, dash, underscore.
 const CANDIDATE_ID_PATTERN = /^[A-Za-z0-9_-]{1,128}$/;
 
+/**
+ * Approves/rejects a discovered candidate. No separate admin check here:
+ * `middleware.ts` already requires a valid site-login session on every
+ * `/api/*` request, so reaching this handler means the caller is logged in.
+ */
 export async function POST(
   _request: Request,
   { params }: { params: { id: string; action: string } },
 ) {
-  const adminToken = getAdminToken();
-  if (!adminToken) {
+  if (!isBackendConfigured()) {
     return NextResponse.json({ detail: "Refresh is not configured" }, { status: 503 });
-  }
-
-  const cookieValue = cookies().get(ADMIN_COOKIE_NAME)?.value;
-  if (!isValidSessionCookie(cookieValue)) {
-    return NextResponse.json({ detail: "Not authenticated" }, { status: 401 });
   }
 
   const { id, action } = params;
@@ -34,7 +32,7 @@ export async function POST(
   try {
     const res = await fetch(backendUrl(`/api/candidates/${id}/${action}`), {
       method: "POST",
-      headers: { "X-ResourceOS-Passphrase": adminToken },
+      headers: backendAuthHeader(),
       cache: "no-store",
     });
     const data = await res.json().catch(() => ({}));

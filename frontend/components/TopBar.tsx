@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { RefreshButton } from "@/components/refresh/RefreshButton";
+import { LogoutButton } from "@/components/auth/LogoutButton";
 
 export function TopBar() {
   return (
@@ -47,6 +48,7 @@ export function TopBar() {
       <div className="ml-auto flex items-center gap-2 shrink-0">
         <RefreshButton />
         <ThemeToggle />
+        <LogoutButton />
       </div>
     </header>
   );

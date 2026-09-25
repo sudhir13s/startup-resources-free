@@ -1,49 +1,35 @@
 /**
- * Admin session helpers — server-only. Never import from a Client Component.
+ * Backend auth header for calls to the FastAPI backend — server-only, Node
+ * runtime (uses `node:crypto`; never import from a Client Component or
+ * from Edge-runtime code such as `middleware.ts`).
  *
- * The admin passphrase (RESOURCEOS_PASSPHRASE) never reaches the browser. Login
- * compares the submitted passphrase against RESOURCEOS_PASSPHRASE and, on success,
- * sets an httpOnly session cookie whose value is an HMAC of RESOURCEOS_PASSPHRASE
- * (not the token itself) so the cookie can be verified without storing
- * the token client-side.
+ * A single static key derived from `RESOURCEOS_PASSWORD` is sent as
+ * `X-ResourceOS-Key` on every backend call. This mirrors `api/auth.py`
+ * exactly: both sides compute
+ * `hex HMAC-SHA256(key=RESOURCEOS_PASSWORD, msg="resourceos-api")`.
+ * The raw password itself is never sent over the wire and never logged.
  */
-import { createHash, createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac } from "node:crypto";
 
-export const ADMIN_COOKIE_NAME = "ros_admin";
-const SESSION_CONTEXT = "ros-admin-session-v1";
-const COOKIE_MAX_AGE_SECONDS = 30 * 24 * 60 * 60; // 30 days
+const API_KEY_MESSAGE = "resourceos-api";
 
-/** Reads RESOURCEOS_PASSPHRASE; null when unset (refresh feature disabled). */
-export function getAdminToken(): string | null {
-  const token = process.env.RESOURCEOS_PASSPHRASE?.trim();
-  return token && token.length > 0 ? token : null;
+/** Reads RESOURCEOS_PASSWORD; null when unset (the backend is then unreachable). */
+function getBackendPassword(): string | null {
+  const password = process.env.RESOURCEOS_PASSWORD;
+  return password && password.length > 0 ? password : null;
 }
 
-/** Expected session-cookie value for the configured RESOURCEOS_PASSPHRASE. */
-export function expectedSessionValue(adminToken: string): string {
-  return createHmac("sha256", adminToken).update(SESSION_CONTEXT).digest("hex");
+/** The `X-ResourceOS-Key` header every backend call must carry. Empty object
+ * when `RESOURCEOS_PASSWORD` is unset, so a fetch with `...backendAuthHeader()`
+ * just omits the header (the backend then answers 503). */
+export function backendAuthHeader(): Record<string, string> {
+  const password = getBackendPassword();
+  if (!password) return {};
+  const key = createHmac("sha256", password).update(API_KEY_MESSAGE).digest("hex");
+  return { "X-ResourceOS-Key": key };
 }
 
-/** Constant-time compare of two equal-length SHA-256 digests of the inputs. */
-export function timingSafeStringEqual(a: string, b: string): boolean {
-  const digestA = createHash("sha256").update(a, "utf8").digest();
-  const digestB = createHash("sha256").update(b, "utf8").digest();
-  return timingSafeEqual(digestA, digestB);
-}
-
-/** True when the given cookie value matches the current admin session. */
-export function isValidSessionCookie(cookieValue: string | undefined): boolean {
-  const adminToken = getAdminToken();
-  if (!adminToken || !cookieValue) return false;
-  return timingSafeStringEqual(cookieValue, expectedSessionValue(adminToken));
-}
-
-export function sessionCookieOptions() {
-  return {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict" as const,
-    path: "/",
-    maxAge: COOKIE_MAX_AGE_SECONDS,
-  };
+/** True when RESOURCEOS_PASSWORD is configured (the backend is reachable). */
+export function isBackendConfigured(): boolean {
+  return getBackendPassword() !== null;
 }

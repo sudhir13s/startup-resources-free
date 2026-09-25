@@ -1,4 +1,9 @@
-"""`GET /api/health` and the friendly `GET /` index."""
+"""`GET /api/health` — the only unauthenticated route (Render's health check).
+
+The API is otherwise fully private (see `api.main.create_app`), so the old
+friendly `GET /` index — which just pointed at `/docs` — is gone along with
+`/docs`/`/redoc`/`/openapi.json`.
+"""
 
 from __future__ import annotations
 
@@ -26,21 +31,3 @@ async def health(request: Request) -> HealthResponse:
         version=SERVICE_VERSION,
         data_synced_at=request.app.state.data_synced_at,
     )
-
-
-@router.get("/")
-async def root() -> dict:
-    """Friendly index at `/` so a direct visit shows the live service identity."""
-    return {
-        "service": SERVICE_NAME,
-        "version": SERVICE_VERSION,
-        "status": "ok",
-        "endpoints": {
-            "health": "/api/health",
-            "providers": "/api/providers",
-            "openapi": "/openapi.json",
-            "docs": "/docs",
-        },
-        "docs_url": "/docs",
-        "github": "https://github.com/sudhir13s/startup-resources-free",
-    }

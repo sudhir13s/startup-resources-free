@@ -2,6 +2,7 @@
  * Server-side helpers for calling the FastAPI backend.
  * Server-only: reads process.env — never import from a Client Component.
  */
+import { backendAuthHeader } from "@/lib/admin";
 
 export type QueryValue = string | number | boolean | null | undefined | string[];
 
@@ -42,8 +43,11 @@ export async function backendGet<T>(
   revalidateSeconds = 0,
 ): Promise<BackendResult<T>> {
   try {
+    const headers = backendAuthHeader();
     const init: RequestInit & { next?: { revalidate: number } } =
-      revalidateSeconds > 0 ? { next: { revalidate: revalidateSeconds } } : { cache: "no-store" };
+      revalidateSeconds > 0
+        ? { next: { revalidate: revalidateSeconds }, headers }
+        : { cache: "no-store", headers };
     const res = await fetch(backendUrl(path, query), init);
     if (!res.ok) return { ok: false, status: res.status, detail: await errorDetail(res) };
     return { ok: true, data: (await res.json()) as T };

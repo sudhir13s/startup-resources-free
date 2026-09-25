@@ -19,10 +19,11 @@ def test_should_have_null_data_synced_at_when_no_sync_configured(client):
     assert body["data_synced_at"] is None
 
 
-def test_should_serve_friendly_index_at_root(client):
+def test_should_404_at_root_now_that_the_index_is_gone(client):
+    # The API is fully private; the old `/` index just pointed at `/docs`,
+    # which is disabled too. Nothing should be served at `/` anymore.
     response = client.get("/")
-    assert response.status_code == 200
-    assert response.json()["service"] == "ResourceOS API"
+    assert response.status_code == 404
 
 
 def test_should_import_seed_on_startup(client, repository: SqliteRepository):
