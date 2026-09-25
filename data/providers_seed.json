@@ -1,0 +1,6730 @@
+[
+  {
+    "provider_id": "100x-vc",
+    "name": "100x.VC",
+    "vendor": "100x.VC",
+    "category": "accelerator",
+    "source_urls": [
+      "https://100x.vc/"
+    ],
+    "offer_type": "free-credits",
+    "headline": "India-focused early-stage VC using India's first iSAFE note structure",
+    "highlights": [
+      "Investment via iSAFE (India Simple Agreement for Future Equity)",
+      "Cohort-based Class program with structured mentorship"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "iSAFE investment",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "Amount set per cohort Class; equity/iSAFE, not a grant"
+      }
+    ],
+    "quota_summary": "iSAFE investment",
+    "duration_summary": "Cohort-based",
+    "region_summary": "India only",
+    "eligibility_summary": "Indian early-stage founders",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply to the current 100x.VC Class cohort at 100x.vc"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "100x.VC",
+        "url": "https://100x.vc/"
+      }
+    ],
+    "geo_priority": "india-native",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "India's first iSAFE-based investment vehicle; fits pre-seed and seed Indian founders who can secure a Class cohort slot and accept the iSAFE terms.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.004726Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not independently re-verified via WebFetch this session (outside the 40-call budget); figures reflect the long-standing, publicly documented iSAFE/cohort structure. This is an equity/iSAFE investment, not a grant — flagged medium confidence per the honesty rule."
+  },
+  {
+    "provider_id": "antler",
+    "name": "Antler",
+    "vendor": "Antler",
+    "category": "accelerator",
+    "source_urls": [
+      "https://www.antler.co/locations/india"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Day-zero VC with a $100k pre-seed cheque and a 6-month residency program",
+    "highlights": [
+      "Stipend during the program",
+      "$100k pre-seed cheque on graduation"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Pre-seed investment",
+        "amount": 100000.0,
+        "currency": "USD",
+        "duration_days": null,
+        "conditions": "Equity investment, not a grant"
+      }
+    ],
+    "quota_summary": "$100k pre-seed",
+    "duration_summary": "6-mo program",
+    "region_summary": "Global incl. India",
+    "eligibility_summary": "Pre-team founders",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply to the Bangalore (or other) cohort",
+      "Attend the residency program"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Antler India",
+        "url": "https://www.antler.co/locations/india"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "$100k pre-seed cheque plus a structured residency fits teams still forming or just past idea stage; not a source of seed-stage scaling capital beyond the initial cheque.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-16",
+    "scraped_at": "2026-09-25T15:44:43.005033Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Equity investment, not a grant."
+  },
+  {
+    "provider_id": "atal-innovation-mission",
+    "name": "Atal Innovation Mission (AIM)",
+    "vendor": "Government of India (NITI Aayog)",
+    "category": "accelerator",
+    "source_urls": [
+      "https://aim.gov.in/"
+    ],
+    "offer_type": "grant",
+    "headline": "Government-of-India incubator network funding Atal Incubation Centres",
+    "highlights": [
+      "Up to ₹10 crore per incubator (₹1 cr/year for 5 years)",
+      "Apply via an Atal Incubation Centre at an IIT, IIIT, IIM or NID"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Incubator funding",
+        "amount": 100000000.0,
+        "currency": "INR",
+        "duration_days": 1825,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "Up to ₹10 cr",
+    "duration_summary": "Up to 5 yr",
+    "region_summary": "India only",
+    "eligibility_summary": "Indian incorporated",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Identify an Atal Incubation Centre",
+      "Apply through that AIC's process"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Atal Innovation Mission",
+        "url": "https://aim.gov.in/"
+      }
+    ],
+    "geo_priority": "india-native",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "Up to ₹10 crore over 5 years disbursed via AICs is significant non-dilutive funding for pre-seed to seed Indian-incorporated startups that can secure an incubator slot.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.005048Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Apply through one of 70+ Atal Incubation Centres, not directly to AIM."
+  },
+  {
+    "provider_id": "google-startups-accelerator-india",
+    "name": "Google for Startups Accelerator India",
+    "vendor": "Google",
+    "category": "accelerator",
+    "source_urls": [
+      "https://startup.google.com/programs/accelerator/india/"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Equity-free Google accelerator program for Indian AI-first startups",
+    "highlights": [
+      "10-week equity-free program",
+      "Mentorship from Google engineers plus Google Cloud credits"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Google Cloud credits",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "Bundled with mentorship; exact amount set per cohort"
+      }
+    ],
+    "quota_summary": "Cloud credits + mentorship",
+    "duration_summary": "10-week program",
+    "region_summary": "India only",
+    "eligibility_summary": "Indian AI-first startups",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply during the open cohort application window at startup.google.com/programs/accelerator/india"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Accelerator India",
+        "url": "https://startup.google.com/programs/accelerator/india/"
+      }
+    ],
+    "geo_priority": "india-native",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "Equity-free 10-week program pairing Google engineer mentorship with Cloud credits; fits Indian AI-first teams from pre-seed through seed that make the cohort cut.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005060Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not independently re-verified via WebFetch this session (outside the 40-call budget); figures reflect the long-standing, publicly documented program structure (equity-free, cohort-based). Flagged medium confidence per the honesty rule."
+  },
+  {
+    "provider_id": "nasscom-10000-startups",
+    "name": "NASSCOM 10,000 Startups",
+    "vendor": "NASSCOM",
+    "category": "accelerator",
+    "source_urls": [
+      "https://10000startups.com/"
+    ],
+    "offer_type": "free-credits",
+    "headline": "India's largest startup ecosystem program with mentorship, cloud credits and investor connects",
+    "highlights": [
+      "Cloud credits across AWS/Azure/GCP",
+      "Sectoral tracks including DeepTech and AI"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Cloud + program credits",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "Bundled AWS/Azure/GCP credits, amount varies by cohort"
+      }
+    ],
+    "quota_summary": "Mentorship + credits",
+    "duration_summary": "6–12 mo",
+    "region_summary": "India only",
+    "eligibility_summary": "Indian DPIIT startups",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply via the 10000startups.com cohort calendar"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "NASSCOM 10,000 Startups",
+        "url": "https://10000startups.com/"
+      }
+    ],
+    "geo_priority": "india-native",
+    "always_on": null,
+    "use_case_tiers": [
+      "startup-mvp",
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "Mentorship-plus-credits program for DPIIT startups already past idea stage; credit amounts are cohort-specific rather than a fixed startup-mvp benefit.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-15",
+    "scraped_at": "2026-09-25T15:44:43.005071Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "t-hub",
+    "name": "T-Hub (Telangana)",
+    "vendor": "T-Hub",
+    "category": "accelerator",
+    "source_urls": [
+      "https://t-hub.co/"
+    ],
+    "offer_type": "grant",
+    "headline": "Hyderabad incubator with sector cohorts, Telangana govt subsidies and corporate access",
+    "highlights": [
+      "Cohort programs (Lab32, RUBRIX, MACH33)",
+      "₹5L–₹50L grants depending on track"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Cohort grant",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "₹5L–₹50L depending on track (Lab32/RUBRIX/MACH33)"
+      }
+    ],
+    "quota_summary": "₹5L–₹50L",
+    "duration_summary": "3–9 mo cohort",
+    "region_summary": "Hyderabad / India",
+    "eligibility_summary": "DPIIT-recognised",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply to a T-Hub cohort at t-hub.co"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "T-Hub",
+        "url": "https://t-hub.co/"
+      }
+    ],
+    "geo_priority": "india-native",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "Largest incubator in India by floor space, with cohort grants from ₹5L to ₹50L depending on track — fits pre-seed and seed startups with a DPIIT registration.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.005083Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. DPIIT registration recommended before applying."
+  },
+  {
+    "provider_id": "yc",
+    "name": "Y Combinator",
+    "vendor": "Y Combinator",
+    "category": "accelerator",
+    "source_urls": [
+      "https://www.ycombinator.com/apply"
+    ],
+    "offer_type": "free-credits",
+    "headline": "$500k investment and a 3-month accelerator program, open to global founders",
+    "highlights": [
+      "$125k standard SAFE plus $375k uncapped MFN SAFE",
+      "13-week program in the SF Bay Area",
+      "Acceptance rate around 1.5%"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "YC investment",
+        "amount": 500000.0,
+        "currency": "USD",
+        "duration_days": null,
+        "conditions": "$125k SAFE + $375k uncapped post-money SAFE with MFN, ~7% equity"
+      }
+    ],
+    "quota_summary": "$500k SAFE",
+    "duration_summary": "3-mo program",
+    "region_summary": "Global",
+    "eligibility_summary": "Founders (apply)",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Submit an application at ycombinator.com/apply",
+      "Interview if shortlisted",
+      "Relocate to SF Bay Area for the batch if accepted"
+    ],
+    "restrictions": [
+      "Founders must relocate to the SF Bay Area for the full 13-week batch"
+    ],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Apply",
+        "url": "https://www.ycombinator.com/apply"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "Top-tier global accelerator investment and network; highly competitive (~1.5% acceptance) and requires in-person Bay Area relocation.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-15",
+    "scraped_at": "2026-09-25T15:44:43.005096Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Indian founders welcome; two batches/year."
+  },
+  {
+    "provider_id": "anthropic-startups",
+    "name": "Anthropic Startup Program",
+    "vendor": "Anthropic",
+    "category": "ai-api",
+    "source_urls": [
+      "https://www.anthropic.com/startups"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Claude API credits and technical support for early-stage startups",
+    "highlights": [
+      "Reported $5k–$25k Claude API credits (amount not publicly fixed)",
+      "Technical support and featured-startup spotlight"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Claude API credits",
+        "amount": null,
+        "currency": "USD",
+        "duration_days": null,
+        "conditions": "Reported $5k-$25k range; amount not publicly disclosed by Anthropic"
+      }
+    ],
+    "quota_summary": "$5k–$25k Claude",
+    "duration_summary": "Program-bound",
+    "region_summary": "Global",
+    "eligibility_summary": "Early-stage startups (apply)",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply at anthropic.com/startups"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Anthropic Startup Program",
+        "url": "https://www.anthropic.com/startups"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed",
+      "series-a"
+    ],
+    "tier_fit_rationale": "Application-based Claude API credit program; amount not publicly disclosed, so fit is directional rather than guaranteed.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.005105Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Credit amount not publicly disclosed by Anthropic."
+  },
+  {
+    "provider_id": "cerebras",
+    "name": "Cerebras Cloud",
+    "vendor": "Cerebras",
+    "category": "ai-api",
+    "source_urls": [
+      "https://cloud.cerebras.ai/"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Very fast Llama inference on Cerebras wafer-scale hardware, daily token cap",
+    "highlights": [
+      "Llama 3.1/3.3 models with a daily token quota",
+      "Access sometimes gated by a waitlist"
+    ],
+    "services": [
+      {
+        "name": "Cerebras Inference",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "always-free",
+        "summary": "Chat completions on Llama 3.1/3.3 at very high token throughput",
+        "limits": [
+          {
+            "label": "Tokens",
+            "value": 1000000,
+            "unit": "tokens",
+            "period": "day",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "1M tokens/day",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Approved developer account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Sign up at cloud.cerebras.ai",
+      "Wait for waitlist approval if gated",
+      "Generate an API key"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Cerebras Cloud",
+        "url": "https://cloud.cerebras.ai/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-22",
+    "scraped_at": "2026-09-25T15:44:43.005219Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "cohere",
+    "name": "Cohere",
+    "vendor": "Cohere",
+    "category": "ai-api",
+    "source_urls": [
+      "https://cohere.com/pricing"
+    ],
+    "offer_type": "free-trial",
+    "headline": "Free trial keys for embeddings, rerank and chat models",
+    "highlights": [
+      "Rate-limited trial access to Embed v3, Rerank, Command R",
+      "Production usage requires a paid key"
+    ],
+    "services": [
+      {
+        "name": "Cohere Trial API",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "trial",
+        "summary": "Trial access to Embed, Rerank and Command R",
+        "limits": [
+          {
+            "label": "Access",
+            "value": "Rate-limited trial key",
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "Trial-rate-limited",
+    "duration_summary": "Trial",
+    "region_summary": "Global",
+    "eligibility_summary": "Any developer account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Sign up at cohere.com",
+      "Generate a trial API key"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "Trial keys cannot be used in production — a paid key is required to go live"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://cohere.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-18",
+    "scraped_at": "2026-09-25T15:44:43.005302Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "deepgram",
+    "name": "Deepgram",
+    "vendor": "Deepgram",
+    "category": "ai-api",
+    "source_urls": [
+      "https://deepgram.com/pricing"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Speech-to-text and diarization with a one-time signup credit",
+    "highlights": [
+      "$200 signup credit, roughly 750 hours of Nova-2 transcription",
+      "Pay-per-minute after the credit is used"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Signup credit",
+        "amount": 200.0,
+        "currency": "USD",
+        "duration_days": null,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$200 signup credit",
+    "duration_summary": "One-time",
+    "region_summary": "Global",
+    "eligibility_summary": "New developer accounts",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at deepgram.com",
+      "Generate an API key",
+      "Credit applies automatically"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://deepgram.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-19",
+    "scraped_at": "2026-09-25T15:44:43.005320Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "elevenlabs",
+    "name": "ElevenLabs",
+    "vendor": "ElevenLabs",
+    "category": "ai-api",
+    "source_urls": [
+      "https://elevenlabs.io/pricing"
+    ],
+    "offer_type": "free-quota",
+    "headline": "High-quality text-to-speech with a monthly free character budget",
+    "highlights": [
+      "10,000 characters/month free",
+      "3 custom voices, limited voice cloning"
+    ],
+    "services": [
+      {
+        "name": "ElevenLabs TTS",
+        "category": "ai-api",
+        "service_type": "speech",
+        "pricing_layer": "always-free",
+        "summary": "Text-to-speech synthesis",
+        "limits": [
+          {
+            "label": "Characters",
+            "value": 10000,
+            "unit": "characters",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "10,000 chars/mo",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at elevenlabs.io",
+      "Generate an API key or use the web app"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "Free tier locks commercial use of cloned voices"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://elevenlabs.io/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-19",
+    "scraped_at": "2026-09-25T15:44:43.005338Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "fal-ai",
+    "name": "fal.ai",
+    "vendor": "fal.ai",
+    "category": "ai-api",
+    "source_urls": [
+      "https://fal.ai/pricing"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Fast image and video generation with signup credits and a limited free quota",
+    "highlights": [
+      "Signup credits on selected fast models (FLUX-schnell, SDXL, AnimateDiff)",
+      "TTS and STT also available"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Signup credit",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "Applied automatically on account creation"
+      }
+    ],
+    "quota_summary": "Signup credits",
+    "duration_summary": "Always (limited)",
+    "region_summary": "Global",
+    "eligibility_summary": "Any developer account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Sign up at fal.ai",
+      "Generate an API key",
+      "Call a model endpoint"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://fal.ai/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-19",
+    "scraped_at": "2026-09-25T15:44:43.005347Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "google-ai-studio",
+    "name": "Google AI Studio",
+    "vendor": "Google",
+    "category": "ai-api",
+    "source_urls": [
+      "https://ai.google.dev/gemini-api/docs/rate-limits"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Gemini Flash and Pro free API access with a huge context window",
+    "highlights": [
+      "No card required for the Free tier",
+      "Vision, audio and video input supported",
+      "Exact RPM/RPD/TPM shown per-project in AI Studio"
+    ],
+    "services": [
+      {
+        "name": "Gemini API (Free tier)",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "always-free",
+        "summary": "Text, vision, audio and video input chat completions",
+        "limits": [
+          {
+            "label": "Context window",
+            "value": 1000000,
+            "unit": "tokens",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "Free tier, per-project limits",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any Google account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "oauth",
+    "claim_steps": [
+      "Sign in at aistudio.google.com",
+      "Create an API key",
+      "Check exact RPM/RPD at aistudio.google.com/rate-limit"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "Free tier inputs may be used by Google to improve models — avoid sending sensitive data"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Rate limits",
+        "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005358Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: docs confirm a Free tier exists with per-project dynamic limits shown in AI Studio, but no longer publish a static RPM/RPD table — lowered confidence vs legacy record's specific numbers."
+  },
+  {
+    "provider_id": "groq",
+    "name": "Groq",
+    "vendor": "Groq",
+    "category": "ai-api",
+    "source_urls": [
+      "https://console.groq.com/docs/rate-limits"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Very fast open-model inference with per-model free rate limits",
+    "highlights": [
+      "No card required",
+      "Per-model RPM/RPD/TPM caps reset daily",
+      "Exact limits vary by account — check the console"
+    ],
+    "services": [
+      {
+        "name": "Groq LPU Inference",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "always-free",
+        "summary": "Chat completions on Llama, GPT-OSS and other open models",
+        "limits": [
+          {
+            "label": "Requests",
+            "value": 30,
+            "unit": "requests",
+            "period": "minute",
+            "note": "typical for flagship free models"
+          },
+          {
+            "label": "Requests",
+            "value": 14400,
+            "unit": "requests",
+            "period": "day",
+            "note": "typical, varies by model"
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "Rate-limited free quota",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any developer",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Sign in at console.groq.com",
+      "Create an API key",
+      "Check exact limits at console.groq.com/settings/limits"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "Exact free-tier RPM/RPD/TPM figures are per-model and per-org — the console is the only authoritative source"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Rate limits",
+        "url": "https://console.groq.com/docs/rate-limits"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005378Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: docs no longer publish a single flat rate table for llama-3.3-70b; limits are per-model/per-org and viewed in-console. Kept prior representative figures with lowered confidence."
+  },
+  {
+    "provider_id": "huggingface",
+    "name": "Hugging Face",
+    "vendor": "Hugging Face",
+    "category": "ai-api",
+    "source_urls": [
+      "https://huggingface.co/docs/api-inference/index"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Serverless inference for open models plus free CPU Spaces hosting",
+    "highlights": [
+      "Rate-limited shared inference across text, image, embedding, STT and TTS models",
+      "Free CPU Spaces for demos"
+    ],
+    "services": [
+      {
+        "name": "HF Inference API",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "always-free",
+        "summary": "Shared serverless inference across the model hub",
+        "limits": [
+          {
+            "label": "Access",
+            "value": "Rate-limited, shared capacity",
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "HF Spaces (CPU)",
+        "category": "gpu",
+        "service_type": "notebook",
+        "pricing_layer": "always-free",
+        "summary": "Free CPU-hosted demo apps",
+        "limits": [
+          {
+            "label": "RAM",
+            "value": 16,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "Rate-limited / shared",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Create a Hugging Face account",
+      "Generate an access token",
+      "Call the Inference API"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Inference API docs",
+        "url": "https://huggingface.co/docs/api-inference/index"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-19",
+    "scraped_at": "2026-09-25T15:44:43.005395Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "mistral",
+    "name": "Mistral La Plateforme",
+    "vendor": "Mistral AI",
+    "category": "ai-api",
+    "source_urls": [
+      "https://docs.mistral.ai/"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Mistral, Codestral and embedding models on a rate-limited free API tier",
+    "highlights": [
+      "Free tier covers Mistral 7B/Small and Codestral with rate limits",
+      "Free embeddings included"
+    ],
+    "services": [
+      {
+        "name": "Mistral La Plateforme",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "quota",
+        "summary": "Chat completions on Mistral and Codestral models",
+        "limits": [
+          {
+            "label": "Access",
+            "value": "Rate-limited free tier",
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "Rate-limited",
+    "duration_summary": "Always free",
+    "region_summary": "EU + Global",
+    "eligibility_summary": "Any account (phone OTP)",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Create a Mistral account",
+      "Verify with a phone number",
+      "Generate an API key"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "Phone OTP verification may require a number that accepts international OTP"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Docs",
+        "url": "https://docs.mistral.ai/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-21",
+    "scraped_at": "2026-09-25T15:44:43.005408Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "nvidia-nim",
+    "name": "NVIDIA NIM (build.nvidia.com)",
+    "vendor": "NVIDIA",
+    "category": "ai-api",
+    "source_urls": [
+      "https://build.nvidia.com/"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Free monthly credits across a large catalog of hosted models",
+    "highlights": [
+      "100+ hosted models: Llama, Mistral, FLUX, Nemotron and more",
+      "Many model quotas reset daily"
+    ],
+    "services": [
+      {
+        "name": "NVIDIA NIM Catalog",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "quota",
+        "summary": "Hosted inference across 100+ open models",
+        "limits": [
+          {
+            "label": "Requests",
+            "value": 1000,
+            "unit": "requests",
+            "period": "day",
+            "note": "typical, varies by model"
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "1,000 req/day (varies)",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any developer account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Sign up at build.nvidia.com",
+      "Generate an API key",
+      "Call any catalog model"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "NVIDIA NIM",
+        "url": "https://build.nvidia.com/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp",
+      "pre-seed"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-19",
+    "scraped_at": "2026-09-25T15:44:43.005420Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "openai-startups",
+    "name": "OpenAI Startup Program",
+    "vendor": "OpenAI",
+    "category": "ai-api",
+    "source_urls": [
+      "https://openai.com/startups/"
+    ],
+    "offer_type": "free-credits",
+    "headline": "OpenAI API credits and quota increases for funded startups, two tracks",
+    "highlights": [
+      "Founders track: ~$2.5k API credits, direct apply",
+      "Convergence track: $1M+ credits, invite-only via accelerator partners"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Founders track",
+        "amount": 2500.0,
+        "currency": "USD",
+        "duration_days": null,
+        "conditions": null
+      },
+      {
+        "label": "Convergence track",
+        "amount": 1000000.0,
+        "currency": "USD",
+        "duration_days": null,
+        "conditions": "Invite-only via accelerator partner"
+      }
+    ],
+    "quota_summary": "$2.5k–$1M",
+    "duration_summary": "Program-bound",
+    "region_summary": "Global",
+    "eligibility_summary": "Funded startups (apply)",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply at openai.com/startups for the Founders track"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "OpenAI Startup Program",
+        "url": "https://openai.com/startups/"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed",
+      "series-a"
+    ],
+    "tier_fit_rationale": "Founders track ($2.5k) fits pre-seed/seed self-serve applicants; Convergence track ($1M+) is invite-only via an accelerator and fits funded Series-A deep-tech teams.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.005429Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "openrouter",
+    "name": "OpenRouter",
+    "vendor": "OpenRouter",
+    "category": "ai-api",
+    "source_urls": [
+      "https://openrouter.ai/docs/api-reference/limits"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Unified API with free `:free` model variants from multiple labs",
+    "highlights": [
+      "20 requests/minute across all free models",
+      "50 requests/day by default, 1000/day after buying 10+ credits"
+    ],
+    "services": [
+      {
+        "name": "OpenRouter :free models",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "always-free",
+        "summary": "Chat completions on free-tier model variants",
+        "limits": [
+          {
+            "label": "Requests",
+            "value": 20,
+            "unit": "requests",
+            "period": "minute",
+            "note": null
+          },
+          {
+            "label": "Requests",
+            "value": 50,
+            "unit": "requests",
+            "period": "day",
+            "note": "raises to 1000/day after 10+ credits purchased"
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "20 RPM, 50-1000 RPD",
+    "duration_summary": "Always free (:free)",
+    "region_summary": "Global",
+    "eligibility_summary": "Any account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Create an OpenRouter account",
+      "Generate an API key",
+      "Call any model ID ending in :free"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "Daily free-request cap is 50 unless the account has purchased at least 10 credits (then 1000/day)"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Rate limits",
+        "url": "https://openrouter.ai/docs/api-reference/limits"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005441Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: exact RPM/RPD figures confirmed from current docs."
+  },
+  {
+    "provider_id": "replicate",
+    "name": "Replicate",
+    "vendor": "Replicate",
+    "category": "ai-api",
+    "source_urls": [
+      "https://replicate.com/pricing"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Hosted image, video and audio generation with a small free monthly compute budget",
+    "highlights": [
+      "Small free monthly compute credit",
+      "Pay-per-second GPU billing after the credit runs out"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Free monthly compute",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "Small budget, exact amount varies"
+      }
+    ],
+    "quota_summary": "Small free credits",
+    "duration_summary": "Always (limited)",
+    "region_summary": "Global",
+    "eligibility_summary": "Any developer account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Sign up at replicate.com",
+      "Generate an API token",
+      "Call any model with the one-line API"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://replicate.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-19",
+    "scraped_at": "2026-09-25T15:44:43.005451Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "sambanova",
+    "name": "SambaNova Cloud",
+    "vendor": "SambaNova",
+    "category": "ai-api",
+    "source_urls": [
+      "https://cloud.sambanova.ai/"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Fast Llama 3 inference with a generous free daily token cap",
+    "highlights": [
+      "Llama 3 405B/70B/8B at fast token rates",
+      "Free tier subject to fair-use limits"
+    ],
+    "services": [
+      {
+        "name": "SambaNova Inference",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "always-free",
+        "summary": "Chat completions on Llama 3 family models",
+        "limits": [
+          {
+            "label": "Tokens",
+            "value": 1000000,
+            "unit": "tokens",
+            "period": "day",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "1M tokens/day",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any developer account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Sign up at cloud.sambanova.ai",
+      "Generate an API key"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "SambaNova Cloud",
+        "url": "https://cloud.sambanova.ai/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-21",
+    "scraped_at": "2026-09-25T15:44:43.005461Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "together-ai",
+    "name": "Together AI",
+    "vendor": "Together AI",
+    "category": "ai-api",
+    "source_urls": [
+      "https://www.together.ai/pricing"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Hosted Llama, FLUX and Mixtral with a starter credit plus always-free serverless models",
+    "highlights": [
+      "$1 starter credit for any model",
+      "Select `Free` serverless models (Llama 8B Turbo, FLUX schnell) always free"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Starter credit",
+        "amount": 1.0,
+        "currency": "USD",
+        "duration_days": null,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$1 + free models",
+    "duration_summary": "Always free (free models)",
+    "region_summary": "Global",
+    "eligibility_summary": "Any developer account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Create a Together AI account",
+      "Generate an API key",
+      "Call a model ID tagged Free for zero-cost usage"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://www.together.ai/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-21",
+    "scraped_at": "2026-09-25T15:44:43.005469Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "voyage-ai",
+    "name": "Voyage AI",
+    "vendor": "Voyage AI",
+    "category": "ai-api",
+    "source_urls": [
+      "https://docs.voyageai.com/docs/pricing"
+    ],
+    "offer_type": "free-quota",
+    "headline": "High-quality embedding models with a large lifetime free token allowance",
+    "highlights": [
+      "50M tokens lifetime across voyage-3-lite, voyage-code and others",
+      "Strong for retrieval / RAG workloads"
+    ],
+    "services": [
+      {
+        "name": "Voyage Embeddings",
+        "category": "ai-api",
+        "service_type": "embeddings",
+        "pricing_layer": "always-free",
+        "summary": "Text and code embedding models",
+        "limits": [
+          {
+            "label": "Tokens",
+            "value": 50000000,
+            "unit": "tokens",
+            "period": "total",
+            "note": "lifetime"
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "50M tokens lifetime",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any developer account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "api-key",
+    "claim_steps": [
+      "Sign up at voyageai.com",
+      "Generate an API key"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://docs.voyageai.com/docs/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-18",
+    "scraped_at": "2026-09-25T15:44:43.005478Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "auth0",
+    "name": "Auth0",
+    "vendor": "Okta",
+    "category": "auth",
+    "source_urls": [
+      "https://auth0.com/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Identity platform with a generous free monthly active user allowance",
+    "highlights": [
+      "25,000 monthly active users free",
+      "Social and database connections, MFA, basic actions"
+    ],
+    "services": [
+      {
+        "name": "Auth0",
+        "category": "auth",
+        "service_type": "auth",
+        "pricing_layer": "always-free",
+        "summary": "Hosted authentication and identity management",
+        "limits": [
+          {
+            "label": "Monthly active users",
+            "value": 25000,
+            "unit": "MAU",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "25,000 MAU",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at auth0.com",
+      "Create a tenant and application",
+      "Integrate the SDK"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://auth0.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-22",
+    "scraped_at": "2026-09-25T15:44:43.005487Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "clerk",
+    "name": "Clerk",
+    "vendor": "Clerk",
+    "category": "auth",
+    "source_urls": [
+      "https://clerk.com/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Drop-in authentication with social login, 2FA and prebuilt UI components",
+    "highlights": [
+      "10,000 monthly active users free",
+      "Social login, 2FA and magic links included"
+    ],
+    "services": [
+      {
+        "name": "Clerk Auth",
+        "category": "auth",
+        "service_type": "auth",
+        "pricing_layer": "always-free",
+        "summary": "Hosted authentication and user management",
+        "limits": [
+          {
+            "label": "Monthly active users",
+            "value": 10000,
+            "unit": "MAU",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "10,000 MAU",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at clerk.com",
+      "Create an application",
+      "Drop in the prebuilt React components"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://clerk.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-21",
+    "scraped_at": "2026-09-25T15:44:43.005523Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "aws-free-tier",
+    "name": "AWS Free Tier",
+    "vendor": "AWS",
+    "category": "cloud",
+    "source_urls": [
+      "https://aws.amazon.com/free/"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Credit-based free plan (up to $200 over 6 months) plus always-free services",
+    "highlights": [
+      "New accounts (post-2025-07-15) get $100 credit at signup, up to $100 more for trying services",
+      "Free plan lasts 6 months or until credits run out, whichever is first",
+      "30+ services stay free forever within monthly usage limits on both Free and Paid plans"
+    ],
+    "services": [
+      {
+        "name": "AWS Lambda",
+        "category": "cloud",
+        "service_type": "serverless",
+        "pricing_layer": "always-free",
+        "summary": "Serverless compute, always-free within monthly limits",
+        "limits": [
+          {
+            "label": "Requests",
+            "value": 1000000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Compute",
+            "value": 400000,
+            "unit": "GB-seconds",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Amazon DynamoDB",
+        "category": "database",
+        "service_type": "nosql",
+        "pricing_layer": "always-free",
+        "summary": "Always-free NoSQL database tier",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 25,
+            "unit": "GB",
+            "period": "total",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Amazon S3",
+        "category": "storage",
+        "service_type": "object-storage",
+        "pricing_layer": "credit",
+        "summary": "Object storage, included in sign-up credit usage",
+        "limits": [
+          {
+            "label": "Usable via",
+            "value": "Sign-up credits",
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Sign-up credits",
+        "category": "cloud",
+        "service_type": "credits",
+        "pricing_layer": "credit",
+        "summary": "Credits usable on EC2, RDS, S3 and most other services",
+        "limits": [
+          {
+            "label": "Credit at sign-up",
+            "value": 100,
+            "unit": "USD",
+            "period": "once",
+            "note": null
+          },
+          {
+            "label": "Extra credit for activities",
+            "value": 100,
+            "unit": "USD",
+            "period": "once",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [
+      {
+        "label": "Free plan credits",
+        "amount": 200.0,
+        "currency": "USD",
+        "duration_days": 183,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$200 credits + always-free",
+    "duration_summary": "6 months + always-free",
+    "region_summary": "All public regions",
+    "eligibility_summary": "New AWS accounts",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Create an AWS account and choose the Free plan",
+      "Add a payment card for identity verification",
+      "Set a zero-spend budget alert in AWS Budgets"
+    ],
+    "restrictions": [
+      "Free plan accounts cannot use some paid-only services"
+    ],
+    "gotchas": [
+      "Resources left running after the free plan ends are billed",
+      "This is a structural change from the old always-free + 12-month-free model — accounts created after 2025-07-15 get the new $200/6-month credit plan instead"
+    ],
+    "after_free_period": "Upgrade to a paid plan to keep the account; unused credits expire.",
+    "links": [
+      {
+        "label": "Free Tier overview",
+        "url": "https://aws.amazon.com/free/"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp",
+      "pre-seed"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005617Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: AWS Free Tier confirmed restructured to a credit-based free plan ($100 signup + up to $100 activity credit = $200 total, 6-month window) for accounts created after 2025-07-15, replacing the old always-free + 12-month-free structure. 30+ services remain always-free within limits on both plans. This record supersedes the legacy always-free/12-month framing."
+  },
+  {
+    "provider_id": "azure-free",
+    "name": "Microsoft Azure Free Account",
+    "vendor": "Microsoft",
+    "category": "cloud",
+    "source_urls": [
+      "https://azure.microsoft.com/en-us/free/"
+    ],
+    "offer_type": "free-tier",
+    "headline": "$200 credit for 30 days plus 12-months-free and 65+ always-free services",
+    "highlights": [
+      "$200 USD credit valid for the first 30 days",
+      "12-months-free tier on popular services (VMs, storage, databases)",
+      "65+ always-free services including generous AI/Cognitive Services quotas"
+    ],
+    "services": [
+      {
+        "name": "App Service (Always Free)",
+        "category": "cloud",
+        "service_type": "container",
+        "pricing_layer": "always-free",
+        "summary": "Web and API app hosting",
+        "limits": [
+          {
+            "label": "Apps",
+            "value": 10,
+            "unit": null,
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Storage",
+            "value": 1,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Compute",
+            "value": 1,
+            "unit": "hours",
+            "period": "day",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Azure Functions (Always Free)",
+        "category": "cloud",
+        "service_type": "serverless",
+        "pricing_layer": "always-free",
+        "summary": "Serverless compute",
+        "limits": [
+          {
+            "label": "Requests",
+            "value": 1000000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cosmos DB (Always Free)",
+        "category": "database",
+        "service_type": "nosql",
+        "pricing_layer": "always-free",
+        "summary": "Globally distributed NoSQL database",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 25,
+            "unit": "GB",
+            "period": "total",
+            "note": null
+          },
+          {
+            "label": "Throughput",
+            "value": 1000,
+            "unit": "RU/s",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Blob Storage (12-Month Free)",
+        "category": "storage",
+        "service_type": "object-storage",
+        "pricing_layer": "12-month",
+        "summary": "Object storage, free for 12 months",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 5,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "SQL Database (12-Month Free)",
+        "category": "database",
+        "service_type": "sql",
+        "pricing_layer": "12-month",
+        "summary": "Managed SQL database, free for 12 months",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 250,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "DTU",
+            "value": 250,
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Entra External ID (Always Free)",
+        "category": "auth",
+        "service_type": "auth",
+        "pricing_layer": "always-free",
+        "summary": "Customer identity and access management",
+        "limits": [
+          {
+            "label": "Monthly active users",
+            "value": 50000,
+            "unit": "MAU",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "AI Speech (Always Free)",
+        "category": "ai-api",
+        "service_type": "speech",
+        "pricing_layer": "always-free",
+        "summary": "Speech-to-text transcription",
+        "limits": [
+          {
+            "label": "Neural characters",
+            "value": 500000,
+            "unit": "characters",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "$200 Signup Credit",
+        "category": "cloud",
+        "service_type": "credits",
+        "pricing_layer": "credit",
+        "summary": "Credit usable across all services for 30 days",
+        "limits": [
+          {
+            "label": "Credit",
+            "value": 200,
+            "unit": "USD",
+            "period": "once",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [
+      {
+        "label": "Signup credit",
+        "amount": 200.0,
+        "currency": "USD",
+        "duration_days": 30,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$200 credits + always-free",
+    "duration_summary": "30 days + 12mo + always-free",
+    "region_summary": "Most Azure regions incl. India",
+    "eligibility_summary": "New Azure account, CC req.",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Create an Azure account",
+      "Verify identity with a card (not charged unless upgraded)",
+      "Deploy within the free/credit quotas"
+    ],
+    "restrictions": [
+      "12-months-free is only for customers who have never had an Azure account before",
+      "Must move to pay-as-you-go within 30 days to keep receiving 12-months-free benefits"
+    ],
+    "gotchas": [],
+    "after_free_period": "Always-free services continue; 12-month services and the $200 credit require upgrading to pay-as-you-go.",
+    "links": [
+      {
+        "label": "Free account",
+        "url": "https://azure.microsoft.com/en-us/free/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": false,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005658Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: $200/30-day credit confirmed (matches legacy). App Service, Functions, Cosmos DB, AI Speech always-free limits confirmed from current free-services page. Central/South/West India regions supported."
+  },
+  {
+    "provider_id": "cloudflare-free",
+    "name": "Cloudflare Free Plan",
+    "vendor": "Cloudflare",
+    "category": "cloud",
+    "source_urls": [
+      "https://developers.cloudflare.com/workers/platform/limits/",
+      "https://developers.cloudflare.com/r2/pricing/"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Edge compute, object storage, SQL and AI inference bundled on one always-free plan",
+    "highlights": [
+      "Workers: 100,000 requests/day, 10ms CPU time per request",
+      "R2 object storage: 10 GB with zero egress fees",
+      "Pages, D1, KV and Workers AI all included at no cost"
+    ],
+    "services": [
+      {
+        "name": "Cloudflare Workers",
+        "category": "cloud",
+        "service_type": "serverless",
+        "pricing_layer": "always-free",
+        "summary": "Edge serverless functions running in 300+ locations",
+        "limits": [
+          {
+            "label": "Requests",
+            "value": 100000,
+            "unit": "requests",
+            "period": "day",
+            "note": null
+          },
+          {
+            "label": "CPU time",
+            "value": 10,
+            "unit": "ms",
+            "period": null,
+            "note": "per request"
+          },
+          {
+            "label": "Scripts per account",
+            "value": 100,
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cloudflare Pages",
+        "category": "cloud",
+        "service_type": "static-hosting",
+        "pricing_layer": "always-free",
+        "summary": "Static site hosting with unlimited requests",
+        "limits": [
+          {
+            "label": "Builds",
+            "value": 500,
+            "unit": "builds",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cloudflare R2",
+        "category": "storage",
+        "service_type": "object-storage",
+        "pricing_layer": "always-free",
+        "summary": "S3-compatible object storage with no egress fees",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 10,
+            "unit": "GB",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Class A operations",
+            "value": 1000000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Class B operations",
+            "value": 10000000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Egress fee",
+            "value": "$0",
+            "unit": null,
+            "period": null,
+            "note": "free egress to anywhere"
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cloudflare D1",
+        "category": "database",
+        "service_type": "sql",
+        "pricing_layer": "always-free",
+        "summary": "Serverless SQLite at the edge",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 5,
+            "unit": "GB",
+            "period": "total",
+            "note": null
+          },
+          {
+            "label": "Rows read",
+            "value": 25000000000,
+            "unit": "rows",
+            "period": "day",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cloudflare KV",
+        "category": "storage",
+        "service_type": "kv-cache",
+        "pricing_layer": "always-free",
+        "summary": "Low-latency global key-value store",
+        "limits": [
+          {
+            "label": "Reads",
+            "value": 100000,
+            "unit": "requests",
+            "period": "day",
+            "note": null
+          },
+          {
+            "label": "Writes",
+            "value": 1000,
+            "unit": "requests",
+            "period": "day",
+            "note": null
+          },
+          {
+            "label": "Storage",
+            "value": 1,
+            "unit": "GB",
+            "period": "total",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Workers AI",
+        "category": "ai-api",
+        "service_type": "llm",
+        "pricing_layer": "always-free",
+        "summary": "Serverless inference for open models at the edge",
+        "limits": [
+          {
+            "label": "Neurons",
+            "value": 10000,
+            "unit": "neurons",
+            "period": "day",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "100,000 req/day",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "email-verify",
+    "claim_steps": [
+      "Create a Cloudflare account",
+      "Add a Worker, Pages project, or R2 bucket",
+      "Deploy — no card required"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "10ms CPU time per request is the binding constraint for compute-heavy Workers",
+      "Durable Objects and Queues are paid-only add-ons"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Workers limits",
+        "url": "https://developers.cloudflare.com/workers/platform/limits/"
+      },
+      {
+        "label": "R2 pricing",
+        "url": "https://developers.cloudflare.com/r2/pricing/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp",
+      "pre-seed",
+      "seed",
+      "series-a"
+    ],
+    "tier_fit_rationale": "Free quota scales further than any other edge platform — usable well past hobby into small production workloads.",
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005688Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Merged from legacy cloudflare-workers + cloudflare-r2 into one vendor record with a services[] breakdown per the v2 schema; D1/KV/Workers AI limits added. Verified 2026-09-25 for Workers and R2 (matched legacy figures); D1/KV/Workers AI figures carried from prior knowledge, not re-fetched this session."
+  },
+  {
+    "provider_id": "deno-deploy",
+    "name": "Deno Deploy",
+    "vendor": "Deno",
+    "category": "cloud",
+    "source_urls": [
+      "https://deno.com/deploy/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Edge JavaScript/TypeScript hosting with a free tier including KV storage",
+    "highlights": [
+      "1M requests/month free",
+      "10 hours of active CPU time included",
+      "1 GiB KV storage with 1M read units/month"
+    ],
+    "services": [
+      {
+        "name": "Deno Deploy",
+        "category": "cloud",
+        "service_type": "serverless",
+        "pricing_layer": "always-free",
+        "summary": "Edge-deployed JS/TS applications",
+        "limits": [
+          {
+            "label": "Requests",
+            "value": 1000000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Active CPU",
+            "value": 10,
+            "unit": "hours",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Memory",
+            "value": 150,
+            "unit": "GiB-hours",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Deno KV",
+        "category": "storage",
+        "service_type": "kv-cache",
+        "pricing_layer": "always-free",
+        "summary": "Globally distributed key-value store",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 1,
+            "unit": "GiB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Read units",
+            "value": 1000000,
+            "unit": "units",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Write units",
+            "value": 500000,
+            "unit": "units",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "1M requests/mo",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "github-auth",
+    "claim_steps": [
+      "Sign up at deno.com/deploy with GitHub",
+      "Link a repo or use deployctl",
+      "Deploy — no card required"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "Log retention limited to 1 day on the free plan"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://deno.com/deploy/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005709Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the Deno Deploy pricing page."
+  },
+  {
+    "provider_id": "fly-io",
+    "name": "Fly.io",
+    "vendor": "Fly.io",
+    "category": "cloud",
+    "source_urls": [
+      "https://fly.io/docs/about/pricing/"
+    ],
+    "offer_type": "free-trial",
+    "headline": "Global edge VM hosting with a small trial credit, no perpetual free tier",
+    "highlights": [
+      "$5 trial credit covers small always-on apps for a while",
+      "Pay-as-you-go after the credit runs out"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Trial credit",
+        "amount": 5.0,
+        "currency": "USD",
+        "duration_days": null,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$5 trial credit",
+    "duration_summary": "Trial",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at fly.io",
+      "Add a card to deploy",
+      "Trial credit applies automatically"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "No always-free tier as of 2026 — a card is required and billing starts once the trial credit is used"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://fly.io/docs/about/pricing/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": false,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-22",
+    "scraped_at": "2026-09-25T15:44:43.005717Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "gcp-free-tier",
+    "name": "Google Cloud Free Tier",
+    "vendor": "Google",
+    "category": "cloud",
+    "source_urls": [
+      "https://cloud.google.com/free",
+      "https://docs.cloud.google.com/free/docs/free-cloud-tier"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Always-free services plus a $300 credit for 90 days on any new account",
+    "highlights": [
+      "$300 welcome credit usable across eligible products for 90 days, no auto-charge",
+      "Always-free Compute Engine e2-micro instance, limited to three US regions",
+      "Cloud Run, Cloud Functions, Firestore and BigQuery each have a generous always-free quota"
+    ],
+    "services": [
+      {
+        "name": "Compute Engine (Always Free)",
+        "category": "cloud",
+        "service_type": "vm",
+        "pricing_layer": "always-free",
+        "summary": "One non-preemptible e2-micro VM per month in US regions",
+        "limits": [
+          {
+            "label": "Instances",
+            "value": 1,
+            "unit": null,
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Disk",
+            "value": 30,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Regions",
+            "value": "us-west1, us-central1, us-east1",
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cloud Storage (Always Free)",
+        "category": "storage",
+        "service_type": "object-storage",
+        "pricing_layer": "always-free",
+        "summary": "Regional storage in US regions only",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 5,
+            "unit": "GB",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Class A ops",
+            "value": 5000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Class B ops",
+            "value": 50000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cloud Run (Always Free)",
+        "category": "cloud",
+        "service_type": "container",
+        "pricing_layer": "always-free",
+        "summary": "Serverless containers",
+        "limits": [
+          {
+            "label": "Requests",
+            "value": 2000000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "vCPU-seconds",
+            "value": 180000,
+            "unit": "vCPU-seconds",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cloud Functions (Always Free)",
+        "category": "cloud",
+        "service_type": "serverless",
+        "pricing_layer": "always-free",
+        "summary": "Serverless functions",
+        "limits": [
+          {
+            "label": "Invocations",
+            "value": 2000000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Firestore (Always Free)",
+        "category": "database",
+        "service_type": "nosql",
+        "pricing_layer": "always-free",
+        "summary": "NoSQL document database",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 1,
+            "unit": "GB",
+            "period": "total",
+            "note": null
+          },
+          {
+            "label": "Reads",
+            "value": 50000,
+            "unit": "reads",
+            "period": "day",
+            "note": null
+          },
+          {
+            "label": "Writes",
+            "value": 20000,
+            "unit": "writes",
+            "period": "day",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "BigQuery (Always Free)",
+        "category": "database",
+        "service_type": "sql",
+        "pricing_layer": "always-free",
+        "summary": "Serverless data warehouse",
+        "limits": [
+          {
+            "label": "Query processing",
+            "value": 1,
+            "unit": "TB",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Storage",
+            "value": 10,
+            "unit": "GB",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "$300 Signup Credit",
+        "category": "cloud",
+        "service_type": "credits",
+        "pricing_layer": "credit",
+        "summary": "Credit usable across all eligible GCP services for 90 days",
+        "limits": [
+          {
+            "label": "Credit",
+            "value": 300,
+            "unit": "USD",
+            "period": "once",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [
+      {
+        "label": "Signup credit",
+        "amount": 300.0,
+        "currency": "USD",
+        "duration_days": 90,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$300 credits + always-free",
+    "duration_summary": "90 days + always-free",
+    "region_summary": "US free; global on credits",
+    "eligibility_summary": "New GCP account, CC req.",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Create a GCP account",
+      "Enable billing to unlock the $300 credit",
+      "Set a budget alert before the credit expires"
+    ],
+    "restrictions": [
+      "Always-free Compute Engine and Storage are US-region only (us-west1/us-central1/us-east1)"
+    ],
+    "gotchas": [
+      "Crossing $300 credit triggers paid billing only if you opted in to continue after the trial"
+    ],
+    "after_free_period": "Always-Free services continue indefinitely; everything else requires opting into paid billing.",
+    "links": [
+      {
+        "label": "Free tier",
+        "url": "https://cloud.google.com/free"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": false,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005745Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: $300/90-day credit and always-free service limits (Compute e2-micro, Storage 5GB, Cloud Run 2M req, Functions 2M req, Firestore 1GB/50k reads/20k writes, BigQuery 1TB query) all confirmed against current docs.cloud.google.com page — matches legacy record closely."
+  },
+  {
+    "provider_id": "netlify",
+    "name": "Netlify",
+    "vendor": "Netlify",
+    "category": "cloud",
+    "source_urls": [
+      "https://www.netlify.com/pricing/"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Static and Jamstack hosting with a free Starter plan built on usage credits",
+    "highlights": [
+      "Unlimited deploy previews",
+      "Includes Functions and AI-model access on the free credit pool"
+    ],
+    "services": [
+      {
+        "name": "Netlify Starter",
+        "category": "cloud",
+        "service_type": "static-hosting",
+        "pricing_layer": "always-free",
+        "summary": "Static hosting, Functions and deploy previews on a monthly credit pool",
+        "limits": [
+          {
+            "label": "Monthly credits",
+            "value": 300,
+            "unit": null,
+            "period": null,
+            "note": "exact GB/minute conversion not published"
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "300 credits/mo",
+    "duration_summary": "Always free (Starter)",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "github-auth",
+    "claim_steps": [
+      "Sign up with GitHub, GitLab or email",
+      "Connect a repo",
+      "Deploy on the free Starter plan"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://www.netlify.com/pricing/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005754Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: Netlify has restructured its free plan around a '300 credit' usage pool rather than separate bandwidth/build-minute caps; the pricing page does not publish exact GB/minutes conversions, so specific limits are omitted rather than guessed."
+  },
+  {
+    "provider_id": "oracle-always-free",
+    "name": "Oracle Cloud Always Free",
+    "vendor": "Oracle",
+    "category": "cloud",
+    "source_urls": [
+      "https://www.oracle.com/cloud/free/"
+    ],
+    "offer_type": "free-tier",
+    "headline": "The most generous always-free compute of any public cloud: 4 ARM cores, 24 GB RAM, forever",
+    "highlights": [
+      "4 ARM Ampere A1 OCPUs + 24 GB RAM, split across up to 4 VMs, never expires",
+      "2 AMD micro VMs, 200 GB block storage, 10 TB egress/month",
+      "2 Autonomous Databases (20 GB each), Mumbai region supported"
+    ],
+    "services": [
+      {
+        "name": "Compute (ARM Ampere A1)",
+        "category": "cloud",
+        "service_type": "vm",
+        "pricing_layer": "always-free",
+        "summary": "Always-free ARM compute, flexibly split across up to 4 VMs",
+        "limits": [
+          {
+            "label": "OCPUs",
+            "value": 4,
+            "unit": null,
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "RAM",
+            "value": 24,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Max VMs",
+            "value": 4,
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Compute (AMD Micro)",
+        "category": "cloud",
+        "service_type": "vm",
+        "pricing_layer": "always-free",
+        "summary": "Always-free AMD micro VM instances",
+        "limits": [
+          {
+            "label": "Instances",
+            "value": 2,
+            "unit": null,
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "RAM each",
+            "value": 1,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Block Storage",
+        "category": "storage",
+        "service_type": "object-storage",
+        "pricing_layer": "always-free",
+        "summary": "Always-free block volumes for compute instances",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 200,
+            "unit": "GB",
+            "period": "total",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Object Storage",
+        "category": "storage",
+        "service_type": "object-storage",
+        "pricing_layer": "always-free",
+        "summary": "Always-free object storage buckets",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 10,
+            "unit": "GB",
+            "period": "total",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Autonomous Database",
+        "category": "database",
+        "service_type": "sql",
+        "pricing_layer": "always-free",
+        "summary": "Always-free managed Oracle database, two instances",
+        "limits": [
+          {
+            "label": "Databases",
+            "value": 2,
+            "unit": null,
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Storage each",
+            "value": 20,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "$300 Signup Credit",
+        "category": "cloud",
+        "service_type": "credits",
+        "pricing_layer": "credit",
+        "summary": "Credit usable across all services for 30 days",
+        "limits": [
+          {
+            "label": "Credit",
+            "value": 300,
+            "unit": "USD",
+            "period": "once",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [
+      {
+        "label": "Signup credit",
+        "amount": 300.0,
+        "currency": "USD",
+        "duration_days": 30,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "4 ARM cores + 24 GB RAM",
+    "duration_summary": "Always free (forever)",
+    "region_summary": "All OCI incl. Mumbai",
+    "eligibility_summary": "New Oracle account, CC req.",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Create an Oracle Cloud account",
+      "Verify with a card (used for identity only on Always Free)",
+      "Provision an Always Free ARM A1 VM"
+    ],
+    "restrictions": [
+      "ARM A1 capacity is reclaimed if idle 30+ days"
+    ],
+    "gotchas": [
+      "Mumbai (ap-mumbai-1) A1 ARM capacity is sometimes exhausted — retry over hours/days",
+      "Rare account suspensions reported when sustained 100% CPU looks abusive"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Oracle Cloud Free Tier",
+        "url": "https://www.oracle.com/cloud/free/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp",
+      "pre-seed"
+    ],
+    "tier_fit_rationale": "Best free-tier compute by an order of magnitude — 4 ARM cores + 24 GB RAM trivially runs FastAPI + Next.js + Postgres on one VM at $0 forever.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-28",
+    "scraped_at": "2026-09-25T15:44:43.005781Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session — oracle.com blocked WebFetch with HTTP 403 (bot protection) on two attempted URLs. Legacy facts (verified 2026-04-28) carried forward unchanged."
+  },
+  {
+    "provider_id": "render",
+    "name": "Render",
+    "vendor": "Render",
+    "category": "cloud",
+    "source_urls": [
+      "https://render.com/docs/free"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Web services, Postgres and static sites with a free monthly instance-hour budget",
+    "highlights": [
+      "750 free web service instance-hours per month",
+      "Free services spin down after 15 minutes idle",
+      "Free Postgres now expires 30 days after creation, not 90"
+    ],
+    "services": [
+      {
+        "name": "Render Web Service",
+        "category": "cloud",
+        "service_type": "container",
+        "pricing_layer": "always-free",
+        "summary": "Container-based web service on shared free compute",
+        "limits": [
+          {
+            "label": "Instance hours",
+            "value": 750,
+            "unit": "hours",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Spin-down after idle",
+            "value": 15,
+            "unit": "minutes",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Render Postgres",
+        "category": "database",
+        "service_type": "sql",
+        "pricing_layer": "always-free",
+        "summary": "Managed Postgres database, free tier",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 1,
+            "unit": "GB",
+            "period": "total",
+            "note": null
+          },
+          {
+            "label": "Expires after",
+            "value": 30,
+            "unit": "days",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Render Key Value",
+        "category": "storage",
+        "service_type": "kv-cache",
+        "pricing_layer": "always-free",
+        "summary": "Redis-compatible in-memory store, free tier",
+        "limits": [
+          {
+            "label": "Persistence",
+            "value": "In-memory only, lost on restart",
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "750 hrs/mo",
+    "duration_summary": "Always free (sleeps)",
+    "region_summary": "US / EU / SG",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "github-auth",
+    "claim_steps": [
+      "Sign up with GitHub or email",
+      "Create a Web Service from a repo",
+      "Deploy on the free plan"
+    ],
+    "restrictions": [
+      "Free web services spin down after 15 min idle (cold-start ~30-60s)"
+    ],
+    "gotchas": [
+      "Free Postgres now expires 30 days after creation (was 90 days) with a 14-day grace period before deletion",
+      "Free web services have an ephemeral filesystem — data is lost on redeploy or spin-down"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Free tier docs",
+        "url": "https://render.com/docs/free"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": false,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005795Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: Postgres free-tier expiry shortened to 30 days (legacy record said 90) — this is a real regression, flagged in gotchas."
+  },
+  {
+    "provider_id": "vercel",
+    "name": "Vercel",
+    "vendor": "Vercel",
+    "category": "cloud",
+    "source_urls": [
+      "https://vercel.com/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Frontend hosting and edge functions for personal, non-commercial projects",
+    "highlights": [
+      "100 GB bandwidth and 1M edge requests included monthly",
+      "1M serverless function invocations per month",
+      "Hobby plan is strictly non-commercial"
+    ],
+    "services": [
+      {
+        "name": "Vercel Hosting",
+        "category": "cloud",
+        "service_type": "static-hosting",
+        "pricing_layer": "always-free",
+        "summary": "Static hosting plus preview deploys on Vercel's edge network",
+        "limits": [
+          {
+            "label": "Bandwidth",
+            "value": 100,
+            "unit": "GB",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Edge requests",
+            "value": 1000000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Vercel Functions",
+        "category": "cloud",
+        "service_type": "serverless",
+        "pricing_layer": "always-free",
+        "summary": "Serverless and edge functions for API routes",
+        "limits": [
+          {
+            "label": "Serverless invocations",
+            "value": 1000000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Provisioned memory",
+            "value": 360,
+            "unit": "GB-hrs",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "100 GB bandwidth/mo",
+    "duration_summary": "Always free (Hobby)",
+    "region_summary": "Global",
+    "eligibility_summary": "Personal use only",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "github-auth",
+    "claim_steps": [
+      "Sign up with a GitHub, GitLab or email account",
+      "Import or create a project",
+      "Deploy — no card required"
+    ],
+    "restrictions": [
+      "Hobby plan is for personal, non-commercial use only"
+    ],
+    "gotchas": [
+      "Any monetized site (ads, paid users, e-commerce) requires the paid Pro plan"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://vercel.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005809Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: commercial-use ban confirmed; edge/serverless invocation caps updated from legacy figures."
+  },
+  {
+    "provider_id": "cockroachdb-basic",
+    "name": "CockroachDB Cloud",
+    "vendor": "Cockroach Labs",
+    "category": "database",
+    "source_urls": [
+      "https://www.cockroachlabs.com/pricing/"
+    ],
+    "offer_type": "free-trial",
+    "headline": "Distributed SQL database with a 30-day trial credit, no longer a perpetual free tier",
+    "highlights": [
+      "30-day free trial with $400 in credit, no card required for Standard edition",
+      "Cluster pauses after the trial or credit is exhausted, with a 30-day grace period"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Trial credit",
+        "amount": 400.0,
+        "currency": "USD",
+        "duration_days": 30,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$400 trial credit",
+    "duration_summary": "30-day trial",
+    "region_summary": "Global",
+    "eligibility_summary": "Any new organization",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Create a CockroachDB Cloud organization",
+      "Deploy a Standard cluster on the trial",
+      "Add a payment method before day 30 to avoid pause"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "No perpetual free/Basic tier as of this session — legacy assumption of an always-free Basic plan is outdated; this is now a time-boxed trial"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://www.cockroachlabs.com/pricing/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": false,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005817Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: CockroachDB Cloud's free offering is a 30-day/$400-credit trial, not a perpetual free Basic plan — corrected from the task brief's assumption."
+  },
+  {
+    "provider_id": "firebase",
+    "name": "Firebase (Spark plan)",
+    "vendor": "Google",
+    "category": "database",
+    "source_urls": [
+      "https://firebase.google.com/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Google's mobile/web backend platform, free Spark plan with no card required",
+    "highlights": [
+      "Firestore, Auth, Hosting and Cloud Functions all included free",
+      "No payment method required to start"
+    ],
+    "services": [
+      {
+        "name": "Firestore",
+        "category": "database",
+        "service_type": "nosql",
+        "pricing_layer": "always-free",
+        "summary": "NoSQL document database",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 1,
+            "unit": "GiB",
+            "period": "total",
+            "note": null
+          },
+          {
+            "label": "Reads",
+            "value": 50000,
+            "unit": "reads",
+            "period": "day",
+            "note": null
+          },
+          {
+            "label": "Writes",
+            "value": 20000,
+            "unit": "writes",
+            "period": "day",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Firebase Auth",
+        "category": "auth",
+        "service_type": "auth",
+        "pricing_layer": "always-free",
+        "summary": "Email, phone and OAuth authentication",
+        "limits": [
+          {
+            "label": "Monthly active users",
+            "value": 50000,
+            "unit": "MAU",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Firebase Hosting",
+        "category": "cloud",
+        "service_type": "static-hosting",
+        "pricing_layer": "always-free",
+        "summary": "Static hosting with CDN",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 10,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Transfer",
+            "value": 360,
+            "unit": "MB",
+            "period": "day",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cloud Functions (via Firebase)",
+        "category": "cloud",
+        "service_type": "serverless",
+        "pricing_layer": "always-free",
+        "summary": "Serverless functions triggered by Firebase events",
+        "limits": [
+          {
+            "label": "Invocations",
+            "value": 2000000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "1 GiB Firestore",
+    "duration_summary": "Always free (Spark)",
+    "region_summary": "Global",
+    "eligibility_summary": "Any Google account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "oauth",
+    "claim_steps": [
+      "Create a Firebase project",
+      "Stay on the Spark (free) plan",
+      "Add the SDK to a web/mobile app"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://firebase.google.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005835Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the Firebase pricing page."
+  },
+  {
+    "provider_id": "mongodb-atlas",
+    "name": "MongoDB Atlas",
+    "vendor": "MongoDB",
+    "category": "database",
+    "source_urls": [
+      "https://www.mongodb.com/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Hosted MongoDB free M0 cluster with shared CPU/RAM",
+    "highlights": [
+      "512 MB storage, shared cluster, free forever",
+      "No backups on the free tier",
+      "No card required to start"
+    ],
+    "services": [
+      {
+        "name": "MongoDB Atlas M0",
+        "category": "database",
+        "service_type": "nosql",
+        "pricing_layer": "always-free",
+        "summary": "Shared free MongoDB cluster",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 512,
+            "unit": "MB",
+            "period": "total",
+            "note": null
+          },
+          {
+            "label": "Throughput",
+            "value": 100,
+            "unit": "ops/sec",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "512 MB",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Create a MongoDB Atlas account",
+      "Deploy a free M0 cluster",
+      "Whitelist an IP and connect"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "No backup service on the free M0 tier"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://www.mongodb.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005845Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: 512 MB storage, shared CPU/RAM, no backups — matches legacy record."
+  },
+  {
+    "provider_id": "neon",
+    "name": "Neon",
+    "vendor": "Neon",
+    "category": "database",
+    "source_urls": [
+      "https://neon.com/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Serverless Postgres with git-style branching and autoscaling compute",
+    "highlights": [
+      "0.5 GB storage per project, 100 compute-hours/month",
+      "Up to 10 branches per project, 100 projects per org",
+      "Autosuspends after 5 minutes idle"
+    ],
+    "services": [
+      {
+        "name": "Neon Postgres",
+        "category": "database",
+        "service_type": "sql",
+        "pricing_layer": "always-free",
+        "summary": "Serverless Postgres with branchable storage",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 0.5,
+            "unit": "GB",
+            "period": "total",
+            "note": "per project"
+          },
+          {
+            "label": "Compute",
+            "value": 100,
+            "unit": "CU-hours",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Branches",
+            "value": 10,
+            "unit": null,
+            "period": null,
+            "note": "per project"
+          },
+          {
+            "label": "Autosuspend",
+            "value": 5,
+            "unit": "minutes",
+            "period": null,
+            "note": "idle before suspend"
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "0.5 GB · 100 CU-hrs",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at neon.tech",
+      "Create a project",
+      "Copy the connection string"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "Compute suspends once the 100 CU-hour monthly budget is exhausted until the next cycle"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://neon.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp",
+      "pre-seed"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005857Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: pricing.neon.tech redirects permanently to neon.com/pricing. Storage and compute-hour figures confirmed; branch limit (10) and 5-min autosuspend newly documented."
+  },
+  {
+    "provider_id": "redis-cloud-free",
+    "name": "Redis Cloud",
+    "vendor": "Redis",
+    "category": "database",
+    "source_urls": [
+      "https://redis.io/pricing/"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Managed Redis with a small always-free shared database",
+    "highlights": [
+      "30 MB storage, single database, always free",
+      "Available on AWS, Azure and GCP"
+    ],
+    "services": [
+      {
+        "name": "Redis Cloud Free",
+        "category": "database",
+        "service_type": "kv-cache",
+        "pricing_layer": "always-free",
+        "summary": "Shared-cloud Redis database",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 30,
+            "unit": "MB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Databases",
+            "value": 1,
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "30 MB",
+    "duration_summary": "Always free",
+    "region_summary": "AWS / Azure / GCP",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at redis.io",
+      "Create a free database",
+      "No card required"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://redis.io/pricing/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005897Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the Redis pricing page."
+  },
+  {
+    "provider_id": "supabase",
+    "name": "Supabase",
+    "vendor": "Supabase",
+    "category": "database",
+    "source_urls": [
+      "https://supabase.com/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Postgres, Auth, Storage and Realtime bundled on one free plan",
+    "highlights": [
+      "500 MB Postgres database, 2 active projects",
+      "50,000 monthly active users on Auth",
+      "Projects pause after 1 week idle"
+    ],
+    "services": [
+      {
+        "name": "Supabase Postgres",
+        "category": "database",
+        "service_type": "sql",
+        "pricing_layer": "always-free",
+        "summary": "Managed Postgres database with pgvector included",
+        "limits": [
+          {
+            "label": "Database size",
+            "value": 500,
+            "unit": "MB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Projects",
+            "value": 2,
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Supabase Storage",
+        "category": "storage",
+        "service_type": "object-storage",
+        "pricing_layer": "always-free",
+        "summary": "Object storage for files and media",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 1,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Supabase Auth",
+        "category": "auth",
+        "service_type": "auth",
+        "pricing_layer": "always-free",
+        "summary": "Email, OAuth and magic-link authentication",
+        "limits": [
+          {
+            "label": "Monthly active users",
+            "value": 50000,
+            "unit": "MAU",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Supabase Edge Functions",
+        "category": "cloud",
+        "service_type": "serverless",
+        "pricing_layer": "always-free",
+        "summary": "Deno-based serverless functions",
+        "limits": [
+          {
+            "label": "Invocations",
+            "value": 500000,
+            "unit": "requests",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "500 MB · 2 projects",
+    "duration_summary": "Always free",
+    "region_summary": "Global incl. Mumbai",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "github-auth",
+    "claim_steps": [
+      "Sign up with GitHub",
+      "Create a new project",
+      "Copy the connection string and API keys"
+    ],
+    "restrictions": [
+      "Free projects pause after 7 days of inactivity (resume on first request, ~10s wakeup)"
+    ],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://supabase.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": "Production-ready free tier for personal and startup-MVP use; scales naturally into paid Pro at $25/mo.",
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005915Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25: all figures (500 MB, 2 projects, 50k MAU, 500k edge invocations, 200 realtime connections, 7-day pause) match current pricing page exactly."
+  },
+  {
+    "provider_id": "turso",
+    "name": "Turso",
+    "vendor": "Turso",
+    "category": "database",
+    "source_urls": [
+      "https://turso.tech/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Distributed SQLite (libSQL) with a generous free tier and no card required",
+    "highlights": [
+      "100 databases, 5 GB storage free",
+      "500M rows read and 10M rows written per month"
+    ],
+    "services": [
+      {
+        "name": "Turso Database",
+        "category": "database",
+        "service_type": "sql",
+        "pricing_layer": "always-free",
+        "summary": "Distributed SQLite built on libSQL",
+        "limits": [
+          {
+            "label": "Databases",
+            "value": 100,
+            "unit": null,
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Storage",
+            "value": 5,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Rows read",
+            "value": 500000000,
+            "unit": "rows",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Rows written",
+            "value": 10000000,
+            "unit": "rows",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "5 GB · 100 DBs",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at turso.tech",
+      "Create a database via the CLI or dashboard",
+      "No card required"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://turso.tech/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005927Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the Turso pricing page."
+  },
+  {
+    "provider_id": "upstash",
+    "name": "Upstash",
+    "vendor": "Upstash",
+    "category": "database",
+    "source_urls": [
+      "https://upstash.com/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Serverless Redis with a small always-free tier, pay-per-request after",
+    "highlights": [
+      "256 MB storage, 500K commands/month free",
+      "10 GB bandwidth/month included"
+    ],
+    "services": [
+      {
+        "name": "Upstash Redis",
+        "category": "database",
+        "service_type": "kv-cache",
+        "pricing_layer": "always-free",
+        "summary": "Serverless Redis-compatible key-value store",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 256,
+            "unit": "MB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Commands",
+            "value": 500000,
+            "unit": "commands",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Bandwidth",
+            "value": 10,
+            "unit": "GB",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "256 MB · 500K cmds",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at upstash.com",
+      "Create a Redis database",
+      "No card required"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://upstash.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005938Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 for Redis; Kafka/QStash free-tier figures not confirmed this session (page only surfaced Redis pricing) so those services are omitted rather than guessed."
+  },
+  {
+    "provider_id": "github-actions",
+    "name": "GitHub Actions",
+    "vendor": "GitHub",
+    "category": "dev-tools",
+    "source_urls": [
+      "https://github.com/pricing"
+    ],
+    "offer_type": "free-quota",
+    "headline": "CI/CD minutes free for public repos, monthly budget for private repos",
+    "highlights": [
+      "Unlimited minutes on public repositories",
+      "2,000 free Linux minutes/month on private repos"
+    ],
+    "services": [
+      {
+        "name": "GitHub Actions",
+        "category": "dev-tools",
+        "service_type": "ci-cd",
+        "pricing_layer": "always-free",
+        "summary": "Hosted CI/CD runners",
+        "limits": [
+          {
+            "label": "Minutes (private repos)",
+            "value": 2000,
+            "unit": "minutes",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Minutes (public repos)",
+            "value": "Unlimited",
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "2,000 min/mo",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any GitHub account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Add a .github/workflows/*.yml file to a repo",
+      "Push — Actions runs automatically"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://github.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp",
+      "pre-seed",
+      "seed",
+      "series-a"
+    ],
+    "tier_fit_rationale": "Free CI/CD minutes on public repos scale to any team size; private-repo budget is generous enough for small teams through Series A.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-25",
+    "scraped_at": "2026-09-25T15:44:43.005951Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "github-codespaces",
+    "name": "GitHub Codespaces",
+    "vendor": "GitHub",
+    "category": "dev-tools",
+    "source_urls": [
+      "https://github.com/features/codespaces"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Cloud dev environments with a free monthly core-hour and storage budget",
+    "highlights": [
+      "120 core-hours/month (60 hours on a 2-core codespace)",
+      "15 GB storage/month included"
+    ],
+    "services": [
+      {
+        "name": "Codespaces",
+        "category": "dev-tools",
+        "service_type": "vm",
+        "pricing_layer": "always-free",
+        "summary": "Cloud-hosted VS Code dev environments",
+        "limits": [
+          {
+            "label": "Core hours",
+            "value": 120,
+            "unit": "core-hours",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Storage",
+            "value": 15,
+            "unit": "GB",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "120 core-hrs/mo",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any GitHub account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Open a repo on GitHub",
+      "Click Code -> Codespaces -> Create codespace"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Codespaces",
+        "url": "https://github.com/features/codespaces"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": false,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005960Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the GitHub Codespaces features page."
+  },
+  {
+    "provider_id": "cloudflare-registrar",
+    "name": "Cloudflare Registrar & DNS",
+    "vendor": "Cloudflare",
+    "category": "domain",
+    "source_urls": [
+      "https://developers.cloudflare.com/registrar/"
+    ],
+    "offer_type": "free-tier",
+    "headline": "At-cost domain registration with free DNS management and email routing",
+    "highlights": [
+      "Domains sold at registry cost, no markup",
+      "Free authoritative DNS on Cloudflare's global network",
+      "Free Email Routing to forward mail without hosting a mailbox"
+    ],
+    "services": [
+      {
+        "name": "Cloudflare Registrar",
+        "category": "domain",
+        "service_type": "domain-registration",
+        "pricing_layer": "always-free",
+        "summary": "At-cost domain registration, no markup",
+        "limits": [
+          {
+            "label": "Markup",
+            "value": "$0",
+            "unit": null,
+            "period": null,
+            "note": "pay only the registry price"
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cloudflare DNS",
+        "category": "domain",
+        "service_type": "dns",
+        "pricing_layer": "always-free",
+        "summary": "Authoritative DNS on Cloudflare's global anycast network",
+        "limits": [
+          {
+            "label": "DNSSEC",
+            "value": "Included free",
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Cloudflare Email Routing",
+        "category": "domain",
+        "service_type": "email",
+        "pricing_layer": "always-free",
+        "summary": "Forward email for a custom domain without hosting a mailbox",
+        "limits": [
+          {
+            "label": "Custom addresses",
+            "value": "Unlimited",
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "At-cost domains",
+    "duration_summary": "Always free (DNS/routing)",
+    "region_summary": "Global",
+    "eligibility_summary": "Any domain owner",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "email-verify",
+    "claim_steps": [
+      "Add a domain to a Cloudflare account",
+      "Transfer or register it through Cloudflare Registrar",
+      "Enable Email Routing under the domain's Email tab"
+    ],
+    "restrictions": [
+      "Registrar requires the domain to be added to Cloudflare DNS first; not all TLDs are supported"
+    ],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Registrar docs",
+        "url": "https://developers.cloudflare.com/registrar/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp",
+      "pre-seed",
+      "seed",
+      "series-a"
+    ],
+    "tier_fit_rationale": "At-cost domains and free DNS/email-routing scale from hobby projects through Series-A infrastructure with zero markup at any stage.",
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.005973Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from Cloudflare Registrar docs: at-cost pricing and free DNSSEC confirmed; Email Routing is a well-documented free Cloudflare feature bundled with any zone."
+  },
+  {
+    "provider_id": "google-colab",
+    "name": "Google Colab",
+    "vendor": "Google",
+    "category": "gpu",
+    "source_urls": [
+      "https://colab.research.google.com/"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Free Jupyter notebooks with T4/L4 GPU access, dynamic daily quota",
+    "highlights": [
+      "~12 hours/day of T4/L4 GPU time, quota varies with demand",
+      "Disconnects on inactivity or after long sessions"
+    ],
+    "services": [
+      {
+        "name": "Colab GPU Runtime",
+        "category": "gpu",
+        "service_type": "notebook",
+        "pricing_layer": "quota",
+        "summary": "T4/L4 GPU-backed Jupyter notebooks",
+        "limits": [
+          {
+            "label": "GPU time",
+            "value": "~12 hrs",
+            "unit": null,
+            "period": null,
+            "note": "per day, dynamic"
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "~12 hrs/day GPU",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any Google account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "oauth",
+    "claim_steps": [
+      "Open colab.research.google.com with a Google account",
+      "Select GPU runtime",
+      "Run notebook cells"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "Sessions terminate on idle; free GPU quota is dynamic and shrinks under heavy demand"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Colab",
+        "url": "https://colab.research.google.com/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": false,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-22",
+    "scraped_at": "2026-09-25T15:44:43.005982Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "kaggle",
+    "name": "Kaggle Notebooks",
+    "vendor": "Google",
+    "category": "gpu",
+    "source_urls": [
+      "https://www.kaggle.com/docs/notebooks"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Free GPU and TPU notebooks with a stable weekly quota",
+    "highlights": [
+      "30 hrs/week GPU (P100 or 2x T4)",
+      "20 hrs/week TPU",
+      "Persistent sessions, more stable than Colab"
+    ],
+    "services": [
+      {
+        "name": "Kaggle Notebooks GPU",
+        "category": "gpu",
+        "service_type": "notebook",
+        "pricing_layer": "always-free",
+        "summary": "P100 or dual T4 GPU for notebook compute",
+        "limits": [
+          {
+            "label": "GPU hours",
+            "value": 30,
+            "unit": "hours",
+            "period": null,
+            "note": "per week"
+          },
+          {
+            "label": "TPU hours",
+            "value": 20,
+            "unit": "hours",
+            "period": null,
+            "note": "per week"
+          },
+          {
+            "label": "RAM",
+            "value": 16,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "30 hrs/week GPU",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any Kaggle account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Create a Kaggle account",
+      "Verify phone number to enable GPU",
+      "Start a new notebook with GPU accelerator"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Notebooks docs",
+        "url": "https://www.kaggle.com/docs/notebooks"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": false,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-20",
+    "scraped_at": "2026-09-25T15:44:43.005992Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "modal",
+    "name": "Modal",
+    "vendor": "Modal",
+    "category": "gpu",
+    "source_urls": [
+      "https://modal.com/pricing"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Serverless GPU and CPU compute with a recurring monthly free credit",
+    "highlights": [
+      "$30/month free compute credit on the Starter plan",
+      "Usable on GPU or CPU functions"
+    ],
+    "services": [
+      {
+        "name": "Modal Compute",
+        "category": "gpu",
+        "service_type": "serverless",
+        "pricing_layer": "credit",
+        "summary": "Serverless functions on GPU or CPU",
+        "limits": [
+          {
+            "label": "Monthly credit",
+            "value": 30,
+            "unit": "USD",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "$30/mo free credit",
+    "duration_summary": "Recurring monthly",
+    "region_summary": "Global",
+    "eligibility_summary": "Any developer account",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at modal.com",
+      "Install the modal CLI",
+      "Deploy a function — credit applies automatically"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://modal.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.006002Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the Modal pricing page."
+  },
+  {
+    "provider_id": "sagemaker-studio-lab",
+    "name": "Amazon SageMaker Studio Lab",
+    "vendor": "AWS",
+    "category": "gpu",
+    "source_urls": [
+      "https://studiolab.sagemaker.aws/"
+    ],
+    "offer_type": "free-quota",
+    "headline": "Free hosted Jupyter notebooks with GPU access, no AWS account or card required",
+    "highlights": [
+      "Free CPU and GPU compute sessions",
+      "No AWS account needed — separate free signup"
+    ],
+    "services": [
+      {
+        "name": "Studio Lab Notebooks",
+        "category": "gpu",
+        "service_type": "notebook",
+        "pricing_layer": "always-free",
+        "summary": "Free CPU/GPU Jupyter notebook runtime, no AWS account needed",
+        "limits": [
+          {
+            "label": "Access",
+            "value": "Free CPU or GPU session, time-limited per session",
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "Free GPU sessions",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user (approval required)",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Request access at studiolab.sagemaker.aws",
+      "Wait for account approval email",
+      "Start a CPU or GPU runtime"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "Signup requires waitlist approval, which can take days"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "SageMaker Studio Lab",
+        "url": "https://studiolab.sagemaker.aws/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": false,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.006010Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not independently re-verified via WebFetch this session (outside the 40-call budget); facts based on well-established, stable product behavior (free tier unchanged for years). Flagged medium confidence per the honesty rule."
+  },
+  {
+    "provider_id": "birac-big-grant",
+    "name": "BIRAC BIG Grant",
+    "vendor": "Government of India (BIRAC)",
+    "category": "grant",
+    "source_urls": [
+      "https://birac.nic.in/"
+    ],
+    "offer_type": "grant",
+    "headline": "Biotechnology Ignition Grant for early-stage biotech and life-sciences startups",
+    "highlights": [
+      "Up to ₹50 lakh grant for proof-of-concept biotech ideas",
+      "Disbursed via BIRAC-accredited Bioincubators"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Ignition grant",
+        "amount": 5000000.0,
+        "currency": "INR",
+        "duration_days": null,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "Up to ₹50 lakh",
+    "duration_summary": "Application-based",
+    "region_summary": "India only",
+    "eligibility_summary": "Biotech startups/entrepreneurs",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Identify a BIRAC-accredited Bioincubator",
+      "Apply through the BIG call for proposals"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "BIRAC",
+        "url": "https://birac.nic.in/"
+      }
+    ],
+    "geo_priority": "india-native",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.006018Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not independently re-verified via WebFetch this session (outside the 40-call budget, government portal); figures reflect the long-standing, publicly documented BIG scheme structure. Flagged medium confidence per the honesty rule — grant amount should be reconfirmed on next refresh."
+  },
+  {
+    "provider_id": "indiaai-mission",
+    "name": "IndiaAI Mission (MeitY)",
+    "vendor": "Government of India (MeitY)",
+    "category": "grant",
+    "source_urls": [
+      "https://indiaai.gov.in/"
+    ],
+    "offer_type": "grant",
+    "headline": "Indian government AI mission offering subsidised GPU compute and startup grants",
+    "highlights": [
+      "Subsidised access to 10,000+ GPUs",
+      "Free access to AI Kosh datasets and the IndiaAI Innovation Centre"
+    ],
+    "services": [],
+    "credits": [],
+    "quota_summary": "GPU + ₹ varies",
+    "duration_summary": "Multi-year",
+    "region_summary": "India only",
+    "eligibility_summary": "Indian AI startups/researchers",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply via indiaai.gov.in for compute access or grant programs"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "IndiaAI Mission",
+        "url": "https://indiaai.gov.in/"
+      }
+    ],
+    "geo_priority": "india-native",
+    "always_on": null,
+    "use_case_tiers": [
+      "startup-mvp",
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "Subsidised GPU access and grant tracks under a ₹10,372 crore national allocation; fits AI startups from MVP through seed that qualify via empanelled partners.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-12",
+    "scraped_at": "2026-09-25T15:44:43.006025Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. ₹10,372 crore allocation across 5 years; compute via empanelled cloud partners."
+  },
+  {
+    "provider_id": "meity-tide-2",
+    "name": "MeitY TIDE 2.0",
+    "vendor": "Government of India (MeitY)",
+    "category": "grant",
+    "source_urls": [
+      "https://tide.meity.gov.in/"
+    ],
+    "offer_type": "grant",
+    "headline": "Indian government incubation grant for tech startups, AI and IoT focus",
+    "highlights": [
+      "Up to ₹4 lakh proof-of-concept grant",
+      "Up to ₹7 lakh prototype grant via TIDE incubators"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Proof-of-concept + prototype grant",
+        "amount": 1100000.0,
+        "currency": "INR",
+        "duration_days": null,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "Up to ₹11 lakh",
+    "duration_summary": "1 yr",
+    "region_summary": "India only",
+    "eligibility_summary": "Tech startups via TIDE",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Identify a TIDE 2.0 incubator",
+      "Apply through that incubator's cohort process"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "TIDE 2.0",
+        "url": "https://tide.meity.gov.in/"
+      }
+    ],
+    "geo_priority": "india-native",
+    "always_on": null,
+    "use_case_tiers": [
+      "startup-mvp",
+      "pre-seed"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-12",
+    "scraped_at": "2026-09-25T15:44:43.006033Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "nidhi-prayas",
+    "name": "NIDHI-PRAYAS",
+    "vendor": "Government of India (DST)",
+    "category": "grant",
+    "source_urls": [
+      "https://www.startupindia.gov.in/content/sih/en/government-schemes/nidhi-prayas.html"
+    ],
+    "offer_type": "grant",
+    "headline": "DST prototype grant for early-stage innovators, disbursed via NIDHI-PRAYAS centres",
+    "highlights": [
+      "Up to ₹10 lakh for prototype development",
+      "Aimed at idea and pre-prototype stage innovators"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Prototype grant",
+        "amount": 1000000.0,
+        "currency": "INR",
+        "duration_days": null,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "Up to ₹10 lakh",
+    "duration_summary": "Application-based",
+    "region_summary": "India only",
+    "eligibility_summary": "Pre-prototype innovators",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Identify a NIDHI-PRAYAS centre",
+      "Apply with a prototype proposal"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "NIDHI-PRAYAS",
+        "url": "https://www.startupindia.gov.in/content/sih/en/government-schemes/nidhi-prayas.html"
+      }
+    ],
+    "geo_priority": "india-native",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "pre-seed"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.006040Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not independently re-verified via WebFetch this session (outside the 40-call budget, government portal); figures reflect the long-standing, publicly documented NIDHI-PRAYAS scheme structure. Flagged medium confidence per the honesty rule."
+  },
+  {
+    "provider_id": "startup-india-seed",
+    "name": "Startup India Seed Fund Scheme",
+    "vendor": "Government of India (DPIIT)",
+    "category": "grant",
+    "source_urls": [
+      "https://seedfund.startupindia.gov.in/"
+    ],
+    "offer_type": "grant",
+    "headline": "Indian government seed grant up to ₹50 lakh disbursed via partner incubators",
+    "highlights": [
+      "Up to ₹20 lakh grant for proof-of-concept",
+      "Up to ₹50 lakh as convertible debentures for market entry"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Proof-of-concept grant",
+        "amount": 2000000.0,
+        "currency": "INR",
+        "duration_days": null,
+        "conditions": null
+      },
+      {
+        "label": "Market-entry convertible debt",
+        "amount": 5000000.0,
+        "currency": "INR",
+        "duration_days": null,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "Up to ₹50 lakh",
+    "duration_summary": "Application-based",
+    "region_summary": "India only",
+    "eligibility_summary": "DPIIT-recognised startups",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Get DPIIT recognition",
+      "Apply to a partner incubator on the Seed Fund portal",
+      "Submit milestone-based utilization reports"
+    ],
+    "restrictions": [
+      "Eligible only for DPIIT-recognised startups under 2 years old, incorporated in India, with 51%+ Indian promoter shareholding"
+    ],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Scheme portal",
+        "url": "https://seedfund.startupindia.gov.in/"
+      }
+    ],
+    "geo_priority": "india-native",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "India-only non-dilutive/convertible-debt program targeting early-stage, DPIIT-recognised startups; not applicable to hobby or personal projects.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-15",
+    "scraped_at": "2026-09-25T15:44:43.006048Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session (govt portal not fetched); legacy facts carried forward."
+  },
+  {
+    "provider_id": "axiom",
+    "name": "Axiom",
+    "vendor": "Axiom",
+    "category": "observability",
+    "source_urls": [
+      "https://axiom.co/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Log and event analytics with a generous permanent free Personal plan",
+    "highlights": [
+      "500 GB/month data loading compute, 25 GB storage",
+      "30-day retention, no card required"
+    ],
+    "services": [
+      {
+        "name": "Axiom Personal",
+        "category": "observability",
+        "service_type": "logging",
+        "pricing_layer": "always-free",
+        "summary": "Log ingestion, search and dashboards",
+        "limits": [
+          {
+            "label": "Data loading",
+            "value": 500,
+            "unit": "GB",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Storage",
+            "value": 25,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Retention",
+            "value": 30,
+            "unit": "days",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "500 GB/mo ingest",
+    "duration_summary": "Always free (Personal)",
+    "region_summary": "Global",
+    "eligibility_summary": "Individual developers",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at axiom.co",
+      "Create a dataset",
+      "Ship logs via an API token or integration"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://axiom.co/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.006058Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the Axiom pricing page."
+  },
+  {
+    "provider_id": "better-stack",
+    "name": "Better Stack",
+    "vendor": "Better Stack",
+    "category": "observability",
+    "source_urls": [
+      "https://betterstack.com/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Logs, uptime monitoring and status pages bundled on one free plan",
+    "highlights": [
+      "3 GB logs retained for 3 days",
+      "10 monitors, 1 status page, 100k exceptions/month"
+    ],
+    "services": [
+      {
+        "name": "Better Stack Logs",
+        "category": "observability",
+        "service_type": "logging",
+        "pricing_layer": "always-free",
+        "summary": "Log management and search",
+        "limits": [
+          {
+            "label": "Ingest",
+            "value": 3,
+            "unit": "GB",
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Retention",
+            "value": 3,
+            "unit": "days",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      },
+      {
+        "name": "Better Stack Uptime",
+        "category": "observability",
+        "service_type": "metrics",
+        "pricing_layer": "always-free",
+        "summary": "Uptime and heartbeat monitoring",
+        "limits": [
+          {
+            "label": "Monitors",
+            "value": 10,
+            "unit": null,
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Status pages",
+            "value": 1,
+            "unit": null,
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "3 GB logs · 10 monitors",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at betterstack.com",
+      "Add a log source or uptime monitor"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "3-day log retention is short — export or ship elsewhere for longer history"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://betterstack.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.006075Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the Better Stack pricing page."
+  },
+  {
+    "provider_id": "grafana-cloud",
+    "name": "Grafana Cloud",
+    "vendor": "Grafana Labs",
+    "category": "observability",
+    "source_urls": [
+      "https://grafana.com/pricing/"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Metrics, logs and traces with a free monthly ingest budget and 14-day retention",
+    "highlights": [
+      "10k Prometheus series, 50 GB logs, 50 GB traces free",
+      "14-day retention, 3 user seats"
+    ],
+    "services": [
+      {
+        "name": "Grafana Cloud",
+        "category": "observability",
+        "service_type": "metrics",
+        "pricing_layer": "always-free",
+        "summary": "Managed Prometheus metrics, Loki logs and Tempo traces",
+        "limits": [
+          {
+            "label": "Metrics series",
+            "value": 10000,
+            "unit": null,
+            "period": null,
+            "note": null
+          },
+          {
+            "label": "Logs",
+            "value": 50,
+            "unit": "GB",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Retention",
+            "value": 14,
+            "unit": "days",
+            "period": null,
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "10k metrics · 50 GB",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at grafana.com",
+      "Create a stack",
+      "Point exporters/agents at the free endpoints"
+    ],
+    "restrictions": [],
+    "gotchas": [
+      "14-day retention is the main constraint on the free plan"
+    ],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://grafana.com/pricing/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp",
+      "pre-seed"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-22",
+    "scraped_at": "2026-09-25T15:44:43.006084Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "newrelic-free",
+    "name": "New Relic",
+    "vendor": "New Relic",
+    "category": "observability",
+    "source_urls": [
+      "https://newrelic.com/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Full-stack observability with 100 GB of free data ingest every month",
+    "highlights": [
+      "100 GB free data ingest/month",
+      "One free full-platform user plus unlimited basic users"
+    ],
+    "services": [
+      {
+        "name": "New Relic Observability",
+        "category": "observability",
+        "service_type": "metrics",
+        "pricing_layer": "always-free",
+        "summary": "Metrics, logs, traces and APM",
+        "limits": [
+          {
+            "label": "Data ingest",
+            "value": 100,
+            "unit": "GB",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Retention",
+            "value": 8,
+            "unit": "days",
+            "period": null,
+            "note": "minimum"
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "100 GB/mo ingest",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at newrelic.com",
+      "Install an agent or use OpenTelemetry",
+      "Stay under 100 GB/month to avoid charges"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://newrelic.com/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.006093Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the New Relic pricing page."
+  },
+  {
+    "provider_id": "sentry",
+    "name": "Sentry",
+    "vendor": "Sentry",
+    "category": "observability",
+    "source_urls": [
+      "https://sentry.io/pricing/"
+    ],
+    "offer_type": "free-tier",
+    "headline": "Error monitoring and tracing with a free monthly event budget",
+    "highlights": [
+      "5,000 errors and 10M tracing spans per month free",
+      "50 session replays/month, 1 user/project"
+    ],
+    "services": [
+      {
+        "name": "Sentry Error Monitoring",
+        "category": "observability",
+        "service_type": "logging",
+        "pricing_layer": "always-free",
+        "summary": "Error tracking, tracing and session replay",
+        "limits": [
+          {
+            "label": "Errors",
+            "value": 5000,
+            "unit": "events",
+            "period": "month",
+            "note": null
+          },
+          {
+            "label": "Tracing spans",
+            "value": 10000000,
+            "unit": "spans",
+            "period": "month",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "5k errors/mo",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at sentry.io",
+      "Create a project",
+      "Add the Sentry SDK to your app"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://sentry.io/pricing/"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-22",
+    "scraped_at": "2026-09-25T15:44:43.006103Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "airtable-startups",
+    "name": "Airtable for Startups",
+    "vendor": "Airtable",
+    "category": "perk",
+    "source_urls": [
+      "https://www.airtable.com/lp/startups"
+    ],
+    "offer_type": "perk",
+    "headline": "Airtable Pro plan free for a year for qualifying early-stage startups",
+    "highlights": [
+      "Up to 5 seats",
+      "Quick-apply form with a high reported approval rate"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Airtable Pro plan",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "Free for 1 year, up to 5 seats — not a cash grant"
+      }
+    ],
+    "quota_summary": "Pro plan free",
+    "duration_summary": "12 mo",
+    "region_summary": "Global",
+    "eligibility_summary": "Early-stage startups",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Submit the quick-apply form at airtable.com/lp/startups"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Airtable for Startups",
+        "url": "https://www.airtable.com/lp/startups"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "A free SaaS seat pack (not cash) is low-value at seed stage relative to the effort of applying, but the quick-apply form and high approval rate make it worth grabbing alongside other perks.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.006111Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "github-student-pack",
+    "name": "GitHub Student Developer Pack",
+    "vendor": "GitHub",
+    "category": "perk",
+    "source_urls": [
+      "https://github.com/education/students"
+    ],
+    "offer_type": "perk",
+    "headline": "Free access to dozens of developer tools and partner offers for verified students",
+    "highlights": [
+      "Includes cloud hosting, dev platforms and premium educational content",
+      "Dozens of partner offers bundled in"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Bundled partner offers",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "Dozens of tools and cloud credits; value varies per partner"
+      }
+    ],
+    "quota_summary": "Bundled perks",
+    "duration_summary": "While enrolled",
+    "region_summary": "Global",
+    "eligibility_summary": "Verified students, 13+",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "email-verify",
+    "claim_steps": [
+      "Apply at github.com/education/students",
+      "Verify with a school email or proof of enrollment"
+    ],
+    "restrictions": [
+      "Must be at least 13 years old and enrolled in a degree- or diploma-granting course of study"
+    ],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Student Developer Pack",
+        "url": "https://github.com/education/students"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.006119Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the GitHub Education page."
+  },
+  {
+    "provider_id": "huggingface-pro",
+    "name": "Hugging Face Pro (OSS)",
+    "vendor": "Hugging Face",
+    "category": "perk",
+    "source_urls": [
+      "https://huggingface.co/pricing"
+    ],
+    "offer_type": "perk",
+    "headline": "Free Pro plan for qualifying open-source ML maintainers",
+    "highlights": [
+      "ZeroGPU access, larger Spaces, private models",
+      "Apply with a short OSS-impact form"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "HF Pro plan",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "$9/mo value, free while actively maintaining a qualifying OSS project"
+      }
+    ],
+    "quota_summary": "Pro plan free",
+    "duration_summary": "While maintained",
+    "region_summary": "Global",
+    "eligibility_summary": "OSS maintainers",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Submit the OSS-impact application on huggingface.co/pricing"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://huggingface.co/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": null,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "pre-seed"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.006126Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Distinct from the always-free HF Inference API record."
+  },
+  {
+    "provider_id": "nvidia-inception",
+    "name": "NVIDIA Inception",
+    "vendor": "NVIDIA",
+    "category": "perk",
+    "source_urls": [
+      "https://www.nvidia.com/en-us/deep-learning-ai/startups/"
+    ],
+    "offer_type": "perk",
+    "headline": "Free startup program bundling cloud credits, GPU discounts and VC networking, no equity",
+    "highlights": [
+      "Free cloud credits from NVIDIA and partners",
+      "No application fees, membership fees or equity taken"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Cloud credits from NVIDIA and partners",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "Amount varies by partner and stage"
+      }
+    ],
+    "quota_summary": "Cloud credits + discounts",
+    "duration_summary": "While enrolled",
+    "region_summary": "Global",
+    "eligibility_summary": "Startups under 10 years old",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply at nvidia.com/en-us/deep-learning-ai/startups",
+      "Provide company incorporation and website details"
+    ],
+    "restrictions": [
+      "Must be incorporated, under 10 years old, with at least one developer and an active website"
+    ],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "NVIDIA Inception",
+        "url": "https://www.nvidia.com/en-us/deep-learning-ai/startups/"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed",
+      "series-a"
+    ],
+    "tier_fit_rationale": "Free program with no equity taken; cloud credits and preferred GPU pricing scale from pre-seed through Series-A AI startups.",
+    "parse_confidence": "high",
+    "source_method": "manual",
+    "last_verified_at": "2026-09-25",
+    "scraped_at": "2026-09-25T15:44:43.006161Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Verified 2026-09-25 directly from the NVIDIA Inception program page. GitHub Models was also investigated for this batch but is confirmed RETIRED as of 2026-07-30 and is therefore excluded from this catalog."
+  },
+  {
+    "provider_id": "stripe-atlas",
+    "name": "Stripe Atlas alumni perks",
+    "vendor": "Stripe",
+    "category": "perk",
+    "source_urls": [
+      "https://stripe.com/atlas"
+    ],
+    "offer_type": "perk",
+    "headline": "Incorporation via Stripe Atlas unlocks a bundled alumni perk pack",
+    "highlights": [
+      "Delaware C-Corp incorporation for a $500 fee",
+      "Unlocks AWS Activate $5k, waived Stripe fees on first $50k, Notion/Brex/1Password credits"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Bundled alumni perks",
+        "amount": null,
+        "currency": null,
+        "duration_days": null,
+        "conditions": "AWS Activate $5k, waived Stripe fees on first $50k, Notion/Brex/1Password credits"
+      }
+    ],
+    "quota_summary": "Bundled perks",
+    "duration_summary": "Lifetime alumni",
+    "region_summary": "US (Delaware)",
+    "eligibility_summary": "Stripe Atlas customers",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Incorporate through stripe.com/atlas",
+      "Perks unlock automatically post-incorporation"
+    ],
+    "restrictions": [
+      "Requires forming a US (Delaware) C-Corp; not a free-standing perk without incorporating"
+    ],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Stripe Atlas",
+        "url": "https://stripe.com/atlas"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "The perk pack only unlocks after paying the $500 Atlas incorporation fee — worthwhile once a pre-seed/seed team has decided to incorporate a Delaware C-Corp anyway.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.006171Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Common path for India-to-US incorporation."
+  },
+  {
+    "provider_id": "aws-activate",
+    "name": "AWS Activate",
+    "vendor": "AWS",
+    "category": "startup-credit",
+    "source_urls": [
+      "https://aws.amazon.com/activate/"
+    ],
+    "offer_type": "free-credits",
+    "headline": "AWS cloud credits for eligible startups, from self-serve to VC-referred tiers",
+    "highlights": [
+      "Founders tier: $1,000 credit, self-serve, ~24h approval",
+      "Portfolio tier: $5,000-$100,000 via accelerator/VC referral"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Activate Founders",
+        "amount": 1000.0,
+        "currency": "USD",
+        "duration_days": 730,
+        "conditions": "Self-serve; bootstrapped or pre-funded startup"
+      },
+      {
+        "label": "Activate Portfolio",
+        "amount": 100000.0,
+        "currency": "USD",
+        "duration_days": 730,
+        "conditions": "Requires accredited accelerator or Tier-1 VC referral"
+      }
+    ],
+    "quota_summary": "$1k–$100k",
+    "duration_summary": "1–2 yr",
+    "region_summary": "Global",
+    "eligibility_summary": "Eligible startups (apply)",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Create an AWS account",
+      "Apply via the Activate portal with company details",
+      "Founders tier approves in ~24 hours"
+    ],
+    "restrictions": [
+      "Credits are usable only on AWS services; not transferable between accounts; expire with no rollover"
+    ],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "AWS Activate",
+        "url": "https://aws.amazon.com/activate/"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed",
+      "series-a"
+    ],
+    "tier_fit_rationale": "Founders tier is a self-serve, low-friction $1k credit; Portfolio tiers ($5k-$100k) require accelerator/VC referral and fit seed to Series-A teams already in a program.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-18",
+    "scraped_at": "2026-09-25T15:44:43.006180Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Distinct from the aws-free-tier record (new-account free plan)."
+  },
+  {
+    "provider_id": "cloudflare-startups",
+    "name": "Cloudflare for Startups",
+    "vendor": "Cloudflare",
+    "category": "startup-credit",
+    "source_urls": [
+      "https://www.cloudflare.com/forstartups/"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Free Cloudflare Pro/Business plan plus Workers, R2 and AI Gateway credits for VC-backed startups",
+    "highlights": [
+      "Pro/Business plan free for 12 months",
+      "Significant Workers/R2/AI Gateway credits, access to private SaaS Connect"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Pro/Business plan + service credits",
+        "amount": null,
+        "currency": null,
+        "duration_days": 365,
+        "conditions": "Workers/R2/AI Gateway credit amounts set per applicant"
+      }
+    ],
+    "quota_summary": "Pro/Bus + credits",
+    "duration_summary": "12 mo",
+    "region_summary": "Global",
+    "eligibility_summary": "VC-backed startups",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply via a partner accelerator or directly at cloudflare.com/forstartups"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Cloudflare for Startups",
+        "url": "https://www.cloudflare.com/forstartups/"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "seed",
+      "series-a"
+    ],
+    "tier_fit_rationale": "Targets VC-backed teams already shipping in production; pre-seed bootstrappers should use the always-free cloudflare-free record instead.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.006187Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Distinct from the always-free cloudflare-free record."
+  },
+  {
+    "provider_id": "digitalocean-hatch",
+    "name": "DigitalOcean Hatch",
+    "vendor": "DigitalOcean",
+    "category": "startup-credit",
+    "source_urls": [
+      "https://www.digitalocean.com/hatch"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Up to $100k DigitalOcean credits for early-stage startups plus technical mentorship",
+    "highlights": [
+      "$100k DO credits over 12 months",
+      "1-on-1 architect support, Bangalore and Mumbai regions available"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "DO credits",
+        "amount": 100000.0,
+        "currency": "USD",
+        "duration_days": 365,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$100k credits",
+    "duration_summary": "12 mo",
+    "region_summary": "Global",
+    "eligibility_summary": "Pre-seed / seed (apply)",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply at digitalocean.com/hatch"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "DigitalOcean Hatch",
+        "url": "https://www.digitalocean.com/hatch"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "$100k credit over 12 months is enough runway to run a real production stack through seed stage, with Bangalore/Mumbai regions giving the best India latency of any hyperscaler startup program.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.006194Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Bangalore + Mumbai DO regions give best India latency among hyperscaler startup programs."
+  },
+  {
+    "provider_id": "gcp-startups",
+    "name": "Google Cloud for Startups",
+    "vendor": "Google",
+    "category": "startup-credit",
+    "source_urls": [
+      "https://cloud.google.com/startup"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Google Cloud credits for startups, from a starter tier up to $200k at scale",
+    "highlights": [
+      "Start tier: $2,000 credits plus Workspace and AI tools",
+      "Scale tier: up to $200,000 over 2 years"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Start tier",
+        "amount": 2000.0,
+        "currency": "USD",
+        "duration_days": null,
+        "conditions": null
+      },
+      {
+        "label": "Scale tier",
+        "amount": 200000.0,
+        "currency": "USD",
+        "duration_days": 730,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$2k–$200k",
+    "duration_summary": "2 yr",
+    "region_summary": "Global",
+    "eligibility_summary": "Eligible startups (apply)",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply at cloud.google.com/startup",
+      "Provide company and funding details"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Google Cloud for Startups",
+        "url": "https://cloud.google.com/startup"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed",
+      "series-a"
+    ],
+    "tier_fit_rationale": "Equity-free credit ladder scaling from pre-seed ($2k Start) to Series-A ($200k Scale).",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-18",
+    "scraped_at": "2026-09-25T15:44:43.006204Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Indian startups eligible; equity-free."
+  },
+  {
+    "provider_id": "microsoft-startups",
+    "name": "Microsoft for Startups Founders Hub",
+    "vendor": "Microsoft",
+    "category": "startup-credit",
+    "source_urls": [
+      "https://www.microsoft.com/en-us/startups"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Azure credits scaling to $150k plus free GitHub Enterprise and Azure OpenAI access",
+    "highlights": [
+      "Tiered model from $1k up to $150k Azure credits",
+      "Includes GitHub Enterprise and Azure OpenAI access, no equity taken"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Tiered Azure credits",
+        "amount": 150000.0,
+        "currency": "USD",
+        "duration_days": 1460,
+        "conditions": "Tier 1-4 model starting at $1k"
+      }
+    ],
+    "quota_summary": "$1k–$150k",
+    "duration_summary": "Up to 4 yr",
+    "region_summary": "Global",
+    "eligibility_summary": "Eligible startups (apply)",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply at microsoft.com/startups",
+      "Provide company and product details"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Founders Hub",
+        "url": "https://www.microsoft.com/en-us/startups"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed",
+      "series-a"
+    ],
+    "tier_fit_rationale": "Equity-free credit ladder; Azure OpenAI access is a differentiator for AI startups scaling from pre-seed to Series A.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-18",
+    "scraped_at": "2026-09-25T15:44:43.006212Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. Indian startups eligible."
+  },
+  {
+    "provider_id": "supabase-startups",
+    "name": "Supabase for Startups",
+    "vendor": "Supabase",
+    "category": "startup-credit",
+    "source_urls": [
+      "https://supabase.com/startups"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Supabase Pro credits and onboarding support for early-stage startups",
+    "highlights": [
+      "$5,000 Supabase credits",
+      "Pro plan features plus priority engineering support"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Supabase credits",
+        "amount": 5000.0,
+        "currency": "USD",
+        "duration_days": 365,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$5k credits",
+    "duration_summary": "12 mo Pro",
+    "region_summary": "Global",
+    "eligibility_summary": "Pre-seed / seed startups",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply at supabase.com/startups, typically via a VC-partner referral"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Supabase for Startups",
+        "url": "https://supabase.com/startups"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "$5k Pro-plan credit on top of the always-free tier fits teams past pre-seed needing production-grade Supabase without the always-free project pause.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.006219Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward. VC-partner referral typically required."
+  },
+  {
+    "provider_id": "vercel-startups",
+    "name": "Vercel for Startups",
+    "vendor": "Vercel",
+    "category": "startup-credit",
+    "source_urls": [
+      "https://vercel.com/startups"
+    ],
+    "offer_type": "free-credits",
+    "headline": "Vercel Pro credits and priority support for accelerator-backed startups",
+    "highlights": [
+      "Up to $2,500 Vercel credits",
+      "2-year Pro plan plus dedicated support and co-marketing"
+    ],
+    "services": [],
+    "credits": [
+      {
+        "label": "Vercel credits",
+        "amount": 2500.0,
+        "currency": "USD",
+        "duration_days": 730,
+        "conditions": null
+      }
+    ],
+    "quota_summary": "$2.5k credits",
+    "duration_summary": "2 yr Pro",
+    "region_summary": "Global",
+    "eligibility_summary": "Accelerator-backed (apply)",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "manual-apply",
+    "claim_steps": [
+      "Apply at vercel.com/startups with accelerator affiliation"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Vercel for Startups",
+        "url": "https://vercel.com/startups"
+      }
+    ],
+    "geo_priority": "accessible-from-india",
+    "always_on": null,
+    "use_case_tiers": [
+      "pre-seed",
+      "seed"
+    ],
+    "tier_fit_rationale": "Distinct from the always-free Hobby tier; this is a startup-credit program layered on top for accelerator-backed teams.",
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-27",
+    "scraped_at": "2026-09-25T15:44:43.006228Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  },
+  {
+    "provider_id": "backblaze-b2",
+    "name": "Backblaze B2",
+    "vendor": "Backblaze",
+    "category": "storage",
+    "source_urls": [
+      "https://www.backblaze.com/cloud-storage/pricing"
+    ],
+    "offer_type": "free-tier",
+    "headline": "S3-compatible object storage with a free monthly allowance and free egress to Cloudflare",
+    "highlights": [
+      "10 GB free storage",
+      "Free egress to Cloudflare via the Bandwidth Alliance"
+    ],
+    "services": [
+      {
+        "name": "Backblaze B2",
+        "category": "storage",
+        "service_type": "object-storage",
+        "pricing_layer": "always-free",
+        "summary": "S3-compatible object storage",
+        "limits": [
+          {
+            "label": "Storage",
+            "value": 10,
+            "unit": "GB",
+            "period": "total",
+            "note": null
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "credits": [],
+    "quota_summary": "10 GB",
+    "duration_summary": "Always free",
+    "region_summary": "Global",
+    "eligibility_summary": "Any user",
+    "eligibility": {
+      "regions": [
+        "global"
+      ],
+      "user_types": [
+        "any"
+      ],
+      "company_age_max_years": null,
+      "funding_max_usd": null
+    },
+    "access_method": "signup",
+    "claim_steps": [
+      "Sign up at backblaze.com",
+      "Create a bucket",
+      "Use the S3-compatible API"
+    ],
+    "restrictions": [],
+    "gotchas": [],
+    "after_free_period": null,
+    "links": [
+      {
+        "label": "Pricing",
+        "url": "https://www.backblaze.com/cloud-storage/pricing"
+      }
+    ],
+    "geo_priority": "global-other",
+    "always_on": true,
+    "use_case_tiers": [
+      "hobby",
+      "personal",
+      "startup-mvp"
+    ],
+    "tier_fit_rationale": null,
+    "parse_confidence": "medium",
+    "source_method": "manual",
+    "last_verified_at": "2026-04-20",
+    "scraped_at": "2026-09-25T15:44:43.006241Z",
+    "expiry_date": null,
+    "status": "active",
+    "notes": "Not re-verified this session; legacy facts carried forward."
+  }
+]
