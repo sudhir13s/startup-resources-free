@@ -5,13 +5,16 @@ services:
     plan: free
     region: oregon
     branch: main
-    rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/health
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.3"
+      # Render's free disk is ephemeral — the DB lives under /tmp and is
+      # pulled from / pushed to the `data` branch each boot/refresh.
+      - key: RESOURCEOS_DB_PATH
+        value: /tmp/resourceos.db
       # Auto-resolved from the web service host. No manual entry needed
       # after Blueprint sync. Render expands `host` to e.g.
       # "startup-resources.onrender.com" — code prepends https:// scheme.
@@ -20,6 +23,39 @@ services:
           type: web
           name: startup-resources
           property: host
+      # Secrets — set once in the Render dashboard, never committed.
+      - key: ADMIN_TOKEN
+        sync: false
+      - key: GITHUB_DATA_TOKEN
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: CEREBRAS_API_KEY
+        sync: false
+      - key: MISTRAL_API_KEY
+        sync: false
+      - key: SAMBANOVA_API_KEY
+        sync: false
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: TOGETHER_API_KEY
+        sync: false
+      - key: HF_TOKEN
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: EXA_API_KEY
+        sync: false
+      - key: JINA_API_KEY
+        sync: false
+      - key: LINKUP_API_KEY
+        sync: false
+      - key: SERPAPI_API_KEY
+        sync: false
 
   - type: web
     name: startup-resources
@@ -41,3 +77,8 @@ services:
           property: host
       - key: NEXT_PUBLIC_APP_ENV
         value: production
+      # Server-side only (Next.js route handlers) — adds X-Admin-Token to
+      # proxied admin calls; the browser only ever sees an httpOnly
+      # session cookie after the passphrase login.
+      - key: ADMIN_TOKEN
+        sync: false
