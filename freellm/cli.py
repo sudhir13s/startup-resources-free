@@ -5,21 +5,25 @@ Usage:
     python -m freellm catalog --modality text
     python -m freellm plan --modality text --task-name extract-record
     python -m freellm quotas
+    python -m freellm keys
+    python -m freellm smoke --modality text
     python -m freellm version
 """
 
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
 import os
 import sys
+from collections.abc import Sequence
 from dataclasses import asdict
-from typing import Sequence
 
 from freellm import __version__, quotas
+from freellm.errors import AllProvidersExhaustedError
 from freellm.providers import PROVIDERS, list_providers
-from freellm.router import plan
+from freellm.router import call_text, plan
 from freellm.schemas import ALL_MODALITIES, Modality
 
 
@@ -89,6 +93,52 @@ def cmd_keys(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_smoke(args: argparse.Namespace) -> int:
+    """Send a 1-token request through the chain for one modality.
+
+    Skips cleanly (exit 0, explanatory message) when no provider key is
+    set — this is expected in CI / a fresh clone, not a failure.
+    """
+    if args.modality != "text":
+        _print({"modality": args.modality, "status": "skipped", "reason": "only text is live"})
+        return 0
+
+    p = plan(modality="text", task_name="cli-smoke")
+    if p.chosen is None:
+        _print(
+            {
+                "modality": "text",
+                "status": "skipped",
+                "reason": "no provider API key set — set one of the *_API_KEY / *_TOKEN "
+                "env vars listed by `python -m freellm keys` to run a live smoke test",
+            }
+        )
+        return 0
+
+    async def _run() -> None:
+        result = await call_text(
+            messages=[{"role": "user", "content": "hi"}],
+            task_name="cli-smoke",
+            max_tokens=1,
+        )
+        _print(
+            {
+                "modality": "text",
+                "status": "ok",
+                "provider_used": result.provider_used,
+                "model_used": result.model_used,
+                "latency_ms": result.latency_ms,
+            }
+        )
+
+    try:
+        asyncio.run(_run())
+    except AllProvidersExhaustedError as e:
+        _print({"modality": "text", "status": "exhausted", "chain_attempted": e.chain_attempted})
+        return 2
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="freellm", description="Free-LLM router CLI")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -110,6 +160,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_version = sub.add_parser("version", help="Show freellm version")
     p_version.set_defaults(func=cmd_version)
+
+    p_smoke = sub.add_parser(
+        "smoke", help="Send a 1-token request through the chain (skips cleanly with no keys)"
+    )
+    p_smoke.add_argument("--modality", choices=ALL_MODALITIES, default="text")
+    p_smoke.set_defaults(func=cmd_smoke)
 
     return parser
 
