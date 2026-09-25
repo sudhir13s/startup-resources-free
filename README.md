@@ -8,7 +8,7 @@ category and region, open any offer for exactly what's free, and refresh the dat
 using free AI services only. **India-first**: programs open to Indian founders are surfaced by default.
 
 - **Live:** <https://startup-resources.onrender.com>
-- **How it works:** [architecture notes](docs/architecture/resourceos/2026-09-25T22-43-architecture-notes.md)
+- **How it works:** [architecture notes](architecture/architecture-notes.md)
 
 ---
 
