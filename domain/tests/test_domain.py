@@ -53,6 +53,13 @@ def test_should_normalize_legacy_slugs_when_validating(records):
     assert (record.category, record.offer_type) == ("cloud", "free-tier")
 
 
+def test_should_revalidate_when_dump_includes_derived_fields(records):
+    aws = by_id(records, "aws-free-tier")
+    dumped = aws.model_dump(mode="json")
+    assert "categories" in dumped
+    assert ProviderRecord.model_validate(dumped) == aws
+
+
 def test_should_reject_record_when_tile_too_long(records):
     row = by_id(records, "groq").to_storage()
     row["quota_summary"] = "x" * 41
