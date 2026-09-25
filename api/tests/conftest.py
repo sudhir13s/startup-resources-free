@@ -61,9 +61,12 @@ class FakeRunner:
 class FakeSync:
     """Same public shape as `storage.github_sync.GitHubDataSync` (pull/push/aclose)."""
 
-    def __init__(self, *, push_should_fail: bool = False) -> None:
+    def __init__(
+        self, *, push_should_fail: bool = False, push_error: Exception | None = None
+    ) -> None:
         self.pushed: list[tuple[Path, str]] = []
         self.push_should_fail = push_should_fail
+        self.push_error = push_error
 
     async def pull(self, dest: Path) -> bool:
         return False
@@ -73,6 +76,8 @@ class FakeSync:
             from storage.github_sync import DataSyncError
 
             raise DataSyncError("push failed")
+        if self.push_error is not None:
+            raise self.push_error
         self.pushed.append((src, message))
         return "deadbeef"
 

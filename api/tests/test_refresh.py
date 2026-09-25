@@ -88,3 +88,22 @@ def test_should_return_empty_status_when_no_runs_yet(client):
     body = response.json()
     assert body["active"] is None
     assert body["last"] is None
+
+
+def test_should_finish_run_when_push_raises_unexpected_error(repository, seed_file):
+    sync = FakeSync(push_error=OSError("disk full"))
+    client_gen = make_client(
+        repository, seed_file, sync=sync, runner_factory=lambda repo: FakeRunner()
+    )
+    client = next(client_gen)
+    try:
+        response = client.post("/api/refresh", json={}, headers={"X-Admin-Token": ADMIN_TOKEN})
+        run_id = response.json()["run_id"]
+
+        assert _wait_until(lambda: repository.get_run(run_id).status != "running")
+        run = repository.get_run(run_id)
+        assert run.data_pushed is False
+        assert any("disk full" in error for error in run.errors)
+        assert repository.active_run() is None
+    finally:
+        client_gen.close()
