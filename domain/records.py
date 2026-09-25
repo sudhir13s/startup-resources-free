@@ -14,7 +14,14 @@ from __future__ import annotations
 from datetime import date, datetime, timezone
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    computed_field,
+    field_validator,
+    model_validator,
+)
 
 from domain.taxonomy import (
     INDIA_USABLE_GEO,
@@ -37,6 +44,7 @@ from domain.taxonomy import (
 
 TILE_MAX_CHARS = 40  # UI stat tiles; aim for <= 30
 SLUG_PATTERN = r"^[a-z0-9]+(-[a-z0-9]+)*$"
+_DERIVED_FIELDS = frozenset({"categories", "card_variant", "india_accessible"})
 
 
 def _utcnow() -> datetime:
@@ -191,6 +199,15 @@ class ProviderRecord(BaseModel):
 
     # --- Validators ---
 
+    @model_validator(mode="before")
+    @classmethod
+    def _drop_derived(cls, data: Any) -> Any:
+        # API/JSON dumps include the computed fields; accept and discard them
+        # so any serialized record (e.g. nested in VerifyItem) re-validates.
+        if isinstance(data, dict):
+            return {k: v for k, v in data.items() if k not in _DERIVED_FIELDS}
+        return data
+
     @field_validator("category", mode="before")
     @classmethod
     def _canonical_category(cls, v: Any) -> Any:
@@ -236,17 +253,11 @@ class ProviderRecord(BaseModel):
 
     def to_storage(self) -> dict[str, Any]:
         """JSON-safe dict without derived fields — what storage persists."""
-        return self.model_dump(
-            mode="json", exclude={"categories", "card_variant", "india_accessible"}
-        )
+        return self.model_dump(mode="json", exclude=set(_DERIVED_FIELDS))
 
     @classmethod
     def from_storage(cls, data: dict[str, Any]) -> ProviderRecord:
-        clean = {
-            k: v for k, v in data.items()
-            if k not in {"categories", "card_variant", "india_accessible"}
-        }
-        return cls.model_validate(clean)
+        return cls.model_validate(data)
 
     def content_fingerprint(self) -> dict[str, Any]:
         """Fields that define the offer — used to decide if a new version is needed.
@@ -256,7 +267,7 @@ class ProviderRecord(BaseModel):
         return self.model_dump(
             mode="json",
             exclude={
-                "categories", "card_variant", "india_accessible",
+                *_DERIVED_FIELDS,
                 "scraped_at", "last_verified_at", "parse_confidence", "source_method",
             },
         )
