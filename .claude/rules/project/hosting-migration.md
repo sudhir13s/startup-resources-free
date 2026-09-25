@@ -10,7 +10,7 @@
 2. **750 hr/mo cap** — both services need always-on for >31 days (paid users emerge).
 3. **India latency required** — Indian users complain about US/EU/SG-only Render regions (~150ms RTT vs ~10ms from Mumbai).
 4. **Postgres 90-day expiry hits** — when v0.2 SQLite → Postgres migration lands and we need permanent persistence (Render free Postgres dies after 90 days).
-5. **Long agent runs** — v0.2 agentic pipeline run > Render free runtime quota.
+5. **Long refresh runs** — a `refresh/runner.py` run, triggered in-process, exceeds Render's free-instance runtime budget for a single request.
 6. **Commercial use** — project goes monetized (Render free still works but Vercel-style ToS doesn't apply; this trigger is informational).
 
 Until ANY of these fires, stay on Render. Don't migrate prematurely.
@@ -41,13 +41,14 @@ Single VM (`VM.Standard.A1.Flex`, 2 OCPU + 12 GB RAM — fits in always-free):
 │                                         │
 │  systemd units                          │
 │    ├─ resourceos-web.service (Next.js)  │
-│    ├─ resourceos-api.service (uvicorn)  │
-│    └─ resourceos-pipeline.timer (daily) │
+│    └─ resourceos-api.service (uvicorn)  │
+│         (refresh stays button-triggered,│
+│          in-process — no timer unit)    │
 │                                         │
 │  /var/lib/resourceos/                   │
-│    ├─ data/seed.json                    │
-│    ├─ data/snapshots/<date>.json        │
-│    └─ resourceos.db (SQLite)            │
+│    ├─ data/providers_seed.json          │
+│    └─ resourceos.db (SQLite, mirrors    │
+│         the `data` git branch)          │
 └─────────────────────────────────────────┘
 ```
 
@@ -76,7 +77,10 @@ Single VM (`VM.Standard.A1.Flex`, 2 OCPU + 12 GB RAM — fits in always-free):
    }
    ```
    Caddy auto-issues TLS via Let's Encrypt.
-7. **systemd units** under `/etc/systemd/system/resourceos-{api,web}.service` running uvicorn + `npm start` from `/opt/resourceos/{backend,frontend}`. `resourceos-pipeline.timer` for v0.2 daily cron (replaces GH Actions cron).
+7. **systemd units** under `/etc/systemd/system/resourceos-{api,web}.service` running uvicorn
+   (root of the repo — no `backend/` subdirectory) + `npm start` from `frontend/`. No timer
+   unit: refresh stays button-triggered and runs in-process inside the API service, same as on
+   Render — there is nothing to schedule.
 8. **DNS** — point A/AAAA `resourceos` and `api.resourceos` records to VM public IP. Cloudflare DNS free is fine.
 9. **GitHub deploy hook** — GH Actions workflow on push to `main` SSHs to VM, `git pull && systemctl restart resourceos-{api,web}`. Add deploy SSH key as repo secret.
 
@@ -154,13 +158,16 @@ Can Oracle Mumbai signup + provision A1 ARM?
 
 These remain identical regardless of host:
 
-- Repo layout (`backend/`, `frontend/`, `data/`, `freellm/`, `agents/`).
-- `data/seed.json` schema.
+- Repo layout (`domain/`, `storage/`, `freellm/`, `refresh/`, `api/`, `frontend/`, `data/` — all
+  at repo root; no `backend/` subdirectory).
+- `data/providers_seed.json` schema.
 - FastAPI routes.
 - Next.js pages + components.
-- env-var names (`BACKEND_URL`, `CORS_ORIGINS`, all `*_API_KEY` for v0.2).
+- env-var names (`BACKEND_URL`/`BACKEND_HOST`, `CORS_ORIGINS`, `ADMIN_TOKEN`,
+  `GITHUB_DATA_TOKEN`, `DATA_BRANCH`, all `*_API_KEY` — see the README's env var table).
 - GitHub Actions CI (lint + test).
-- v0.2 daily cron — moves from GH Actions to systemd-timer on Oracle (same script, different invoker).
+- Refresh stays button-triggered, in-process — no cron to move. The database's persistence
+  mechanism (the `data` git branch) is unaffected by which host runs the API.
 
 Migration cost = ops setup + DNS, not code rewrites. Should fit a single Saturday.
 
@@ -170,8 +177,10 @@ Migration cost = ops setup + DNS, not code rewrites. Should fit a single Saturda
 
 - **Don't migrate before a trigger fires.** Premature migration = wasted weekend.
 - **Don't dual-deploy.** Pick one host. Two deploys = two sources of truth = drift.
-- **Don't hardcode Render URLs in code** — all URL refs MUST come from env vars (`BACKEND_URL`) so migration is config-only.
-- **Don't lose the seed history.** Before migration, ensure `data/snapshots/<date>.json` is git-tracked so the v0.2 append-only history survives the host swap.
+- **Don't hardcode Render URLs in code** — all URL refs MUST come from env vars (`BACKEND_URL`/`BACKEND_HOST`) so migration is config-only.
+- **Don't lose the version history.** The `data` git branch already carries the full append-only
+  history independent of the host — confirm `git fetch origin data` succeeds from the new host
+  before decommissioning Render, rather than introducing a new export/import step.
 - **Don't migrate v0.3 Media Benchmark BEFORE the host swap.** ffmpeg + video gen on Render free will fail; migrate first if those features land before Oracle is up.
 
 ---
@@ -185,9 +194,10 @@ Migration cost = ops setup + DNS, not code rewrites. Should fit a single Saturda
 - [ ] Open ports 80/443 in VCN security list.
 - [ ] DNS: A/AAAA records to public IP.
 - [ ] Caddy + systemd units in place. Smoke-test on `https://resourceos.<domain>`.
-- [ ] Migrate `data/snapshots/` + SQLite/Postgres dump from Render.
+- [ ] Confirm the new host can pull the `data` branch (`GITHUB_DATA_TOKEN` set, `git fetch
+      origin data` succeeds) — this replaces any manual database export/import.
 - [ ] Update GH Actions deploy workflow to SSH-deploy to Oracle.
-- [ ] Run `pytest backend/tests` + `npm run build` against new host.
+- [ ] Run `python -m pytest` + `npm run build` against new host.
 - [ ] Cut DNS over. 5-min TTL ahead of cutover.
 - [ ] Decommission Render services after 7-day soak.
 - [ ] If Oracle fails at any step → walk fallback ladder above.
