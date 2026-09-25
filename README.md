@@ -16,9 +16,10 @@ A dashboard that aggregates **free / discounted / time-limited** offerings — c
 git clone git@github.com:sudhir13s/startup-resources-free.git
 cd startup-resources-free
 
-# Backend (FastAPI on :8000) — Python 3.12 via uv
-uv pip install --python ~/.uv/envs/resourceos-py312/bin/python -r requirements-dev.txt
-~/.uv/envs/resourceos-py312/bin/python -m api
+# Backend (FastAPI on :8000) — any Python 3.12 environment; uv shown
+uv venv --python 3.12
+uv pip install -r requirements-dev.txt
+uv run python -m api
 
 # Frontend (separate terminal — Node 20+)
 npm --prefix frontend install
@@ -34,9 +35,10 @@ to browse the catalog — LLM and search keys (below) are only needed to click *
 
 ## Prerequisites
 
-- **Python 3.12** — this project targets 3.12; a project-local `uv` environment
-  (`~/.uv/envs/resourceos-py312`) is the assumed local setup, per `pyproject.toml`'s
-  `target-version = "py312"`.
+- **Python 3.12** — this project targets 3.12 (`pyproject.toml`: `target-version = "py312"`).
+  Any 3.12 environment works; the commands below use [uv](https://docs.astral.sh/uv/). Using an
+  existing shared environment instead? Install only what it lacks — `requirements-dev.txt` pins
+  exact versions that may up- or downgrade packages other projects rely on.
 - **Node.js 20+** — the frontend is Next.js 14 (App Router).
 - **Git** — the SQLite database is version-controlled on a separate `data` branch (see below);
   no separate database server to install.
@@ -49,13 +51,13 @@ to browse the catalog — LLM and search keys (below) are only needed to click *
 
 ```bash
 # Run the API (reload not wired — restart on change)
-~/.uv/envs/resourceos-py312/bin/python -m api
+uv run python -m api
 
 # Run the test suite (domain, storage, freellm, refresh, api — see pyproject.toml testpaths)
-~/.uv/envs/resourceos-py312/bin/python -m pytest
+uv run python -m pytest
 
 # Lint
-~/.uv/envs/resourceos-py312/bin/python -m ruff check .
+uv run python -m ruff check .
 
 # Frontend dev server
 npm --prefix frontend run dev
@@ -68,8 +70,8 @@ A manual, local-only refresh run (bypassing the API and the admin passphrase) is
 the `refresh` package's CLI:
 
 ```bash
-~/.uv/envs/resourceos-py312/bin/python -m refresh run --db data/resourceos.db --seed data/providers_seed.json
-~/.uv/envs/resourceos-py312/bin/python -m refresh search-status --db data/resourceos.db
+uv run python -m refresh run --db data/resourceos.db --seed data/providers_seed.json
+uv run python -m refresh search-status --db data/resourceos.db
 ```
 
 ---
