@@ -234,16 +234,16 @@ def test_should_not_retry_on_4xx(tmp_path):
 def test_should_return_none_from_env_when_any_var_missing(monkeypatch):
     monkeypatch.delenv("RESOURCEOS_R2_ENDPOINT", raising=False)
     monkeypatch.setenv("RESOURCEOS_R2_BUCKET", BUCKET)
-    monkeypatch.setenv("RESOURCEOS_R2_ACCESS_KEY_ID", ACCESS_KEY_ID)
-    monkeypatch.setenv("RESOURCEOS_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
+    monkeypatch.setenv("CF_USER_ACCESS_KEY_ID", ACCESS_KEY_ID)
+    monkeypatch.setenv("CF_USER_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
     assert R2DataSync.from_env() is None
 
 
 def test_should_build_from_env_when_all_vars_present(monkeypatch):
     monkeypatch.setenv("RESOURCEOS_R2_ENDPOINT", ENDPOINT)
     monkeypatch.setenv("RESOURCEOS_R2_BUCKET", BUCKET)
-    monkeypatch.setenv("RESOURCEOS_R2_ACCESS_KEY_ID", ACCESS_KEY_ID)
-    monkeypatch.setenv("RESOURCEOS_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
+    monkeypatch.setenv("CF_USER_ACCESS_KEY_ID", ACCESS_KEY_ID)
+    monkeypatch.setenv("CF_USER_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
     monkeypatch.delenv("RESOURCEOS_R2_OBJECT_KEY", raising=False)
     sync = R2DataSync.from_env()
     assert sync is not None
@@ -255,8 +255,8 @@ def test_should_build_from_env_when_all_vars_present(monkeypatch):
 def test_should_use_custom_object_key_from_env_when_set(monkeypatch):
     monkeypatch.setenv("RESOURCEOS_R2_ENDPOINT", ENDPOINT)
     monkeypatch.setenv("RESOURCEOS_R2_BUCKET", BUCKET)
-    monkeypatch.setenv("RESOURCEOS_R2_ACCESS_KEY_ID", ACCESS_KEY_ID)
-    monkeypatch.setenv("RESOURCEOS_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
+    monkeypatch.setenv("CF_USER_ACCESS_KEY_ID", ACCESS_KEY_ID)
+    monkeypatch.setenv("CF_USER_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
     monkeypatch.setenv("RESOURCEOS_R2_OBJECT_KEY", "custom.db")
     sync = R2DataSync.from_env()
     assert sync is not None

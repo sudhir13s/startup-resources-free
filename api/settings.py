@@ -73,7 +73,7 @@ def load_settings() -> Settings:
         seed_path=os.environ.get("SEED_PATH", DEFAULT_SEED_PATH),
         r2_endpoint=os.environ.get("RESOURCEOS_R2_ENDPOINT") or None,
         r2_bucket=os.environ.get("RESOURCEOS_R2_BUCKET") or None,
-        r2_access_key_id=os.environ.get("RESOURCEOS_R2_ACCESS_KEY_ID") or None,
-        r2_secret_access_key=os.environ.get("RESOURCEOS_R2_SECRET_ACCESS_KEY") or None,
+        r2_access_key_id=os.environ.get("CF_USER_ACCESS_KEY_ID") or None,
+        r2_secret_access_key=os.environ.get("CF_USER_R2_SECRET_ACCESS_KEY") or None,
         r2_object_key=os.environ.get("RESOURCEOS_R2_OBJECT_KEY", DEFAULT_R2_OBJECT_KEY),
     )

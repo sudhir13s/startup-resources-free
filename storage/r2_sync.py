@@ -40,8 +40,8 @@ _DEFAULT_OBJECT_KEY = "resourceos.db"
 
 _ENV_ENDPOINT = "RESOURCEOS_R2_ENDPOINT"
 _ENV_BUCKET = "RESOURCEOS_R2_BUCKET"
-_ENV_ACCESS_KEY_ID = "RESOURCEOS_R2_ACCESS_KEY_ID"
-_ENV_SECRET_ACCESS_KEY = "RESOURCEOS_R2_SECRET_ACCESS_KEY"
+_ENV_ACCESS_KEY_ID = "CF_USER_ACCESS_KEY_ID"
+_ENV_SECRET_ACCESS_KEY = "CF_USER_R2_SECRET_ACCESS_KEY"
 _ENV_OBJECT_KEY = "RESOURCEOS_R2_OBJECT_KEY"
 
 
@@ -87,7 +87,7 @@ class R2DataSync:
 
     @classmethod
     def from_env(cls) -> R2DataSync | None:
-        """Build from the four `RESOURCEOS_R2_*` env vars; None unless all are set."""
+        """Build from RESOURCEOS_R2_ENDPOINT, RESOURCEOS_R2_BUCKET, CF_USER_ACCESS_KEY_ID and CF_USER_R2_SECRET_ACCESS_KEY; None unless all are set."""
         endpoint = os.environ.get(_ENV_ENDPOINT)
         bucket = os.environ.get(_ENV_BUCKET)
         access_key_id = os.environ.get(_ENV_ACCESS_KEY_ID)
