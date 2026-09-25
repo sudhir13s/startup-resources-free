@@ -1,81 +1,108 @@
-# Project Rule: Provider Record Schema
+# Project Rule: Provider Record Schema (v2)
 
-> The canonical shape of a "provider offering" record. Every collector emits this shape. Every UI/API consumes this shape. Schema changes are migrations, not silent edits.
+> The canonical shape of a "provider offering" record. Every refresh extraction emits this
+> shape. Every UI/API consumes this shape. Schema changes are migrations, not silent edits.
+> **Source of truth: `domain/records.py`** (the `ProviderRecord`, `Service`, `Credit`, `Link`,
+> `Eligibility` Pydantic models) and `domain/taxonomy.py` (every enum). This file explains the
+> shape in prose; when they disagree, the code wins — update this file to match.
 
 ## Why a fixed schema
 
-`project-idea.md` lists 7+ categories (cloud, GPU, AI APIs, DBs, credits, grants, OSS). Tempting to give each category its own schema. Don't. A single normalized shape makes:
+Tempting to give each category its own schema. Don't. A single normalized shape makes:
 
 - Cross-category ranking ("best free stack for AI app") trivial.
 - The dashboard one component instead of seven.
 - History diffs comparable across providers.
 
-## The shape (canonical — don't drift)
+## v2 change: an offer, broken into services
+
+A record is one vendor **offer** (AWS Free Tier, AWS Activate, Groq free quota) — not one
+service. A multi-service offer lists each service in `services[]` with its own `category`, so
+"AWS Free Tier" matches the Database, Storage, and AI filters simultaneously through the
+computed `categories` field, instead of needing one record per AWS service.
+
+## The shape (canonical — mirrors `domain/records.py::ProviderRecord`)
 
 ```jsonc
 {
-  // Identity (required, immutable per record)
-  "id": "uuid",                         // generated; stable across re-scrapes
-  "provider_id": "groq",                // slug, stable, unique within a category
-  "provider_name": "Groq",              // display name, vendor-cased
-  "category": "ai-api",                 // enum (see CATEGORY_ENUM below)
-  "subcategory": "llm-inference",       // optional refinement
-  "source_url": "https://groq.com/...", // exact URL the data came from
+  // --- Identity ---
+  "provider_id": "aws-free-tier",       // slug, pattern ^[a-z0-9]+(-[a-z0-9]+)*$, stable
+  "name": "AWS Free Tier",              // display name
+  "vendor": "AWS",                      // groups offers from the same company
+  "category": "cloud",                  // primary Category enum (see below)
+  "source_urls": ["https://aws.amazon.com/free/"],  // pages refresh reads; min 1, http(s) only
 
-  // The offering (the actual signal)
-  "offer_type": "free-tier",            // enum: free-tier, free-credits, free-trial, free-quota, grant, perk, oss
-  "offer_summary": "Free LLM inference up to N requests/day",
-  "currency": "USD",                    // ISO 4217; null for non-monetary offers
-  "credit_amount": null,                // numeric, in `currency`; null if N/A
-  "credit_duration_days": null,         // 365 for "free for a year"; null for always-free or one-time
+  // --- The offer ---
+  "offer_type": "free-tier",            // free-tier | free-credits | free-trial | free-quota | grant | perk | oss
+  "headline": "12 months free, plus always-free services",
+  "highlights": ["EC2 t2.micro 750 hrs/mo", "S3 5 GB", "..."],  // TL;DR bullets, max 6
+  "services": [
+    {
+      "name": "EC2",
+      "category": "cloud",              // a ResourceCategory — can differ per service
+      "service_type": "vm",             // free text: vm, serverless, sql, nosql, object-storage, llm, ...
+      "pricing_layer": "12-month",      // always-free | 12-month | trial | credit | quota
+      "summary": "750 hrs/mo t2.micro or t3.micro",
+      "limits": [
+        {"label": "Instance hours", "value": 750, "unit": "hours", "period": "month"}
+      ],
+      "notes": null
+    }
+  ],
+  "credits": [
+    {"label": "AWS Activate credit", "amount": 1000, "currency": "USD", "duration_days": 730, "conditions": "..."}
+  ],
 
-  // Limits (free-form key/value because shape varies wildly)
-  "limits": {
-    "requests_per_day": 14400,
-    "tokens_per_minute": 30000,
-    "models": ["llama-3.1-70b", "mixtral-8x7b"]
-  },
+  // --- Card stat tiles (each <= 40 chars) ---
+  "quota_summary": "750 hrs/mo · 5 GB S3",
+  "duration_summary": "12 months",
+  "region_summary": "Global",
+  "eligibility_summary": "Any AWS account",
 
-  // Eligibility + access
-  "access_method": "api-key",           // enum: api-key, oauth, signup, email-verify, github-auth, manual-apply, invite-only
-  "eligibility": {
-    "regions": ["global"],              // ISO country codes or "global"
-    "user_types": ["any"],              // any, student, startup, founder, researcher, oss-maintainer, india-resident, etc.
-    "company_age_max_years": null,      // for startup credits
-    "funding_max_usd": null             // for startup credits
-  },
-  "restrictions": "Personal use only. Commercial use requires paid plan.",
+  // --- Eligibility, access, caveats ---
+  "eligibility": {"regions": ["global"], "user_types": ["any"], "company_age_max_years": null, "funding_max_usd": null},
+  "access_method": "signup",            // api-key | oauth | signup | email-verify | github-auth | manual-apply | invite-only | contact-sales | unknown
+  "claim_steps": ["Create an AWS account", "Activate the Free Tier in Billing"],
+  "restrictions": ["Free Tier resets per AWS account, not per card"],
+  "gotchas": ["Overage bills at standard rates with no hard cap"],
+  "after_free_period": "Standard on-demand pricing applies",
+  "links": [{"label": "Free Tier FAQ", "url": "https://aws.amazon.com/free/free-tier-faqs/"}],
 
-  // Geographic priority (LOCKED enum — India-primary; drives default sort)
-  "geo_priority": "accessible-from-india",
-  // ^ One of: india-native | accessible-from-india | global-other | us-only | eu-only | other-region
-  // See "GEO_PRIORITY rubric" below.
+  // --- Fit ---
+  "geo_priority": "global-other",       // see GEO_PRIORITY rubric below
+  "always_on": true,
+  "use_case_tiers": ["hobby", "personal", "startup-mvp"],  // see USE_CASE_TIER rubric below
+  "tier_fit_rationale": "...",          // required when tiers include seed or series-a
 
-  // Use-case fit (locked 6-tier enum — drives the dashboard tier filter)
-  "use_case_tiers": ["hobby", "personal", "startup-mvp", "pre-seed"],
-  // ^ Multi-valued. A provider "fits" a tier when its free offer is sufficient + safe to use at that stage.
-  // See "Use-case tier rubric" below for how to assign these. Set by collector heuristic; overridable by user.
-
-  "tier_fit_rationale": "Free quota fits hobby + personal; startup-mvp possible if user count under 1k/day; not safe for revenue-bearing startup workloads (rate caps).",
-
-  // Quality / freshness signals
-  "scraped_at": "2026-04-26T11:47:00Z", // UTC ISO 8601, REQUIRED on every record
-  "parse_confidence": "high",           // high | medium | low — see scraping-ethics.md
-  "source_method": "api",               // api | rss | structured-html | regex-html | manual
-  "last_verified_at": "2026-04-26",     // date a human (or robust API) confirmed; may be older than scraped_at
-  "expiry_date": null,                  // when the offer ends; null = ongoing
-
-  // Status + history pointers
+  // --- Quality / freshness ---
+  "parse_confidence": "high",           // high | medium | low
+  "source_method": "manual",            // manual | llm | api
+  "last_verified_at": "2026-09-25",
+  "scraped_at": "2026-09-25T11:47:00Z", // UTC ISO 8601
+  "expiry_date": null,
   "status": "active",                   // active | reduced | ended | unknown
-  "supersedes_id": null,                // points to previous record id when this is an update
-  "notes": "Provider rebranded from foo to bar on 2026-03-01."
+  "notes": null
+
+  // --- Derived, never stored as input (computed_field on ProviderRecord) ---
+  // "categories": ["cloud", "database", "storage"]  — primary category + every service category
+  // "card_variant": "resource"          — "resource" or "funds", from card_variant(category)
+  // "india_accessible": true            — geo_priority in {india-native, accessible-from-india, global-other}
 }
 ```
 
-## CATEGORY_ENUM (lock these slugs — don't invent variants)
+`ProviderRecord.to_storage()` strips the derived fields before persisting; `from_storage()` /
+the `_drop_derived` validator accept and discard them on read, so a record round-tripped through
+the API (e.g. nested in a `VerifyItem`) re-validates without special-casing.
+
+## CATEGORY_ENUM (from `domain/taxonomy.py` — don't invent variants)
+
+`Category` = `ResourceCategory | FundCategory`. `ResourceCategory` renders on `/resources`;
+`FundCategory` renders on `/funds` (`card_variant()` decides which, keyed off the primary
+`category`). A `Service.category` uses the same `ResourceCategory` values.
 
 ```
-cloud           — IaaS / PaaS / hosting platforms (AWS, GCP, Vercel, Fly)
+# ResourceCategory (/resources)
+cloud           — compute, hosting, PaaS, serverless, networking (AWS, GCP, Vercel, Fly)
 gpu             — GPU compute (Colab, RunPod, Lambda)
 ai-api          — hosted model inference (Groq, OpenRouter, HF Inference)
 database        — managed DB (Supabase, Neon, Mongo Atlas)
@@ -83,15 +110,21 @@ storage         — object / blob storage (R2, B2)
 auth            — managed auth (Clerk, Auth0, Supabase Auth)
 observability   — logs / metrics / errors (Grafana Cloud, Sentry, Logflare)
 domain          — domains / DNS / email
+dev-tools       — CI/CD, repos, codespaces
+oss             — useful open-source repo (template, framework, tool)
+learning        — free course / cert / paper feed
+
+# FundCategory (/funds)
 startup-credit  — bundled credits (AWS Activate, GCP for Startups, Azure for Startups)
 grant           — non-dilutive funding (govt, foundation, sector-specific)
 accelerator     — accelerator / incubator programs
 perk            — SaaS discount (Notion, HubSpot, Stripe Atlas)
-oss             — useful open-source repo (template, framework, tool)
-learning        — free course / cert / paper feed
 ```
 
-If you need a new slug, add it here AND migrate existing records. Don't sprinkle ad-hoc slugs.
+`domain/taxonomy.py::normalize_category` maps legacy/plural aliases (`hosting`→`cloud`,
+`databases`→`database`, `grants`→`grant`, etc.) to the canonical slug so old seed rows and LLM
+output don't hard-fail. If you need a new slug, add it to `taxonomy.py` AND migrate existing
+records — don't sprinkle ad-hoc slugs anywhere else.
 
 ## GEO_PRIORITY rubric (LOCKED — India-primary)
 
@@ -104,7 +137,7 @@ If you need a new slug, add it here AND migrate existing records. Don't sprinkle
 | `eu-only` | EU-only programs | Hidden by default for India-primary view. Surface in "Global / EU" sub-tab. |
 | `other-region` | Region-specific (UK, Singapore, Japan, etc.) | Hidden by default. Surface only when user picks that region. |
 
-When the collector / LLM is uncertain, use `global-other` (most permissive default) AND drop `parse_confidence` to `medium` so the verify queue flags it for human review.
+When `refresh/extract.py` is uncertain, use `global-other` (most permissive default) AND drop `parse_confidence` to `medium` so the record surfaces for review.
 
 A grant or accelerator can carry BOTH `geo_priority` AND a more granular country list in `eligibility.regions`. The two are not redundant — `geo_priority` drives default sort + UI tabs; `eligibility.regions` is precise truth.
 
@@ -127,7 +160,7 @@ A record can carry MULTIPLE tier slugs. Most quality dev resources fit `["hobby"
 - Don't tag `startup` if the free tier has request caps that break under any real revenue.
 - Don't tag `hobby` for grants — those are application-only, not "spin up tonight."
 
-**Collectors set this heuristically; humans can override.** When the LLM extractor is unsure, write `["hobby"]` (most conservative) and set `parse_confidence: low` so the verify-queue flags it.
+**`refresh/extract.py` sets this heuristically; humans can override** via a `data/providers_seed.json` correction (re-applied on next boot — see `agentic-pipeline.md`). When the extractor is unsure, write `["hobby"]` (most conservative) and set `parse_confidence: low` so the record surfaces for review.
 
 ## OFFER_TYPE semantics (don't confuse these)
 
@@ -141,38 +174,51 @@ A record can carry MULTIPLE tier slugs. Most quality dev resources fit `["hobby"
 | `perk`           | Discount or extended free period for partners          | Notion Plus free for startups   |
 | `oss`            | Open-source artifact (no quota concept)                | YC startup directory CSV        |
 
-## Validation rules (enforce in the loader, not in `if`-checks scattered around)
+## Validation rules (enforced by `ProviderRecord`'s Pydantic validators — `domain/records.py`)
 
-- `id`, `provider_id`, `category`, `source_url`, `scraped_at` are required. Reject record if missing.
-- `category` MUST be in CATEGORY_ENUM.
-- `offer_type` MUST match the enum above.
-- `parse_confidence` ∈ {high, medium, low}. Records with `low` are ingested but flagged in the UI with a "verify yourself" badge.
-- `scraped_at` ≤ now + 5 min (clock skew tolerance). Reject future timestamps beyond that.
-- `currency` and `credit_amount` are both null OR both non-null.
-- `eligibility.regions` non-empty array. Use `["global"]` if open to anyone.
-- `use_case_tiers` non-empty array, every element ∈ {hobby, personal, startup-mvp, pre-seed, seed, series-a}.
-- `tier_fit_rationale` required when `use_case_tiers` includes any of `seed`, `series-a` (forces the collector / LLM to defend the claim).
-- `quota_summary`, `duration_summary`, `region_summary` required (drive the three stat tiles in the card UI). All three MUST be ≤ 30 chars to fit the tile layout. Use `Always free`, `Global`, `Rate-limited`, etc.
-- `eligibility_summary` required (one short phrase like "Any developer with email", "Any user", "DPIIT-recognized startups").
+- `provider_id`, `name`, `vendor`, `category`, `source_urls`, `offer_type`, `headline`,
+  `use_case_tiers` are required (`model_config = ConfigDict(extra="forbid")` — unknown fields
+  are rejected, not silently dropped).
+- `provider_id` MUST match `^[a-z0-9]+(-[a-z0-9]+)*$`.
+- `category` and `offer_type` are coerced through `normalize_category` / `normalize_offer_type`
+  before validation, so legacy aliases don't hard-fail.
+- `access_method` unrecognized by the LLM is coerced to `"unknown"` rather than failing the
+  whole record (`_unknown_access_method` validator) — extraction failures degrade one field,
+  not the record.
+- `source_urls` and every `Link.url` MUST start with `http://` or `https://`.
+- `quota_summary`, `duration_summary`, `region_summary`, `eligibility_summary` MUST be
+  ≤ `TILE_MAX_CHARS` (40) to fit the card stat tiles.
+- `highlights` holds at most 6 bullets.
+- `use_case_tiers` non-empty, every element ∈ {hobby, personal, startup-mvp, pre-seed, seed, series-a}.
+- `Credit.currency`, when set, MUST be a 3-letter ISO 4217 code (uppercased automatically).
+- `parse_confidence` ∈ {high, medium, low}. Records with `low` surface on the Candidates/Changes
+  pages for human review rather than being rejected.
 
 ## Migrations
 
-- Schema version pinned in `schema/VERSION` (single integer).
-- Adding an OPTIONAL field → minor bump (e.g. v3 → v4), no migration script needed.
-- Adding a REQUIRED field, renaming, or changing enum membership → MUST ship a migration script under `schema/migrations/<NNN>-<slug>.{sql,py}` that backfills history. Never break old records.
-- All schema changes go through a `/design` cycle. Never silent.
+- `storage/migrations.py` owns SQLite schema migrations (numbered, applied on every API boot
+  before any query runs).
+- Adding an OPTIONAL field to `ProviderRecord` needs no migration — SQLite stores the record as
+  JSON; only structural (table/column) changes need a `storage/migrations.py` entry.
+- Adding a REQUIRED field, renaming, or changing enum membership is still a breaking change to
+  every stored version — write a migration that backfills history, and go through a `/design`
+  cycle. Never silent.
 
 ## What lives OUTSIDE this schema
 
-- Per-category UI metadata (icon, color, tagline) → `web/categories.ts`. Not in the data record.
-- User notes / personal ranking → separate `user_notes` table keyed by `provider_id`.
-- Scraped raw HTML → `data/raw/`, never embedded in the record.
+- Per-category UI metadata (icon, color, tagline) → `frontend/lib/` (mirrors `domain/taxonomy.py`,
+  kept equal by a test). Not in the data record.
+- Field-level version history and diffs → `domain/changes.py` + the `changes` table in
+  `storage/`, not embedded in the current record.
+- Raw fetched page text → not persisted beyond the hash used by the refresh hash-gate.
 
 ## Anti-patterns (flag in review)
 
 - Per-category schema variants ("`gpu_offer`" vs "`api_offer`") — collapse to the canonical shape.
 - Boolean flags like `is_free`, `is_active` — use `offer_type` and `status` enums.
 - Stringly-typed dates ("`expires in 30 days`") — store ISO date.
-- Free-text limits ("`a few thousand requests`") — extract a number, drop confidence to `low` if you must guess.
-- Records without `scraped_at` — reject at ingest.
-- Mutating an existing record on re-scrape — append a new row instead.
+- Free-text limits ("`a few thousand requests`") — extract a number into `Limit.value`, drop
+  confidence to `low` if you must guess.
+- Records without `scraped_at` — the field has a default (`_utcnow()`), but every stored record
+  should carry a real fetch timestamp, not the default.
+- Mutating an existing record's history on re-scrape — `storage/` always appends a new version.

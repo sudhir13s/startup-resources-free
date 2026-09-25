@@ -1,6 +1,6 @@
 # Project Rule: Scraping Ethics + Resilience
 
-> Binds every collector / extractor / agent that fetches data from a third-party site. Goal: legal, polite, durable. A collector that gets us banned is worse than no collector.
+> Binds `refresh/fetch.py` and every extraction step that fetches data from a third-party site. Goal: legal, polite, durable. Getting us banned is worse than no fetch at all.
 
 ## Hard prohibitions
 
@@ -11,51 +11,62 @@
 - No hammering: never default to faster than 1 request / 30 seconds per host.
 - No re-fetch of unchanged pages within the same week (cache + ETag/Last-Modified).
 - No commit of scraped HTML/JSON snapshots that contain copyrighted prose verbatim. Extract structured fields only.
-- No collector for any provider listed in `BLOCKLIST.md` (created on first takedown request).
+- No fetch for any provider listed in `BLOCKLIST.md` (created on first takedown request).
 
-## Required for every new collector
+## Required for every new provider's `source_urls`
 
-A collector PR is incomplete until it has:
+A provider is not ready for refresh until:
 
 1. **Source-of-truth choice in this order:**
    1. Official API (e.g. AWS Pricing API, GCP Billing Catalog) — strongly preferred.
    2. Official RSS / changelog / status feed.
    3. Documented public JSON endpoint.
-   4. HTML scraping — last resort.
-2. **`robots.txt` + ToS link** in the collector header comment (date-stamped).
-3. **Polite client config:**
-   - Real `User-Agent`: `startup-resources-free/<version> (+https://github.com/<user>/startup-resources-free; contact: <email>)`.
-   - Default rate: 1 req per 30 s per host. Override only with documented justification.
-   - Default cadence: weekly. Daily only if the provider's offer changes that often AND the source is an API (not HTML).
-   - Timeout: 30 s. Retry: max 2, exponential backoff with jitter, NO retry on 4xx (except 408/429).
-   - Honor `Retry-After` exactly.
-4. **Caching layer:** ETag / Last-Modified / If-Modified-Since. Skip body parse on 304.
-5. **Idempotent writes:** writing the same record twice produces the same row (upsert by `(provider_id, scraped_at_date)` not by autoincrement).
+   4. HTML fetch (`refresh/fetch.py`, with the Jina Reader fallback) — last resort.
+2. **`robots.txt` + ToS reviewed** — `PoliteFetcher` checks robots.txt per host at fetch time;
+   note the review date if the provider needed a manual exception discussion.
+3. **Polite client config (already enforced by `refresh/fetch.py` — do not weaken it):**
+   - `USER_AGENT = "ResourceOS/2.0 (+https://github.com/sudhir13s/startup-resources-free)"`.
+   - Default rate: 1 request per 30 s per host (`DEFAULT_MIN_INTERVAL_S`).
+   - Timeout 30 s (`DEFAULT_TIMEOUT_S`). Retry max 2, backoff with jitter, only on
+     408/429/500/502/503/504 — never on other 4xx. `Retry-After` honored exactly.
+4. **Caching:** ETag / Last-Modified conditional GET via the repository's `"http-cache"` state
+   namespace (not a local file cache) — a 304 skips body parsing and the LLM call entirely.
+5. **Idempotent, versioned writes:** `storage/` appends a new version on an accepted change;
+   re-running against an unchanged page writes nothing (the hash gate, see `agentic-pipeline.md`).
 6. **Freshness timestamp** on every record (`scraped_at`, ISO 8601, UTC).
-7. **Source URL** stored verbatim per record so a human can verify.
-8. **Confidence score** per field: `high` (from API), `medium` (from structured HTML), `low` (regex-on-prose). UI must surface this.
-9. **Diff-aware logging:** log only when a field changed vs. previous run. No-change runs log a single line.
-10. **Failure mode:** on parse failure, save raw response under `data/raw/<provider>/<date>.html` (gitignored) and emit a structured log entry — never silently drop.
+7. **Source URLs** stored verbatim in `source_urls` so a human can verify.
+8. **Confidence score** on the record: `high` / `medium` / `low` (`parse_confidence`). The UI
+   surfaces `low` on the Changes and Candidates pages.
+9. **Diff-aware persistence:** `refresh/merge.py`'s never-degrade merge only stores a new
+   version when something changed; a no-op run touches nothing.
+10. **Failure mode:** on fetch or parse failure, emit a structured log entry with the reason —
+    never silently drop a provider from the run.
 
-## Stop conditions (kill the collector immediately)
+## Stop conditions (pause the provider immediately)
 
-- HTTP 403 / 429 sustained over 3 runs → pause collector, alert user.
-- Provider sends a takedown / cease-and-desist (email, GitHub issue, abuse contact) → add to `BLOCKLIST.md` SAME DAY, mark all existing records `source: manual`, do NOT delete history.
+- HTTP 403 / 429 sustained over 3 runs → pause that provider's `source_urls`, alert the user.
+- Provider sends a takedown / cease-and-desist (email, GitHub issue, abuse contact) → add to `BLOCKLIST.md` SAME DAY, mark all existing records `source_method: manual`, do NOT delete history.
 - robots.txt changes to `Disallow:` for our path → stop, don't grandfather in.
-- Schema drift breaks the parser → stop emitting (don't write garbage), open a TODOS.md task to update the parser.
+- Schema drift breaks extraction → stop emitting for that provider (don't write garbage); the
+  record falls back to `parse_confidence: low` rather than crashing the whole run.
 
 ## Concurrency + politeness
 
 - Per-host concurrency: 1. Never two parallel requests to the same host.
-- Cross-host concurrency: cap at 5 hosts in flight (a single GitHub Actions runner can't reasonably do more without flaking).
-- Random jitter on schedule (±10 minutes from the cron baseline) so we don't hit every provider at the top of the hour with everyone else.
+- Cross-host concurrency: cap at `MAX_CONCURRENT_HOSTS = 5` hosts in flight (`refresh/fetch.py`)
+  — a run triggered on the same Render process the API runs in can't reasonably do more.
+- No schedule to jitter against: refresh is button-triggered, not cron (see `agentic-pipeline.md`
+  and the Stack table in `CLAUDE.md`), so there is no "top of the hour" collision to avoid.
 
-## Storage rules for scraped data
+## Storage rules for fetched data
 
-- Raw responses → `data/raw/<provider>/<YYYY-MM-DD>.{html,json}` — gitignored except a tiny fixture set in `data/raw/_fixtures/` for tests.
-- Parsed records → DB (Supabase / SQLite — pending stack lock).
-- History is append-only. NEVER overwrite a previous row. New scrape = new row. Latest-by-`(provider_id)` is a query, not a mutation.
-- A small JSON snapshot (`data/snapshots/<YYYY-MM-DD>.json`) is committed weekly so the repo itself carries a public-readable timeline.
+- Parsed records → SQLite (`storage/sqlite_repository.py`), version-controlled on the dedicated
+  `data` git branch, not `main` (`storage/github_sync.py`).
+- History is append-only. NEVER overwrite a previous row. Every accepted change is a new
+  version; latest-by-`provider_id` is a query, not a mutation.
+- Fetched page text is not persisted as files — only its hash (for the hash gate) and, when a
+  change is accepted, the extracted record. There is no committed weekly snapshot; the `data`
+  branch's git history over `resourceos.db` is the public-readable timeline.
 
 ## Legal posture (read once, internalize)
 
@@ -69,17 +80,16 @@ A collector PR is incomplete until it has:
 - Using official affiliate / partner programs that explicitly authorize automated catalog access.
 - Calling LLM APIs against provider docs (we are the user of OpenRouter / Groq, not scraping them).
 
-## Self-check before merging any collector
+## Self-check before adding a new provider's `source_urls`
 
-- [ ] robots.txt + ToS reviewed within the last 30 days, link in header.
-- [ ] User-Agent is honest and identifiable.
-- [ ] Rate limit ≤ 1 req/30s/host.
-- [ ] Cadence ≤ weekly (or justified daily via API).
-- [ ] ETag / Last-Modified caching wired.
-- [ ] Failure path saves raw + emits structured log (no silent drop).
-- [ ] Schema drift detection: collector emits `parse_confidence: low` instead of crashing.
-- [ ] Records carry: `provider_id`, `category`, `scraped_at`, `source_url`, `parse_confidence`.
+- [ ] robots.txt + ToS reviewed within the last 30 days.
+- [ ] Source-of-truth preference followed (official API before HTML fetch).
+- [ ] Rate limit ≤ 1 req/30s/host (unchanged in `refresh/fetch.py` — no per-provider override).
+- [ ] ETag / Last-Modified caching in effect (automatic via `PoliteFetcher`).
+- [ ] Failure path emits a structured log entry (no silent drop).
+- [ ] Schema drift detection: extraction falls back to `parse_confidence: low` instead of crashing.
+- [ ] Record carries: `provider_id`, `category`, `scraped_at`, `source_urls`, `parse_confidence`.
 - [ ] BLOCKLIST.md checked.
 - [ ] No copyrighted prose committed verbatim to the repo.
 
-If any box is unchecked, the collector doesn't merge.
+If any box is unchecked, don't add the provider's `source_urls` yet.
