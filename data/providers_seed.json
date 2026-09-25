@@ -2229,11 +2229,11 @@
             "note": null
           },
           {
-            "label": "DTU",
-            "value": 250,
-            "unit": null,
+            "label": "Performance",
+            "value": 10,
+            "unit": "DTU",
             "period": null,
-            "note": null
+            "note": "S0 service tier"
           }
         ],
         "notes": null
