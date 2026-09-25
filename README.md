@@ -77,7 +77,8 @@ takes 30–60 s).
 
 | Variable | Service | Needed for | Value |
 |---|---|---|---|
-| `RESOURCEOS_PASSPHRASE` | API **and** frontend (same value) | Refresh button | Any long random string, e.g. `openssl rand -hex 24` |
+| `RESOURCEOS_USERNAME` | frontend | Signing in | Any username, e.g. `admin` |
+| `RESOURCEOS_PASSWORD` | API **and** frontend (same value) | Signing in + every backend call | Any long random string, e.g. `openssl rand -hex 24` |
 | `RESOURCEOS_R2_ENDPOINT` | API | Keeping data across restarts | S3 endpoint from the R2 overview page, `https://<account-id>.r2.cloudflarestorage.com` |
 | `RESOURCEOS_R2_BUCKET` | API | Keeping data across restarts | R2 bucket name, e.g. `resourceos-data` |
 | `CF_USER_ACCESS_KEY_ID` | API | Keeping data across restarts | R2 API token access key |
@@ -99,8 +100,8 @@ Optional overrides (defaults work on Render): `RESOURCEOS_R2_OBJECT_KEY` (defaul
 `resourceos.db`), `RESOURCEOS_DB_PATH`, `SEED_PATH`, `CORS_ORIGINS`. For local runs, copy
 `.env.example`.
 
-**First refresh:** open the dashboard → **Refresh data** → enter the passphrase → follow the
-**Runs** page. The first successful run writes the object into the R2 bucket.
+**First refresh:** open the dashboard, log in, click **Refresh data**, follow the **Runs**
+page. The first successful run writes the object into the R2 bucket.
 
 ---
 

@@ -15,16 +15,15 @@ services:
       # pulled from / pushed to the R2 bucket each boot/refresh.
       - key: RESOURCEOS_DB_PATH
         value: /tmp/resourceos.db
-      # Auto-resolved from the web service host. No manual entry needed
-      # after Blueprint sync. Render expands `host` to e.g.
-      # "startup-resources.onrender.com" — code prepends https:// scheme.
-      - key: CORS_ORIGIN_HOST
-        fromService:
-          type: web
-          name: startup-resources
-          property: host
-      # Secrets — set once in the Render dashboard, never committed.
-      - key: RESOURCEOS_PASSPHRASE
+      # No CORS_ORIGIN_HOST: the API is private end-to-end — only the
+      # Next.js server calls it (server-to-server, not subject to CORS),
+      # sending a key derived from RESOURCEOS_PASSWORD on every request
+      # (the X-ResourceOS-Key header). The raw password itself never
+      # leaves this service. Settings.cors_origins defaults to an empty
+      # allow-list, so no browser origin can call this service directly.
+      # Secrets — set once in the Render dashboard, never committed. Same
+      # value as the frontend service's RESOURCEOS_PASSWORD below.
+      - key: RESOURCEOS_PASSWORD
         sync: false
       - key: RESOURCEOS_R2_ENDPOINT
         sync: false
@@ -83,8 +82,12 @@ services:
           property: host
       - key: NEXT_PUBLIC_APP_ENV
         value: production
-      # Server-side only (Next.js route handlers) — adds X-ResourceOS-Passphrase to
-      # proxied admin calls; the browser only ever sees an httpOnly
-      # session cookie after the passphrase login.
-      - key: RESOURCEOS_PASSPHRASE
+      # Site login credentials — checked by app/api/auth/login/route.ts,
+      # never sent to the browser. Also the source of the X-ResourceOS-Key
+      # backend header (see lib/admin.ts) and the session cookie value (see
+      # lib/session.ts). Set both to enable the login page; RESOURCEOS_PASSWORD
+      # must match the API service's.
+      - key: RESOURCEOS_USERNAME
+        sync: false
+      - key: RESOURCEOS_PASSWORD
         sync: false

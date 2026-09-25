@@ -26,15 +26,17 @@ Five Python packages plus a Next.js frontend. Each has one job, and dependencies
 - **`api/`** — FastAPI: providers (with facets), provider detail, changes, runs, refresh
   start/status, candidate approve/reject, freellm catalog/plan. Pulls the DB from the R2
   bucket on boot and pushes it back after each refresh.
-- **`frontend/`** — Next.js 14 + Tailwind: service-aware filters with live counts, a sectioned
-  detail dialog, a passphrase-gated Refresh button (the passphrase stays on the server), and
-  Runs / Candidates / Changes pages.
+- **`frontend/`** — Next.js 14 + Tailwind: a site-wide login (`middleware.ts` + `lib/session.ts`)
+  gates every page and API route; service-aware filters with live counts, a sectioned detail
+  dialog, a Refresh button available to any logged-in session, and Runs / Candidates / Changes
+  pages.
 
 ```mermaid
 flowchart TB
     subgraph Frontend["frontend/ (Next.js)"]
+        Login["/login + middleware.ts<br/>(site-wide session gate)"]
         UI[Catalog UI + filters]
-        AdminRoutes["/api/admin/* server routes<br/>(passphrase login, forwarding)"]
+        AdminRoutes["/api/admin/* server routes<br/>(add key + forward)"]
     end
 
     subgraph API["api/ (FastAPI)"]
@@ -57,8 +59,9 @@ flowchart TB
 
     R2Bucket[("R2 bucket<br/>resourceos.db")]
 
-    UI -->|GET /api/providers, /api/changes| Routers
-    AdminRoutes -->|X-ResourceOS-Passphrase| Routers
+    Login -.->|gates| UI
+    UI -->|X-ResourceOS-Key| Routers
+    AdminRoutes -->|X-ResourceOS-Key| Routers
     Routers --> Domain
     Routers --> RefreshSvc
     RefreshSvc --> RefreshPkg
