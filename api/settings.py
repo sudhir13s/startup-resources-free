@@ -10,10 +10,11 @@ import os
 
 from pydantic import BaseModel, Field
 
-from storage.github_sync import GitHubDataSync
+from storage.r2_sync import R2DataSync
 
 DEFAULT_DB_PATH = "data/resourceos.db"
 DEFAULT_SEED_PATH = "data/providers_seed.json"
+DEFAULT_R2_OBJECT_KEY = "resourceos.db"
 
 
 class Settings(BaseModel):
@@ -23,18 +24,22 @@ class Settings(BaseModel):
     cors_origins: list[str] = Field(default_factory=lambda: ["*"])
     db_path: str = DEFAULT_DB_PATH
     seed_path: str = DEFAULT_SEED_PATH
-    github_repo: str = "sudhir13s/startup-resources-free"
-    github_token: str | None = None
-    data_branch: str = "data"
+    r2_account_id: str | None = None
+    r2_bucket: str | None = None
+    r2_access_key_id: str | None = None
+    r2_secret_access_key: str | None = None
+    r2_object_key: str = DEFAULT_R2_OBJECT_KEY
 
-    def build_sync(self) -> GitHubDataSync | None:
-        """Construct the data-branch sync client, or None when no token is set."""
-        if not self.github_token:
+    def build_sync(self) -> R2DataSync | None:
+        """Construct the R2 sync client, or None when any credential is missing."""
+        if not (self.r2_account_id and self.r2_bucket and self.r2_access_key_id and self.r2_secret_access_key):
             return None
-        return GitHubDataSync(
-            repo_slug=self.github_repo,
-            token=self.github_token,
-            branch=self.data_branch,
+        return R2DataSync(
+            account_id=self.r2_account_id,
+            bucket=self.r2_bucket,
+            access_key_id=self.r2_access_key_id,
+            secret_access_key=self.r2_secret_access_key,
+            object_key=self.r2_object_key,
         )
 
 
@@ -66,7 +71,9 @@ def load_settings() -> Settings:
         cors_origins=_resolve_cors_origins(),
         db_path=os.environ.get("RESOURCEOS_DB_PATH", DEFAULT_DB_PATH),
         seed_path=os.environ.get("SEED_PATH", DEFAULT_SEED_PATH),
-        github_repo=os.environ.get("RESOURCEOS_DATA_REPO", "sudhir13s/startup-resources-free"),
-        github_token=os.environ.get("RESOURCEOS_GITHUB_TOKEN") or None,
-        data_branch=os.environ.get("RESOURCEOS_DATA_BRANCH", "data"),
+        r2_account_id=os.environ.get("RESOURCEOS_R2_ACCOUNT_ID") or None,
+        r2_bucket=os.environ.get("RESOURCEOS_R2_BUCKET") or None,
+        r2_access_key_id=os.environ.get("RESOURCEOS_R2_ACCESS_KEY_ID") or None,
+        r2_secret_access_key=os.environ.get("RESOURCEOS_R2_SECRET_ACCESS_KEY") or None,
+        r2_object_key=os.environ.get("RESOURCEOS_R2_OBJECT_KEY", DEFAULT_R2_OBJECT_KEY),
     )

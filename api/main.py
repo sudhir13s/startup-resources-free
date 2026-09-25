@@ -21,7 +21,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.routers import candidates, changes, freellm_router, health, providers, refresh, runs
 from api.services.refresh_service import RunnerFactory, default_runner_factory
 from api.settings import Settings, load_settings
-from storage.github_sync import DataSyncError, GitHubDataSync
+from storage.r2_sync import DataSyncError, R2DataSync
 from storage.repository import Repository
 from storage.seed_import import import_seed
 from storage.sqlite_repository import SqliteRepository
@@ -37,11 +37,11 @@ logging.basicConfig(
 def create_app(
     settings: Settings | None = None,
     repository: Repository | None = None,
-    sync: GitHubDataSync | None = None,
+    sync: R2DataSync | None = None,
     runner_factory: RunnerFactory | None = None,
 ) -> FastAPI:
     """Build the FastAPI app. Injectable seams (repository/sync/runner_factory)
-    let tests skip the real data-branch pull/push and inject a fake runner.
+    let tests skip the real R2 pull/push and inject a fake runner.
     """
     resolved_settings = settings or load_settings()
     app = FastAPI(title="ResourceOS API", version="0.2.0", lifespan=_lifespan)
@@ -105,8 +105,8 @@ async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
             await sync.aclose()
 
 
-async def _pull_data(sync: GitHubDataSync, db_path: Path) -> None:
-    """Best-effort pull from the data branch — log and continue on failure
+async def _pull_data(sync: R2DataSync, db_path: Path) -> None:
+    """Best-effort pull from the R2 bucket — log and continue on failure
     (a fresh DB is then built from the seed file instead)."""
     try:
         pulled = await sync.pull(db_path)
@@ -118,7 +118,7 @@ async def _pull_data(sync: GitHubDataSync, db_path: Path) -> None:
 # Built only outside pytest: uvicorn imports `api.main:app` by string, so the
 # module must expose a ready instance, but tests build isolated apps via
 # `create_app(...)` with injected fakes and must never trigger real startup
-# I/O (data-branch pull, real seed import) as an import side effect.
+# I/O (R2 pull, real seed import) as an import side effect.
 app: FastAPI | None = None
 if "pytest" not in sys.modules:
     app = create_app()
