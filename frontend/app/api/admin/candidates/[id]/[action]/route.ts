@@ -34,7 +34,7 @@ export async function POST(
   try {
     const res = await fetch(backendUrl(`/api/candidates/${id}/${action}`), {
       method: "POST",
-      headers: { "X-Admin-Token": adminToken },
+      headers: { "X-ResourceOS-Passphrase": adminToken },
       cache: "no-store",
     });
     const data = await res.json().catch(() => ({}));

@@ -70,8 +70,8 @@ If `/validate` later flips this to a public product (FreeStackHub.com angle), up
 ## Dashboard layer (architecture v2, 2026-09-25)
 
 - **Frontend**: Next.js 14 App Router + Tailwind + shadcn/ui (Radix-based, no vendor lock). Pages: Catalog (`app/resources`), Grants & Credits (`app/funds`), Compare (`app/compare`), Changes (`app/changes`), Runs (`app/runs`), Candidates (`app/candidates`), Free-LLM Chain (`app/freellm`).
-- **Backend**: FastAPI (`api/main.py`) with routers for providers (facets + detail), changes, runs, refresh (start/status), candidates (approve/reject), and freellm (catalog/plan). Admin endpoints require `X-Admin-Token`.
-- **Admin auth**: passphrase login via Next.js server routes (`frontend/app/api/admin/*`) sets an httpOnly session cookie in the browser; the server route alone holds `ADMIN_TOKEN` and forwards it to the API. The token never reaches client-side JS.
+- **Backend**: FastAPI (`api/main.py`) with routers for providers (facets + detail), changes, runs, refresh (start/status), candidates (approve/reject), and freellm (catalog/plan). Admin endpoints require `X-ResourceOS-Passphrase`.
+- **Admin auth**: passphrase login via Next.js server routes (`frontend/app/api/admin/*`) sets an httpOnly session cookie in the browser; the server route alone holds `RESOURCEOS_PASSPHRASE` and forwards it to the API. The token never reaches client-side JS.
 - **Refresh trigger**: a button in the UI, not a schedule. See "Headline features" above and `.claude/rules/project/agentic-pipeline.md`.
 - **Filters in UI**: use-case tier (6-tier scheme), service-aware category facets with live counts, region/India-accessible, offer-type, parse-confidence.
 
@@ -110,7 +110,7 @@ startup-resources-free/
   data/
     providers_seed.json  ← 74 curated v2 records; hand-correction channel (storage/seed_import.py)
   docs/       ← plans/ architecture/ discussions/ progress/
-  .github/workflows/  ← ci.yml, dependabot-auto-merge.yml
+  .github/workflows/  ← ci.yml (manual: gh workflow run ci.yml)
   .claude/rules/project/
   pyproject.toml   ← testpaths: domain, storage, freellm, refresh, api
   requirements.txt  requirements-dev.txt
@@ -132,7 +132,7 @@ startup-resources-free/
 
 Global rules from `~/.claude/rules/` still bind. These extend, not replace.
 
-## Dependency-update workflow (auto-pilot)
+## Dependency updates + CI (manual)
 
 `.github/dependabot.yml` opens weekly PRs (Mon 06:00 IST) grouped by stack. The Python
 ecosystem watches `directory: /` (root `pyproject.toml`/`requirements*.txt`) — updated from the
@@ -149,9 +149,7 @@ pre-v2 `backend/` layout when that directory was removed; npm still watches `/fr
 
 Major bumps for the lockstep deps (`next`, `react`, `react-dom`, `eslint*`, `tailwind*`, `typescript`, `@types/node`, `@types/react*`, `autoprefixer`, `postcss`, `fastapi`, `pydantic`, `uvicorn`, `pytest`, `ruff`) are **blocked** at dependabot level — they require coordinated upgrade PRs (e.g. Next 15/16 cutover) so they don't break CI in solo bumps.
 
-`.github/workflows/dependabot-auto-merge.yml` watches CI completion and, when a Dependabot PR's CI finishes green, approves + squash-merges + deletes the branch immediately. Free-tier private repos don't get GitHub's native auto-merge UI; this workflow_run-triggered approach replaces it without paid plan.
-
-End result: dependency PRs flow Dependabot → CI → auto-merge → main → Render auto-deploys, hands-off.
+CI is **manual only** (owner decision 2026-09-25): `ci.yml` runs on `workflow_dispatch`, never on push or PR, and there is no auto-merge. To check a Dependabot PR or any branch: `gh workflow run ci.yml --ref <branch>`, then `gh run watch`; merge by hand when green.
 
 ## Workflow expectations
 

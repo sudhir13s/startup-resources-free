@@ -20,7 +20,7 @@ from domain.runs import RunReport
 from storage.sqlite_repository import SqliteRepository
 
 FIXTURE = Path(__file__).resolve().parent.parent.parent / "domain" / "fixtures" / "sample_records.json"
-ADMIN_TOKEN = "test-admin-token"  # noqa: S105 - fixture constant, not a real secret
+RESOURCEOS_PASSPHRASE = "test-admin-token"  # noqa: S105 - fixture constant, not a real secret
 
 
 @pytest.fixture
@@ -99,7 +99,7 @@ def make_client(
     repository: SqliteRepository,
     seed_file: Path,
     *,
-    admin_token: str | None = ADMIN_TOKEN,
+    passphrase: str | None = RESOURCEOS_PASSPHRASE,
     sync=None,
     runner_factory=None,
 ) -> TestClient:
@@ -107,7 +107,7 @@ def make_client(
     seed file, fake sync/runner so no network call ever happens in tests.
     """
     settings = Settings(
-        admin_token=admin_token,
+        passphrase=passphrase,
         cors_origins=["https://example.com"],
         db_path=str(repository._path),  # noqa: SLF001 - test-only introspection
         seed_path=str(seed_file),

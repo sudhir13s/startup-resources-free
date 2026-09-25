@@ -1,4 +1,4 @@
-"""Shared FastAPI dependencies: repository access + the admin-token guard."""
+"""Shared FastAPI dependencies: repository access + the passphrase guard."""
 
 from __future__ import annotations
 
@@ -15,16 +15,18 @@ def get_repository(request: Request) -> Repository:
 
 
 def require_admin(
-    request: Request, x_admin_token: str | None = Header(default=None)
+    request: Request,
+    x_resourceos_passphrase: str | None = Header(default=None),
 ) -> None:
-    """Guard for write endpoints: compares `X-Admin-Token` via constant-time compare.
+    """Guard for write endpoints: compares `X-ResourceOS-Passphrase` via constant-time compare.
 
-    503 when the deployment has no `ADMIN_TOKEN` configured (refresh is
+    503 when the deployment has no `RESOURCEOS_PASSPHRASE` configured (refresh is
     simply unavailable rather than silently open); 401 on any mismatch,
     including a missing header.
     """
-    admin_token: str | None = request.app.state.settings.admin_token
-    if not admin_token:
+    passphrase: str | None = request.app.state.settings.passphrase
+    if not passphrase:
         raise HTTPException(status_code=503, detail="Refresh is not configured")
-    if not x_admin_token or not hmac.compare_digest(x_admin_token, admin_token):
-        raise HTTPException(status_code=401, detail="Invalid or missing admin token")
+    supplied = x_resourceos_passphrase
+    if not supplied or not hmac.compare_digest(supplied, passphrase):
+        raise HTTPException(status_code=401, detail="Invalid or missing passphrase")

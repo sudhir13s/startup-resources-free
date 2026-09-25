@@ -24,9 +24,9 @@ services:
           name: startup-resources
           property: host
       # Secrets — set once in the Render dashboard, never committed.
-      - key: ADMIN_TOKEN
+      - key: RESOURCEOS_PASSPHRASE
         sync: false
-      - key: GITHUB_DATA_TOKEN
+      - key: RESOURCEOS_GITHUB_TOKEN
         sync: false
       - key: GROQ_API_KEY
         sync: false
@@ -77,8 +77,8 @@ services:
           property: host
       - key: NEXT_PUBLIC_APP_ENV
         value: production
-      # Server-side only (Next.js route handlers) — adds X-Admin-Token to
+      # Server-side only (Next.js route handlers) — adds X-ResourceOS-Passphrase to
       # proxied admin calls; the browser only ever sees an httpOnly
       # session cookie after the passphrase login.
-      - key: ADMIN_TOKEN
+      - key: RESOURCEOS_PASSPHRASE
         sync: false
