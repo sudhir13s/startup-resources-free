@@ -1,17 +1,24 @@
-# Project Rule: Agentic Pipeline + LiteLLM Patterns
+# Project Rule: Refresh Pipeline + freellm Patterns
 
-> Binds every LLM call, agent, scheduler, and pipeline orchestrator. Goal: zero LLM spend, vendor-neutral framework choice, resilient to provider quota exhaustion, manually re-runnable.
+> Binds every LLM call, the refresh runner, and the on-demand pipeline. Goal: zero LLM spend, vendor-neutral framework choice, resilient to provider quota exhaustion, manually re-runnable.
 
-## Core stack (LOCKED)
+## Core stack (LOCKED — architecture v2, 2026-09-25)
 
-- **Python 3.11+** (entire project)
-- **LiteLLM** under the hood. Every LLM call goes through `freellm/` (the in-repo router) which is the **only** package allowed to import `litellm`. Agents import from `freellm`, never from `litellm` directly.
-- **Async-first.** All collectors + agents + router are `async def`. `httpx.AsyncClient`, not `requests`.
+- **Python 3.12** (entire project)
+- Every LLM call goes through `freellm/` (the in-repo router), which owns the **only**
+  OpenAI-compatible `httpx` backend (`freellm/backend.py`) — chosen over LiteLLM so the API
+  fits Render's 512 MB free instance. `refresh/` and `api/` import from `freellm`, never call
+  a provider SDK or a raw HTTP client for LLM traffic directly. LiteLLM is not a runtime
+  dependency; it may be used ad hoc for local experimentation only.
+- **Async-first.** `refresh/` and `freellm/` are `async def` throughout. `httpx.AsyncClient`,
+  not `requests`.
 
 Why this layering:
-- `freellm/` owns the free-tier catalog, fallback chain, and quota state.
-- `agents/` calls `freellm.call_text(...)` / `freellm.call_vision(...)` / etc. — clean separation.
-- Splitting `freellm/` into a standalone PyPI package later requires zero `agents/` changes.
+- `freellm/` owns the free-tier catalog, fallback chain, and quota state (via an injected
+  `StateStore` — the API's SQLite repository in production, an in-memory store in tests).
+- `refresh/extract.py` and friends call `freellm.call_text(...)` / `freellm.call_vision(...)` —
+  clean separation.
+- Splitting `freellm/` into a standalone PyPI package later requires zero `refresh/` changes.
 
 ## Vendor-neutrality (LOCKED policy)
 
@@ -59,78 +66,78 @@ async def call_llm(
 
 - Always-required: `messages`, `task_name`.
 - `temperature=0.0` default — extraction tasks don't want randomness.
-- `response_model` (Pydantic v2) → validated structured output via LiteLLM's `response_format`. Use it whenever the agent extracts a record.
-- `LLMResult` carries: `content`, `model_used`, `provider_used`, `latency_ms`, `tokens_in`, `tokens_out`, `parse_confidence`.
-- The wrapper retries up to 2 times per provider, then falls through to the next provider in the chain. Total budget: ≤ 6 provider attempts per call.
-- On full chain exhaustion: raise `AllProvidersExhaustedError`. Caller decides whether to abort the run or skip that record.
+- `response_model` (Pydantic v2) → validated structured output, enforced by the OpenAI-compatible
+  backend's JSON mode. Use it whenever `refresh/extract.py` extracts a record.
+- The actual public functions live in `freellm/router.py` (`call_text`, `call_vision`,
+  `call_embed` — see `freellm-router.md` for the full contract). This section states the usage
+  rules for callers; the contract itself is not duplicated here.
+- The router retries up to 2 times per provider, then falls through to the next provider in the
+  chain, with automatic cooldown rotation on rate limits. On full chain exhaustion it raises
+  `AllProvidersExhaustedError`; the caller decides whether to abort the run or skip that record.
 
-## Agent inventory (locked roles — names match `project-idea.md`)
+## Refresh module inventory (`refresh/` — replaces the old `agents/` package)
 
-Every agent is a function in `agents/`, NOT a class hierarchy. No LangGraph / CrewAI unless `/design` justifies the dependency.
+Every stage is a module-level function in `refresh/`, not a class hierarchy. No LangGraph /
+CrewAI unless `/design` justifies the dependency.
 
-| Agent | Purpose | Output | Free-LLM call? |
+| Module | Purpose | Output | Free-LLM call? |
 |---|---|---|---|
-| `research.py::find_candidates` | Search-driven discovery of new providers / changed offers | list of candidate URLs + provenance | yes |
-| `extractor.py::extract_record` | Parse a candidate page → canonical provider record (Pydantic-validated) | one record OR `parse_confidence: low` | yes |
-| `tier_classifier.py::assign_tiers` | Decide `use_case_tiers` for a record using the rubric in `provider-schema.md` | tier list + rationale | yes |
-| `change_detector.py::diff_against_last` | Compare today's record vs latest history row, classify change | `changed_fields: [...]`, `change_severity` | no — pure code |
-| `verifier.py::queue_low_confidence` | Push `parse_confidence: low` records into a human-review queue | DB write | no |
+| `discover.py` | Search-driven discovery of new providers via the search chain (`search.py`) | candidate URLs + provenance, queued for review | yes (search, not LLM) |
+| `fetch.py` | Polite HTTP fetch: robots.txt, 30s/host, conditional GET, Jina Reader fallback | page text + hash | no |
+| `extract.py` | Parse fetched text → canonical `ProviderRecord` candidate (Pydantic-validated) | one record OR `parse_confidence: low` | yes |
+| `merge.py` | Never-degrade merge of the candidate against the current record | accepted version + field diff, or no-op | no — pure code |
+| `runner.py` | Orchestrates fetch → hash-gate → extract → merge → discover per run | `RunReport` (`domain/runs.py`) | orchestration only |
 
-Each agent has its own file. Each has a focused system prompt stored next to the code (`agents/prompts/<agent>.md`), versioned in git. **Never inline a system prompt > 5 lines in code** — promote to `prompts/<agent>.md`.
+Each module has a focused system prompt for its LLM call stored next to the code
+(`refresh/prompts/<module>.md` when a prompt exceeds 5 lines), versioned in git. **Never inline
+a system prompt > 5 lines in code.**
 
-## Scheduling
+## Scheduling (architecture v2 — button-triggered, no cron)
 
-### Daily background run (default)
-- **GitHub Actions cron**: `.github/workflows/daily-pipeline.yml`, runs `python -m pipeline.run` once per day, ~02:00 UTC + 10 min jitter.
-- Free runner minutes are sufficient (job target ≤ 30 min).
-- Secrets injected via repo Actions secrets (the env vars listed above).
-- Output: append-only JSON snapshot committed by the workflow under `data/snapshots/<YYYY-MM-DD>.json`. PR-based commit with squash-on-no-change.
-
-### Manual run
-- `python -m pipeline.run --providers groq,openrouter` (subset)
-- `python -m pipeline.run --since 2026-04-01` (re-scrape everything changed since a date)
-- `python -m pipeline.run --background` (detach, write logs to `data/logs/<run-id>.jsonl`, return PID)
-
-### Background-friendly design (mandatory)
-- Pipeline writes a `runs/<run-id>.lock` file on start, removes on clean exit. Refuse to start a second run if a lock exists < 24h old (avoid double-run from cron + manual).
-- Idempotent: re-running for the same date produces the same snapshot.
-- All long-running calls under `asyncio.timeout(...)`. No silent hangs.
-- Structured `structlog` logs to `data/logs/<run-id>.jsonl`. One line per provider per agent.
-- Honors `pkill -f "pipeline.run"`: every external call is cancellable.
+- **Trigger**: `POST /api/refresh` from the frontend's Refresh button (admin-token gated). The
+  API starts `refresh.runner.create_runner(repo)` as a background task inside the same Render
+  process — there is no scheduled job, GitHub Actions cron, or separate worker.
+- **CLI (local/manual only)**: `python -m refresh run [--providers ...] [--discover] [--force]`
+  and `python -m refresh search-status` (`refresh/__main__.py`). Not used in production.
+- **Persistence**: a run's accepted changes are written to the SQLite repository; on completion
+  `storage/github_sync.py` pushes the database to the `data` git branch. `main` is never
+  touched by a refresh, so there is no redeploy per run.
+- **Idempotent**: the hash gate (page-content hash vs. the last successful fetch) skips
+  extraction entirely for an unchanged page, so re-running costs near-zero LLM calls.
+- **Cancellable**: long-running calls run under `asyncio.timeout(...)`; the API can cancel the
+  background task on shutdown (`app.state.background_tasks`, see `api/main.py`).
 
 ## Cost + quota guardrails
 
-- Hard cap per run: **5,000 LLM calls total** (across all agents). Run aborts at the cap with a clear log + commit-skip.
-- Per-provider per-day cap configurable in `agents/llm.py::PROVIDER_DAILY_CAPS`. Defaults conservative (e.g. Groq: 1000, Gemini: 1500).
-- LLM call counter persisted in `data/runs/counters.json` so quota state survives across runs.
-- Track and emit cost (LiteLLM gives this) — should be **$0.00** for free providers. Any non-zero entry triggers an alert in the run summary.
-
-## Prompts — quality bar (non-negotiable)
-
-- Every agent prompt is in `agents/prompts/<agent>.md`, with a version number in the file header.
-- Prompts include: ROLE, INPUT shape, OUTPUT shape (referenced to the Pydantic model), CONSTRAINTS, FAILURE-MODE instructions ("if you can't extract a numeric quota, return `null` and `parse_confidence: low`; do NOT guess").
-- **No "you are a helpful assistant" filler.** Every line earns its tokens.
-- Test prompts with `pytest tests/agents/` golden-file fixtures before deploying.
+- Hard cap per run: `RefreshOptions.max_llm_calls` (`domain/runs.py`), default 200 via the CLI,
+  configurable per call. A run aborts at the cap with a clear log entry.
+- Per-provider quota is tracked through `freellm/quotas.py`'s injected `StateStore` — the API's
+  SQLite repository in production — so quota state survives restarts and redeploys.
+- Cost should be **$0.00** for every free-tier call. `LLM_ALLOW_PAID=1` is required before any
+  paid key is used; unset by default.
 
 ## Anti-patterns (block in review)
 
-- Direct `openai.OpenAI()` / `anthropic.Anthropic()` / `groq.Groq()` import outside `agents/llm.py`.
+- Direct provider-SDK or raw-HTTP import for LLM traffic outside `freellm/backend.py`.
 - LLM call without `task_name`.
 - LLM call without a `response_model` for any extraction-style task.
 - `temperature > 0` on extraction calls.
 - System prompt inlined in Python > 5 lines.
-- Calling LLM in a tight loop without batch grouping (use `asyncio.gather` over inputs, not a `for url in urls: await call_llm(...)` serial loop).
+- Calling LLM in a tight loop without batch grouping (`asyncio.gather` over inputs, not a
+  `for url in urls: await call_text(...)` serial loop).
 - Storing API keys anywhere except env vars.
-- Catching `AllProvidersExhaustedError` and silently skipping — must log + counter-increment.
-- Adding LangGraph / CrewAI / AutoGen / dspy without `/design` approval (they bring heavy deps for limited gain at this scale).
+- Catching `AllProvidersExhaustedError` and silently skipping — must log the outcome on the
+  `RunReport`.
+- Adding LangGraph / CrewAI / AutoGen / dspy without `/design` approval.
+- Reintroducing a cron / scheduled workflow for refresh — the button-triggered, in-process
+  design is locked (architecture v2, 2026-09-25); see `hosting-migration.md` for why.
 
 ## Free-provider monitoring
 
-Providers shift their free tiers. The pipeline itself tracks LLM-provider availability:
-- `data/llm_providers.json` carries: `model_id`, `last_success_at`, `last_failure_reason`, `consecutive_failures`.
-- After 3 consecutive failures, the provider is auto-disabled until manually re-enabled.
-- Weekly task: re-run a smoke test against every disabled provider; auto-re-enable on first success.
+Providers shift their free tiers. `freellm/quotas.py` tracks per-provider state (last success,
+consecutive failures) through the injected `StateStore`; after repeated consecutive failures a
+provider is skipped for the rest of the chain rotation until it succeeds again.
 
 ## Why this pipeline rule exists separately from `scraping-ethics.md`
 
-`scraping-ethics.md` covers HOW we fetch provider data. This rule covers HOW we use LLMs to MAKE SENSE of that data and orchestrate everything. They're orthogonal — both apply to most pipeline files. Read both before editing `pipeline/` or `agents/`.
+`scraping-ethics.md` covers HOW we fetch provider data. This rule covers HOW we use LLMs to MAKE SENSE of that data and orchestrate everything. They're orthogonal — both apply to most refresh files. Read both before editing `refresh/` or `freellm/`.

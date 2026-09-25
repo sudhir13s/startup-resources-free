@@ -40,119 +40,84 @@ If `/validate` later flips this to a public product (FreeStackHub.com angle), up
    - `pre-seed` — bootstrapped or friends-and-family-funded, early traction
    - `seed` — post-seed round, $0.5–5M raised
    - `series-a` — post-Series A, paying users + production scale
-2. **Agentic discovery + extraction.** Daily GH Actions cron + manual `python -m pipeline.run`. Vendor-neutral agentic stack — direct LiteLLM calls + small in-repo orchestrator. NEVER ties to a single vendor's agent SDK.
-3. **`freellm/` router library.** Single source of truth for the free-LLM catalog. Knows every free provider's text / vision / image-gen / video / embedding tier. Routes calls in a quota-aware chain so total spend stays at $0. Reusable as a library outside this project. See [`freellm-router.md`](./.claude/rules/project/freellm-router.md).
-4. **Free-LLM-Chain filter** in the dashboard UI — see only the LLM/multimodal providers `freellm/` knows about, with live chain order + quota state + a "test the chain" button that proves the $0 promise.
-5. **Human-in-the-loop verify queue.** `parse_confidence: low` records surface in a verify tab with Confirm/Reject keyboard shortcuts.
+2. **Agentic discovery + extraction.** Refresh-button-triggered, in-process (`refresh/runner.py`) — no cron. Vendor-neutral agentic stack — direct calls through `freellm/` + a small in-repo orchestrator. NEVER ties to a single vendor's agent SDK.
+3. **`freellm/` router library.** Single source of truth for the free-LLM catalog. Knows every free provider's text / vision / embedding tier (image-gen / video / audio remain dry-run only, deferred to the Media Benchmark). Routes calls in a quota-aware chain — with automatic cooldown rotation on rate limits — over a plain OpenAI-compatible `httpx` backend, so total spend stays at $0. Reusable as a library outside this project. See [`freellm-router.md`](./.claude/rules/project/freellm-router.md).
+4. **Free-LLM Chain page** in the dashboard — see the LLM providers `freellm/` knows about, with catalog + plan endpoints exposed via `api/routers/freellm_router.py`. Live "test the chain" UX is not yet built; the API surface is.
+5. **Human-in-the-loop verify queue.** `parse_confidence: low` records and discovery candidates surface on the Candidates page for approve/reject. `data/providers_seed.json` is also a hand-correction channel — an edited seed entry is re-applied on the next boot, diffed on the Changes page, while unchanged entries never overwrite what a refresh has since learned (see `storage/seed_import.py`).
 6. **India-primary, US-grants-included-when-accessible.** See "Geographic + sector lens" section.
-7. **Media Generation Benchmark (v0.3+, deferred).** Second sub-product: paste a prompt → see ETA + cost + free-quota + quality across video / image / diagram / voice providers, ranked free-first. Uses the same `freellm/` router. Storyboard mode splits long prompts (e.g. system-design explanations) into scenes for per-scene video gen + ffmpeg merge. Locked spec in [`media-benchmark.md`](./.claude/rules/project/media-benchmark.md). NOT in scope for v0.1 ship-today.
+7. **Media Generation Benchmark (v0.3+, deferred).** Second sub-product: paste a prompt → see ETA + cost + free-quota + quality across video / image / diagram / voice providers, ranked free-first. Uses the same `freellm/` router. Storyboard mode splits long prompts into scenes for per-scene video gen + ffmpeg merge. Locked spec in [`media-benchmark.md`](./.claude/rules/project/media-benchmark.md). Not started.
 
 ## Stack (all rows LOCKED by user 2026-04-26 unless marked)
 
 | Layer | Choice | Notes |
 |---|---|---|
-| **Language (backend + agents)** | **Python 3.11+** | LOCKED |
+| **Language (backend)** | **Python 3.12** | LOCKED — `pyproject.toml` `target-version = "py312"` |
 | **Backend API** | **FastAPI** | LOCKED |
 | **Frontend** | **Next.js 14+ (App Router) + Tailwind** | LOCKED — Node.js runtime |
-| **LLM gateway** | **LiteLLM** | LOCKED |
-| **Agentic framework** | **Vendor-neutral. Default = direct LiteLLM + small in-repo orchestrator. If a framework added: Pydantic AI or smolagents (both OSS, model-agnostic). NEVER OpenAI Agents SDK / Claude-only Agent SDK / GCP-required ADK as default.** | LOCKED policy (vendor-lock-free) |
-| **Free-LLM router** | **In-repo `freellm/` sub-package — single source of truth for free-tier provider catalog, quota tracker, multimodal routing.** Importable as a library; runnable as a script. Designed so it can be split out to PyPI later. | LOCKED |
-| Free LLM providers (text) | Groq, OpenRouter (free models), Together free, Cerebras, Gemini free, HF Inference, Mistral free | live catalog in `freellm/providers.py` |
-| Free providers (vision / image / video / embed) | Gemini Flash Vision free, HF Inference, Replicate free quota, fal.ai free, Voyage / Cohere / Mistral free embeddings | live catalog in `freellm/providers.py` |
-| Collector / scraper | `httpx` + `playwright` + `selectolax` | locked-by-language |
-| Storage | SQLite (single file, append-only history). Postgres only if Render hosting requires it. | LOCKED v1 |
-| **Scheduler** | **GitHub Actions cron (daily ~02:00 UTC + jitter) + manual `python -m pipeline.run`** | LOCKED |
-| **Hosting** | **Render** (FastAPI service + Postgres if needed). NOT Vercel. NOT Fly. | LOCKED |
-| Frontend hosting | Render Static Site OR Render Web Service. Stay on Render-only to keep one provider. | LOCKED |
-| Observability | structlog → JSON logs in repo (v1). Grafana Cloud free tier later if quota-history charting demanded. | LOCKED v1 |
-| License | MIT for code, CC-BY-4.0 for data snapshots | proposed (confirm before public release) |
+| **LLM gateway** | **`freellm/` over a plain OpenAI-compatible `httpx` backend** (`freellm/backend.py`) | LOCKED (architecture v2, 2026-09-25) — no LiteLLM/sidecar on Render (512 MB free instance); LiteLLM remains optional for local experimentation only, never a runtime dependency of `api/` |
+| **Agentic framework** | **Vendor-neutral. Default = direct calls + small in-repo orchestrator (`refresh/runner.py`).** NEVER OpenAI Agents SDK / Claude-only Agent SDK / GCP-required ADK as default. | LOCKED policy (vendor-lock-free) |
+| **Free-LLM router** | **In-repo `freellm/` sub-package — single source of truth for free-tier provider catalog, quota-aware routing with cooldown rotation.** Importable as a library; runnable as a script (`python -m freellm`). Designed so it can be split out to PyPI later. | LOCKED |
+| Free LLM providers (text/vision/embed, live) | Groq, Gemini, OpenRouter free models, Cerebras, Mistral, SambaNova, NVIDIA, Together, HF Inference | live catalog in `freellm/providers.py` |
+| Image-gen / video-gen / STT / TTS | Dry-run only (`Plan`, no live call) | deferred to Media Benchmark (v0.3+) |
+| Fetch client | `httpx` (polite fetch: robots.txt, 30s/host, ETag/Last-Modified, Jina Reader fallback) | `refresh/fetch.py` |
+| Storage | SQLite, single file, append-only version history per provider. Persisted on a dedicated `data` git branch (not `main`) — pulled on API boot, pushed after each refresh. Postgres not adopted. | LOCKED (architecture v2) |
+| **Scheduler** | **Refresh button → runs in-process inside the Render API service on click. No cron, no GitHub Actions pipeline.** A CLI (`python -m refresh run`) exists for local manual runs only. | LOCKED (architecture v2, 2026-09-25) |
+| **Hosting** | **Render** (two free Web Services: API + frontend). NOT Vercel. NOT Fly. | LOCKED |
+| Frontend hosting | Render Web Service (server routes required — not a Static Site). | LOCKED |
+| Observability | Structured JSON logs (Python `logging`) to stdout, captured by Render. | LOCKED v2 |
+| License | MIT for code | LOCKED |
 
-Phasing note: user **rejected v0 / v0.5 staging.** Build directly to v1. No Streamlit dogfooding step. No "ship in two hours" optimism baked into estimates — `/design` will produce a realistic task list.
+## Dashboard layer (architecture v2, 2026-09-25)
 
-## Dashboard layer (LOCKED — direct v1)
-
-User decision 2026-04-26: skip Streamlit / Metabase / phased approach. Build **Next.js 14 + Tailwind + FastAPI** directly.
-
-- **Frontend**: Next.js 14 App Router + Tailwind + shadcn/ui (or equivalent OSS component library — Radix-based, no vendor lock).
-- **Backend**: FastAPI exposing `/api/providers`, `/api/changes`, `/api/run` (manual trigger), `/api/verify-queue`.
-- **Hosting**: Render — one Web Service for FastAPI, one Static Site OR Web Service for Next.js. GitHub Actions handles cron.
-- **Charts**: Recharts (React) for the in-app timeline. NO Grafana embed in v1 (revisit if needed).
-- **Filters in UI** (LOCKED): tier chips (`hobby` / `personal` / `startup-mvp` / `startup`), category multi-select, region selector with India default, **Free-LLM-Chain mode** (see below), parse-confidence threshold, status filter.
-
-### Free-LLM-Chain filter (new, LOCKED)
-
-A dedicated UI mode separate from the tier filter. When ON:
-
-- Catalog filters to **only the LLM / multimodal providers** the in-repo `freellm/` router knows about.
-- A side panel shows the **routing chain**: order of providers, current quota state, last successful call timestamp.
-- Provider cards show "Use this for: text / vision / image-gen / embed / video" pills.
-- A "Test the chain" button runs a small free call through the chain and reports which provider answered.
-
-This is the "$0 spend" promise made visible.
+- **Frontend**: Next.js 14 App Router + Tailwind + shadcn/ui (Radix-based, no vendor lock). Pages: Catalog (`app/resources`), Grants & Credits (`app/funds`), Compare (`app/compare`), Changes (`app/changes`), Runs (`app/runs`), Candidates (`app/candidates`), Free-LLM Chain (`app/freellm`).
+- **Backend**: FastAPI (`api/main.py`) with routers for providers (facets + detail), changes, runs, refresh (start/status), candidates (approve/reject), and freellm (catalog/plan). Admin endpoints require `X-Admin-Token`.
+- **Admin auth**: passphrase login via Next.js server routes (`frontend/app/api/admin/*`) sets an httpOnly session cookie in the browser; the server route alone holds `ADMIN_TOKEN` and forwards it to the API. The token never reaches client-side JS.
+- **Refresh trigger**: a button in the UI, not a schedule. See "Headline features" above and `.claude/rules/project/agentic-pipeline.md`.
+- **Filters in UI**: use-case tier (6-tier scheme), service-aware category facets with live counts, region/India-accessible, offer-type, parse-confidence.
 
 ### What NOT to build
 
 - Vercel anything (user explicit reject).
-- Grafana as the main UI (still wrong shape; only embed if `/design` justifies a single timeline panel later).
-- Streamlit (skipped per user decision).
+- Grafana as the main UI.
+- Streamlit.
 - Multiple frontends.
+- A GitHub Actions cron pipeline for refresh (button-triggered, in-process only — see Stack table).
 
-## Project structure (target — v1)
+## Project structure (current — architecture v2)
 
 ```
 startup-resources-free/
-  freellm/            ← in-repo free-LLM router library (LiteLLM wrapper, quota tracker, multimodal routing)
-    __init__.py
-    providers.py      ← canonical free-provider catalog (text/vision/image/video/embed)
-    router.py         ← fallback chain + quota-aware planner
-    quotas.py         ← per-provider per-day cap tracking (persisted)
-    schemas.py        ← Pydantic models (TextRequest, VisionRequest, ImageGenRequest, EmbedRequest, …)
-    cli.py            ← `python -m freellm` script entry
-    prompts/
-  agents/             ← LLM agents (extractor, tier-classifier, change-detector). Imports freellm/, NOT litellm.
-    research.py
-    extractor.py
-    tier_classifier.py
-    change_detector.py
-    verifier.py
-    prompts/          ← versioned system prompts
-  collectors/         ← scrapers per provider (one file per provider)
-    cloud/  gpu/  ai_apis/  databases/  storage/  credits/  grants/  accelerators/  perks/  oss/
-  pipeline/           ← orchestration: schedule, run, diff, alert, write
-    __main__.py       ← `python -m pipeline.run`
-    run.py
-  api/                ← FastAPI service: /api/providers, /api/changes, /api/run, /api/verify-queue
-    main.py
-    routes/
-    deps.py
-  schema/             ← Pydantic record models, SQL migrations, VERSION
-  frontend/           ← Next.js 14 App Router + Tailwind + shadcn/ui — the dashboard
-    app/
-    components/
-    lib/
+  domain/     ← shared types: records.py (ProviderRecord v2 — services[]/credits[]/claim_steps/
+                links + computed categories/card_variant/india_accessible), filters, changes,
+                runs, taxonomy
+  storage/    ← repository.py (Repository protocol), sqlite_repository.py, migrations.py,
+                seed_import.py (re-applies a changed seed entry every boot, never overwrites
+                refreshed data), github_sync.py (pulls/pushes resourceos.db to the `data` branch)
+  freellm/    ← __init__.py (public API: call_text/call_vision/call_embed live; image/video/
+                stt/tts dry-run), providers.py (catalog), backend.py (OpenAI-compatible httpx,
+                no LiteLLM/sidecar), router.py (fallback chain + cooldown rotation), quotas.py
+                (StateStore protocol), schemas.py, errors.py, cli.py
+  refresh/    ← fetch.py (robots.txt, 30s/host, ETag, Jina fallback), extract.py (free-LLM
+                extraction), merge.py (never-degrade merge), discover.py + search.py (Tavily →
+                Exa → Jina → Linkup → SerpAPI), runner.py (create_runner — what the API calls),
+                __main__.py (`python -m refresh run|search-status`, local/manual only)
+  api/        ← main.py (create_app; lifespan pulls data branch, migrates, imports seed,
+                configures freellm), settings.py, routers/ (providers, changes, runs, refresh,
+                candidates, freellm_router, health), services/ (refresh_service, catalog_service)
+  frontend/   ← app/ (resources, funds, compare, changes, runs, candidates, freellm pages;
+                api/admin/ — passphrase login/session/refresh/candidate actions, server-only),
+                components/, lib/
   data/
-    snapshots/<date>.json   ← weekly committed snapshot
-    raw/<provider>/         ← gitignored raw scraped HTML/JSON
-    logs/<run-id>.jsonl
-    runs/                   ← lock files, counters
-  docs/
-    plans/  architecture/  discussions/  diagrams/
-    design-prompt.md        ← prompt for design tools / designer LLMs
-  tests/
-  .github/workflows/
-    daily-pipeline.yml      ← cron + manual dispatch
-    ci.yml
-  .claude/
-    rules/project/
-  pyproject.toml
-  package.json              ← Next.js workspace
-  render.yaml               ← Render service definition
-  README.md
-  CLAUDE.md
-  LICENSE                   ← MIT for code
+    providers_seed.json  ← 74 curated v2 records; hand-correction channel (storage/seed_import.py)
+  docs/       ← plans/ architecture/ discussions/ progress/
+  .github/workflows/  ← ci.yml, dependabot-auto-merge.yml
+  .claude/rules/project/
+  pyproject.toml   ← testpaths: domain, storage, freellm, refresh, api
+  requirements.txt  requirements-dev.txt
+  package.json     ← frontend workspace (frontend/package.json)
+  render.yaml      ← two Web Services: API (Python) + frontend (Node)
+  README.md  CLAUDE.md  LICENSE (MIT)
 ```
-
-Until scaffolded, only docs exist. `/design` produces the task list that creates the tree above.
 
 ## Project-local rules
 
@@ -167,79 +132,11 @@ Until scaffolded, only docs exist. `/design` produces the task list that creates
 
 Global rules from `~/.claude/rules/` still bind. These extend, not replace.
 
-## SHIP-TODAY plan (LOCKED 2026-04-26 by 3-specialist roundtable)
-
-User mandate: deployed-on-Render basic version in **~2 hours from 12:06 IST**. 3-specialist consensus (architect + frontend + designer) cut scope to:
-
-### What ships TODAY (call this `v0.1-seed`)
-
-1. **Hardcoded seed** at `data/seed.json` — 15-20 hand-curated provider records. Fields: `id, name, category, tiers[], geo_priority, india_accessible, headline, free_tier_summary, source_url, parse_confidence, last_verified_at`. NO scraping. NO LLM calls. NO SQLite.
-2. **FastAPI**: ONE file `api/main.py`, ONE route `GET /api/providers?tier=&india=` reading + filtering the seed JSON. `/api/health`. Uvicorn entry. CORS-allow the Next.js origin.
-3. **Next.js 14 App Router** (Lovable-redesign 2026-04-26): TopBar (logo + nav + ⌘K search + status pill + Run-now + theme toggle) · left Sidebar (tier radio + category checkboxes + offer-type checkboxes + region select + parse-confidence buttons + Reset) · main with SubTabs (Catalog active, Compare/Changes/Verify SOON) · Provider cards with three stat tiles (Free Quota / Duration / Region), tier-fit pill, offer + eligibility, Source link, Details expand, parse-confidence dot, freshness footer.
-4. **Theme**: light + dark via `next-themes` (CSS variables, `class` attribute on `<html>`). Default dark, system-aware, toggle in TopBar right side. Both palettes contrast-checked.
-5. **Tab bar in nav**: 4 labels rendered, but Compare/Changes/Verify are visually muted with `Coming soon` tooltip. Click is a no-op.
-6. **Detail view**: inline expanded card on click (NOT slide-over, NOT separate route). Faster, no focus-trap accessibility risk.
-7. **Render deploy**: `render.yaml` declaring **two Web Services** — FastAPI + Next.js. **NOT Static Site** for Next.js (server components + route handlers require a runtime). Free-tier Render services do NOT share a private network, so frontend calls API via its public Render URL via env var `BACKEND_URL`. CORS_ORIGINS on FastAPI must match the frontend's Render URL exactly.
-8. **GH Actions**: ONE workflow `.github/workflows/ci.yml` running `pnpm build` + `pip install + pyright` on PR. NO cron yet.
-9. **README, LICENSE (MIT), .env.example, .gitignore**: short, honest, point at the deferred-to-v1 spec.
-
-### What is DEFERRED to v0.2+ (locked spec, not built today)
-
-- The `freellm/` router library + its CLI + multimodal coverage.
-- Any agentic pipeline / scraping collectors / `pipeline/` package.
-- Compare tab, Changes tab (timeline), Verify queue tab.
-- Slide-over panel.
-- Light-mode + dark-mode toggle.
-- Free-LLM-Chain filter mode (depends on `freellm/`).
-- Category multi-select filter (tier filter + India badge sufficient for v0.1).
-- Recharts / any charting library.
-- SQLite / Postgres migration.
-- GitHub Actions cron + agent run.
-- Verify-confidence keyboard shortcuts.
-
-The deferred items are LOCKED in `CLAUDE.md` + `.claude/rules/project/*.md` so the next session picks up where v0.1 stopped — nothing about the spec was given up, only sequenced.
-
-### Time budget (target)
-
-| Block | Target | Notes |
-|---|---|---|
-| Q&A (this turn ↔ user) | 5 min | GitHub repo + Render account confirmation |
-| Repo scaffold (next/fastapi/shadcn init, commits) | 25 min | First 25 min of next turn |
-| Seed data + FastAPI route | 15 min | |
-| Next.js components + page | 50 min | Bulk of the time |
-| Render setup + deploy + smoke test | 25 min | Includes DNS / cold-start verification |
-| README + commit + push | 10 min | |
-| **Total** | **~130 min** | Tight. Realistic only if user answers questions immediately. |
-
-If any block exceeds budget by > 50%, STOP and reassess scope — don't push the v0.1 cut further.
-
-### Open risks (called out before starting)
-
-- Render free Web Service cold-start ~30-60 s on first hit. **Both** services cold-start independently. Acceptable for demo; document in README + add a "warm the API" curl ping in pre-demo prep.
-- Free-tier Render services spin down after 15 min idle.
-- Without a custom domain, dashboard URL is `*.onrender.com`.
-- **Env-var circular dependency** (DevOps flag): Frontend needs API URL; API needs frontend URL for CORS. Both services must be NAMED first in `render.yaml`, then URLs derived as `https://<name>.onrender.com`, then both env vars set in Render dashboard BEFORE first deploy. Failure mode: deploy succeeds but CORS rejects all calls.
-- Seed data accuracy: 15 hand-picked records sourced from public free-tier pages today. Mark `last_verified_at: 2026-04-26` and `parse_confidence: high` only after a manual click-through.
-- One specialist (designer) suggested `/provider/[slug]` static route for detail view; downgraded to inline-expand for time. Promote to a route in v0.2 when slide-over goes in.
-
-### `/release` verification checklist (CRITICAL findings — must all pass before ship)
-
-Confidence 8+ findings from 2026-04-26 roundtable. Every box MUST be ticked before `/release`.
-
-- [ ] **A1-4** — Catalog-only scope; no agentic / SQLite / cron / 3-tabs in v0.1 (Architect)
-- [ ] **F-B1** — `GET /api/providers` route exists, returns seed JSON (Frontend)
-- [ ] **F-B2** — Next.js 14 App Router project initialized with TS strict + Tailwind (Frontend)
-- [ ] **D-B1** — Tier filter (Lovable-style sidebar radio list, 6-tier scheme: hobby/personal/startup-mvp/pre-seed/seed/series-a) renders with `personal` pre-selected on first paint; grid renders filtered cards immediately. (User override 2026-04-26: was `hobby`, then redesign added 6 tiers, default became `personal`.)
-- [ ] **D-B2** — Skeleton pulse cards render during data fetch — no empty white screen (Designer)
-- [ ] **D-B3** — 4.5:1 contrast verified on body text + ≥3:1 on large text (Designer)
-- [ ] **DO-B1** — Next.js is `type: web` not `static-site` in render.yaml (DevOps)
-- [ ] **DO-B2** — `BACKEND_URL` (frontend) + `CORS_ORIGINS` (api) set in Render dashboard before first deploy; both URLs derived from `name:` fields BEFORE deploy (DevOps)
-
-Plus standard `/release` gates (QA, Security, DevOps, Docs).
-
 ## Dependency-update workflow (auto-pilot)
 
-`.github/dependabot.yml` opens weekly PRs (Mon 06:00 IST) grouped by stack:
+`.github/dependabot.yml` opens weekly PRs (Mon 06:00 IST) grouped by stack. The Python
+ecosystem watches `directory: /` (root `pyproject.toml`/`requirements*.txt`) — updated from the
+pre-v2 `backend/` layout when that directory was removed; npm still watches `/frontend`.
 
 - `python-runtime` (fastapi, uvicorn, pydantic) — minor + patch only.
 - `python-dev` (pytest, ruff, httpx) — minor + patch only.
@@ -274,14 +171,6 @@ This project's value depends on scraping public pricing/free-tier pages. Some pr
 5. Cache responses; never re-scrape unchanged pages.
 
 If a provider asks us to stop, stop. Add to a `BLOCKLIST.md` and mark records as `source: manual`. Full rules: [`.claude/rules/project/scraping-ethics.md`](./.claude/rules/project/scraping-ethics.md).
-
-## Repo state (as of 2026-04-26)
-
-- Git repo initialized 2026-04-26.
-- GitHub remote: pending — user authorized push, but repo name + visibility await confirmation.
-- No `package.json` / `pyproject.toml` yet — scaffold during `/design` → `/build`.
-- Files present: `project-idea.md`, `CLAUDE.md`, `README.md`, `LICENSE`, `docs/design-prompt.md`, `.claude/rules/project/*`, `.gitignore`.
-- Personal scope, India-primary. CI via GitHub Actions. Deploy to Render.
 
 ## Geographic + sector lens (user context — LOCKED)
 
