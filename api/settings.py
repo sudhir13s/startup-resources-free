@@ -24,7 +24,7 @@ class Settings(BaseModel):
     cors_origins: list[str] = Field(default_factory=lambda: ["*"])
     db_path: str = DEFAULT_DB_PATH
     seed_path: str = DEFAULT_SEED_PATH
-    r2_account_id: str | None = None
+    r2_endpoint: str | None = None
     r2_bucket: str | None = None
     r2_access_key_id: str | None = None
     r2_secret_access_key: str | None = None
@@ -32,10 +32,10 @@ class Settings(BaseModel):
 
     def build_sync(self) -> R2DataSync | None:
         """Construct the R2 sync client, or None when any credential is missing."""
-        if not (self.r2_account_id and self.r2_bucket and self.r2_access_key_id and self.r2_secret_access_key):
+        if not (self.r2_endpoint and self.r2_bucket and self.r2_access_key_id and self.r2_secret_access_key):
             return None
         return R2DataSync(
-            account_id=self.r2_account_id,
+            endpoint=self.r2_endpoint,
             bucket=self.r2_bucket,
             access_key_id=self.r2_access_key_id,
             secret_access_key=self.r2_secret_access_key,
@@ -71,7 +71,7 @@ def load_settings() -> Settings:
         cors_origins=_resolve_cors_origins(),
         db_path=os.environ.get("RESOURCEOS_DB_PATH", DEFAULT_DB_PATH),
         seed_path=os.environ.get("SEED_PATH", DEFAULT_SEED_PATH),
-        r2_account_id=os.environ.get("RESOURCEOS_R2_ACCOUNT_ID") or None,
+        r2_endpoint=os.environ.get("RESOURCEOS_R2_ENDPOINT") or None,
         r2_bucket=os.environ.get("RESOURCEOS_R2_BUCKET") or None,
         r2_access_key_id=os.environ.get("RESOURCEOS_R2_ACCESS_KEY_ID") or None,
         r2_secret_access_key=os.environ.get("RESOURCEOS_R2_SECRET_ACCESS_KEY") or None,

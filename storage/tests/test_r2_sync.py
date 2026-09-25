@@ -16,7 +16,7 @@ import pytest
 
 from storage.r2_sync import DataSyncError, R2DataSync
 
-ACCOUNT_ID = "test-account-id"
+ENDPOINT = "https://0123456789abcdef0123456789abcdef.r2.cloudflarestorage.com"
 BUCKET = "resourceos-data-test"
 ACCESS_KEY_ID = "AKIDFAKEACCESSKEY"
 SECRET_ACCESS_KEY = "fake/secret/access/key/never/real"  # noqa: S105 - obviously fake test fixture
@@ -27,10 +27,10 @@ EXPECTED_PATH = f"/{BUCKET}/{OBJECT_KEY}"
 def _sync(handler) -> R2DataSync:
     client = httpx.AsyncClient(
         transport=httpx.MockTransport(handler),
-        base_url=f"https://{ACCOUNT_ID}.r2.cloudflarestorage.com",
+        base_url=ENDPOINT,
     )
     return R2DataSync(
-        account_id=ACCOUNT_ID,
+        endpoint=ENDPOINT,
         bucket=BUCKET,
         access_key_id=ACCESS_KEY_ID,
         secret_access_key=SECRET_ACCESS_KEY,
@@ -232,7 +232,7 @@ def test_should_not_retry_on_4xx(tmp_path):
 
 
 def test_should_return_none_from_env_when_any_var_missing(monkeypatch):
-    monkeypatch.delenv("RESOURCEOS_R2_ACCOUNT_ID", raising=False)
+    monkeypatch.delenv("RESOURCEOS_R2_ENDPOINT", raising=False)
     monkeypatch.setenv("RESOURCEOS_R2_BUCKET", BUCKET)
     monkeypatch.setenv("RESOURCEOS_R2_ACCESS_KEY_ID", ACCESS_KEY_ID)
     monkeypatch.setenv("RESOURCEOS_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
@@ -240,20 +240,20 @@ def test_should_return_none_from_env_when_any_var_missing(monkeypatch):
 
 
 def test_should_build_from_env_when_all_vars_present(monkeypatch):
-    monkeypatch.setenv("RESOURCEOS_R2_ACCOUNT_ID", ACCOUNT_ID)
+    monkeypatch.setenv("RESOURCEOS_R2_ENDPOINT", ENDPOINT)
     monkeypatch.setenv("RESOURCEOS_R2_BUCKET", BUCKET)
     monkeypatch.setenv("RESOURCEOS_R2_ACCESS_KEY_ID", ACCESS_KEY_ID)
     monkeypatch.setenv("RESOURCEOS_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
     monkeypatch.delenv("RESOURCEOS_R2_OBJECT_KEY", raising=False)
     sync = R2DataSync.from_env()
     assert sync is not None
-    assert sync.account_id == ACCOUNT_ID
+    assert sync.endpoint == ENDPOINT
     assert sync.bucket == BUCKET
     assert sync.object_key == "resourceos.db"
 
 
 def test_should_use_custom_object_key_from_env_when_set(monkeypatch):
-    monkeypatch.setenv("RESOURCEOS_R2_ACCOUNT_ID", ACCOUNT_ID)
+    monkeypatch.setenv("RESOURCEOS_R2_ENDPOINT", ENDPOINT)
     monkeypatch.setenv("RESOURCEOS_R2_BUCKET", BUCKET)
     monkeypatch.setenv("RESOURCEOS_R2_ACCESS_KEY_ID", ACCESS_KEY_ID)
     monkeypatch.setenv("RESOURCEOS_R2_SECRET_ACCESS_KEY", SECRET_ACCESS_KEY)
@@ -282,3 +282,31 @@ def test_should_never_log_secret_when_pushing(tmp_path, caplog):
     log_text = caplog.text
     assert SECRET_ACCESS_KEY not in log_text
     assert "Authorization" not in log_text
+
+
+def test_should_reject_endpoint_when_not_https():
+    with pytest.raises(ValueError):
+        R2DataSync(
+            endpoint="0123456789abcdef.r2.cloudflarestorage.com",
+            bucket=BUCKET, access_key_id="k", secret_access_key="s",
+        )
+
+
+def test_should_target_regional_host_when_endpoint_has_jurisdiction(tmp_path):
+    seen: list[httpx.URL] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request.url)
+        return httpx.Response(200, headers={"etag": '"abc"'})
+
+    eu = "https://0123456789abcdef0123456789abcdef.eu.r2.cloudflarestorage.com/"
+    sync = R2DataSync(
+        endpoint=eu, bucket=BUCKET, access_key_id="k", secret_access_key="s",
+        client=httpx.AsyncClient(base_url=eu.rstrip("/"), transport=httpx.MockTransport(handler)),
+    )
+    src = tmp_path / "db"
+    src.write_bytes(b"x")
+    asyncio.run(sync.push(src, "update db"))
+
+    assert seen[0].host == "0123456789abcdef0123456789abcdef.eu.r2.cloudflarestorage.com"
+    assert seen[0].path == f"/{BUCKET}/resourceos.db"

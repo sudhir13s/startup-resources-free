@@ -78,7 +78,7 @@ takes 30–60 s).
 | Variable | Service | Needed for | Value |
 |---|---|---|---|
 | `RESOURCEOS_PASSPHRASE` | API **and** frontend (same value) | Refresh button | Any long random string, e.g. `openssl rand -hex 24` |
-| `RESOURCEOS_R2_ACCOUNT_ID` | API | Keeping data across restarts | Cloudflare account id |
+| `RESOURCEOS_R2_ENDPOINT` | API | Keeping data across restarts | S3 endpoint from the R2 overview page, `https://<account-id>.r2.cloudflarestorage.com` |
 | `RESOURCEOS_R2_BUCKET` | API | Keeping data across restarts | R2 bucket name, e.g. `resourceos-data` |
 | `RESOURCEOS_R2_ACCESS_KEY_ID` | API | Keeping data across restarts | R2 API token access key |
 | `RESOURCEOS_R2_SECRET_ACCESS_KEY` | API | Keeping data across restarts | R2 API token secret |
@@ -87,11 +87,13 @@ takes 30–60 s).
 
 **Create the R2 bucket:**
 
-1. Cloudflare dashboard → **R2** → **Create bucket** (e.g. `resourceos-data`).
-2. **R2** → **Manage API tokens** → **Create API token**, scoped to that bucket with
-   **Object Read & Write** permission.
-3. Copy the **Access Key ID**, **Secret Access Key**, and the **Account ID** into the four
-   variables above.
+1. Cloudflare dashboard → **Storage & databases → R2 object storage** → activate R2 (checkout
+   needs a card; the free tier costs $0).
+2. **Overview → Create bucket** (e.g. `resourceos-data`).
+3. **Overview → Account Details → API Tokens: Manage → Create User API token** with
+   **Object Read & Write**, applied to that bucket only.
+4. Copy the **Access Key ID**, **Secret Access Key** (shown once) and the **S3 endpoint** into
+   the four variables above.
 
 Optional overrides (defaults work on Render): `RESOURCEOS_R2_OBJECT_KEY` (default
 `resourceos.db`), `RESOURCEOS_DB_PATH`, `SEED_PATH`, `CORS_ORIGINS`. For local runs, copy
