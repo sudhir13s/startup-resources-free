@@ -207,7 +207,7 @@ export interface RunReport {
 export interface RefreshStatus {
   active: RunReport | null;
   last: RunReport | null;
-  data_synced_at: string | null; // last successful push to / pull from the data branch
+  data_synced_at: string | null; // last successful push to / pull from the R2 bucket
 }
 
 export type CandidateStatus = "pending" | "approved" | "rejected" | "imported";
