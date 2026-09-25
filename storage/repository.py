@@ -38,7 +38,7 @@ class SaveResult(BaseModel):
 class Repository(Protocol):
     # --- Catalog ---
     def list_providers(self) -> list[ProviderRecord]:
-        """Latest version of every provider whose status is not deleted."""
+        """Latest version of every provider (ended offers included; the UI labels them)."""
         ...
 
     def get_provider(self, provider_id: str) -> ProviderRecord | None: ...
