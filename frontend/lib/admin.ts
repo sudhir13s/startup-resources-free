@@ -1,9 +1,9 @@
 /**
  * Admin session helpers — server-only. Never import from a Client Component.
  *
- * The admin passphrase (ADMIN_TOKEN) never reaches the browser. Login
- * compares the submitted passphrase against ADMIN_TOKEN and, on success,
- * sets an httpOnly session cookie whose value is an HMAC of ADMIN_TOKEN
+ * The admin passphrase (RESOURCEOS_PASSPHRASE) never reaches the browser. Login
+ * compares the submitted passphrase against RESOURCEOS_PASSPHRASE and, on success,
+ * sets an httpOnly session cookie whose value is an HMAC of RESOURCEOS_PASSPHRASE
  * (not the token itself) so the cookie can be verified without storing
  * the token client-side.
  */
@@ -13,13 +13,13 @@ export const ADMIN_COOKIE_NAME = "ros_admin";
 const SESSION_CONTEXT = "ros-admin-session-v1";
 const COOKIE_MAX_AGE_SECONDS = 30 * 24 * 60 * 60; // 30 days
 
-/** Reads ADMIN_TOKEN; null when unset (refresh feature disabled). */
+/** Reads RESOURCEOS_PASSPHRASE; null when unset (refresh feature disabled). */
 export function getAdminToken(): string | null {
-  const token = process.env.ADMIN_TOKEN?.trim();
+  const token = process.env.RESOURCEOS_PASSPHRASE?.trim();
   return token && token.length > 0 ? token : null;
 }
 
-/** Expected session-cookie value for the configured ADMIN_TOKEN. */
+/** Expected session-cookie value for the configured RESOURCEOS_PASSPHRASE. */
 export function expectedSessionValue(adminToken: string): string {
   return createHmac("sha256", adminToken).update(SESSION_CONTEXT).digest("hex");
 }

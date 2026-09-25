@@ -251,14 +251,14 @@ def test_should_not_retry_on_4xx(tmp_path):
 
 
 def test_should_return_none_from_env_when_token_missing(monkeypatch):
-    monkeypatch.delenv("GITHUB_DATA_TOKEN", raising=False)
+    monkeypatch.delenv("RESOURCEOS_GITHUB_TOKEN", raising=False)
     assert GitHubDataSync.from_env() is None
 
 
 def test_should_build_from_env_when_token_present(monkeypatch):
-    monkeypatch.setenv("GITHUB_DATA_TOKEN", "secret-token")
-    monkeypatch.delenv("GITHUB_REPO", raising=False)
-    monkeypatch.delenv("DATA_BRANCH", raising=False)
+    monkeypatch.setenv("RESOURCEOS_GITHUB_TOKEN", "secret-token")
+    monkeypatch.delenv("RESOURCEOS_DATA_REPO", raising=False)
+    monkeypatch.delenv("RESOURCEOS_DATA_BRANCH", raising=False)
     sync = GitHubDataSync.from_env()
     assert sync is not None
     assert sync.repo_slug == "sudhir13s/startup-resources-free"

@@ -60,12 +60,12 @@ class GitHubDataSync:
 
     @classmethod
     def from_env(cls) -> GitHubDataSync | None:
-        """Build from `GITHUB_DATA_TOKEN`/`GITHUB_REPO`/`DATA_BRANCH`; None when the token is missing."""
-        token = os.environ.get("GITHUB_DATA_TOKEN")
+        """Build from `RESOURCEOS_GITHUB_TOKEN`/`RESOURCEOS_DATA_REPO`/`RESOURCEOS_DATA_BRANCH`; None when the token is missing."""
+        token = os.environ.get("RESOURCEOS_GITHUB_TOKEN")
         if not token:
             return None
-        repo_slug = os.environ.get("GITHUB_REPO", "sudhir13s/startup-resources-free")
-        branch = os.environ.get("DATA_BRANCH", "data")
+        repo_slug = os.environ.get("RESOURCEOS_DATA_REPO", "sudhir13s/startup-resources-free")
+        branch = os.environ.get("RESOURCEOS_DATA_BRANCH", "data")
         return cls(repo_slug=repo_slug, token=token, branch=branch)
 
     async def _request(self, method: str, url: str, **kwargs: Any) -> httpx.Response:
