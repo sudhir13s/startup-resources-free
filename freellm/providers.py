@@ -34,9 +34,7 @@ BASE_URLS: dict[str, str] = {
     "openrouter": "https://openrouter.ai/api/v1",
     "cerebras": "https://api.cerebras.ai/v1",
     "mistral": "https://api.mistral.ai/v1",
-    "sambanova": "https://api.sambanova.ai/v1",
     "nvidia_nim": "https://integrate.api.nvidia.com/v1",
-    "together_ai": "https://api.together.xyz/v1",
     "huggingface": "https://router.huggingface.co/v1",
 }
 
@@ -81,7 +79,7 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
     # The router tries entries top to bottom, so order = free daily
     # headroom: Groq and Gemini (1000-1500/day each) cover a full
     # refresh; Cerebras is the large backup; small or unverified pools
-    # follow; Together's one-time credit never resets, so it goes last.
+    # follow.
     # ============================================================
     "text": [
         ProviderEntry(
@@ -190,17 +188,6 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             docs_url="https://openrouter.ai/docs/api-reference/limits",
         ),
         ProviderEntry(
-            provider="sambanova",
-            model="Meta-Llama-3.1-8B-Instruct",
-            free_tier=_free_with_limits("Free developer tier; rate-limited per model."),
-            env_var="SAMBANOVA_API_KEY",
-            base_url=_base_url("sambanova"),
-            speed_tier="fast",
-            last_verified=date(2026, 4, 21),
-            docs_url="https://docs.sambanova.ai/cloud/docs/get-started/overview",
-            notes="Not re-verified 2026-09-25 — recheck rate limits before relying on it.",
-        ),
-        ProviderEntry(
             provider="huggingface",
             model="meta-llama/Meta-Llama-3-8B-Instruct",
             free_tier=_free_with_limits("HF Router; shared free pool."),
@@ -209,17 +196,6 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             speed_tier="slow",
             last_verified=date(2026, 4, 19),
             docs_url="https://huggingface.co/docs/inference-providers/index",
-            notes="Not re-verified 2026-09-25 — recheck before relying on it.",
-        ),
-        ProviderEntry(
-            provider="together_ai",
-            model="meta-llama/Llama-3.1-8B-Instruct-Turbo",
-            free_tier=_credits(1.0, notes="$1 starter + select Free models."),
-            env_var="TOGETHER_API_KEY",
-            base_url=_base_url("together_ai"),
-            speed_tier="fast",
-            last_verified=date(2026, 4, 21),
-            docs_url="https://www.together.ai/pricing",
             notes="Not re-verified 2026-09-25 — recheck before relying on it.",
         ),
     ],
@@ -260,15 +236,6 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             base_url=_base_url("huggingface"),
             speed_tier="slow",
             last_verified=date(2026, 4, 19),
-        ),
-        ProviderEntry(
-            provider="together_ai",
-            model="black-forest-labs/FLUX.1-schnell-Free",
-            free_tier=_free_with_limits("Free FLUX-schnell on Together."),
-            env_var="TOGETHER_API_KEY",
-            base_url=_base_url("together_ai"),
-            speed_tier="fast",
-            last_verified=date(2026, 4, 21),
         ),
         ProviderEntry(
             provider="replicate",
