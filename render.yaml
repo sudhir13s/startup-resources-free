@@ -43,11 +43,7 @@ services:
         sync: false
       - key: MISTRAL_API_KEY
         sync: false
-      - key: SAMBANOVA_API_KEY
-        sync: false
       - key: NVIDIA_API_KEY
-        sync: false
-      - key: TOGETHER_API_KEY
         sync: false
       - key: HF_TOKEN
         sync: false
