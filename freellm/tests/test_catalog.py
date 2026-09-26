@@ -31,7 +31,7 @@ def test_every_entry_validates_as_provider_entry():
             assert isinstance(e, ProviderEntry)
             assert e.provider
             assert e.model
-            assert e.env_var.endswith("_KEY") or e.env_var.endswith("_TOKEN")
+            assert "_KEY" in e.env_var or "_TOKEN" in e.env_var
             assert e.last_verified is not None
 
 

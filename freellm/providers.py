@@ -128,7 +128,7 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             provider="cerebras",
             model="llama3.1-70b",
             free_tier=_rpd(rpd=14400),
-            env_var="CEREBRAS_API_KEY",
+            env_var="CEREBRAS_API_KEY_19S",
             base_url=_base_url("cerebras"),
             speed_tier="fast",
             last_verified=date(2026, 9, 25),
@@ -155,7 +155,7 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             provider="nvidia_nim",
             model="meta/llama-3.1-8b-instruct",
             free_tier=_free_with_limits("Free NIM API credits for evaluation use."),
-            env_var="NVIDIA_API_KEY",
+            env_var="NVIDIA_API_KEY_19S",
             base_url=_base_url("nvidia_nim"),
             speed_tier="medium",
             last_verified=date(2026, 4, 21),
@@ -168,7 +168,7 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             free_tier=_free_with_limits(
                 "20 RPM; 50 RPD (<10 credits purchased) or 1000 RPD (10+ credits)."
             ),
-            env_var="OPENROUTER_API_KEY",
+            env_var="OPENROUTER_API_KEY_19S",
             base_url=_base_url("openrouter"),
             speed_tier="medium",
             last_verified=date(2026, 9, 25),
@@ -181,7 +181,7 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             free_tier=_free_with_limits(
                 "20 RPM; 50 RPD (<10 credits purchased) or 1000 RPD (10+ credits)."
             ),
-            env_var="OPENROUTER_API_KEY",
+            env_var="OPENROUTER_API_KEY_19S",
             base_url=_base_url("openrouter"),
             speed_tier="fast",
             last_verified=date(2026, 9, 25),
@@ -217,7 +217,7 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             provider="openrouter",
             model="meta-llama/llama-3.2-11b-vision-instruct:free",
             free_tier=_free_with_limits("Free :free vision via OpenRouter."),
-            env_var="OPENROUTER_API_KEY",
+            env_var="OPENROUTER_API_KEY_19S",
             base_url=_base_url("openrouter"),
             speed_tier="medium",
             last_verified=date(2026, 9, 25),
