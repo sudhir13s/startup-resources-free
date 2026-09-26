@@ -78,8 +78,10 @@ def _free_with_limits(notes: str) -> AlwaysFreeWithLimits:
 PROVIDERS: dict[Modality, list[ProviderEntry]] = {
     # ============================================================
     # text — chat / completion
-    # Ordered by quality + generosity of the FREE tier, verified
-    # 2026-09-25 against each provider's own docs (WebFetch).
+    # The router tries entries top to bottom, so order = free daily
+    # headroom: Groq and Gemini (1000-1500/day each) cover a full
+    # refresh; Cerebras is the large backup; small or unverified pools
+    # follow; Together's one-time credit never resets, so it goes last.
     # ============================================================
     "text": [
         ProviderEntry(
@@ -141,6 +143,28 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             ),
         ),
         ProviderEntry(
+            provider="mistral",
+            model="open-mistral-7b",
+            free_tier=_free_with_limits("Free tier rate-limited. Phone OTP signup."),
+            env_var="MISTRAL_API_KEY",
+            base_url=_base_url("mistral"),
+            speed_tier="medium",
+            last_verified=date(2026, 4, 21),
+            docs_url="https://docs.mistral.ai/",
+            notes="Not re-verified 2026-09-25 (docs page moved, 404 on fetch); recheck.",
+        ),
+        ProviderEntry(
+            provider="nvidia_nim",
+            model="meta/llama-3.1-8b-instruct",
+            free_tier=_free_with_limits("Free NIM API credits for evaluation use."),
+            env_var="NVIDIA_API_KEY",
+            base_url=_base_url("nvidia_nim"),
+            speed_tier="medium",
+            last_verified=date(2026, 4, 21),
+            docs_url="https://build.nvidia.com/",
+            notes="Not re-verified 2026-09-25 — recheck credit terms before relying on it.",
+        ),
+        ProviderEntry(
             provider="openrouter",
             model="meta-llama/llama-3.1-70b-instruct:free",
             free_tier=_free_with_limits(
@@ -166,17 +190,6 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             docs_url="https://openrouter.ai/docs/api-reference/limits",
         ),
         ProviderEntry(
-            provider="mistral",
-            model="open-mistral-7b",
-            free_tier=_free_with_limits("Free tier rate-limited. Phone OTP signup."),
-            env_var="MISTRAL_API_KEY",
-            base_url=_base_url("mistral"),
-            speed_tier="medium",
-            last_verified=date(2026, 4, 21),
-            docs_url="https://docs.mistral.ai/",
-            notes="Not re-verified 2026-09-25 (docs page moved, 404 on fetch); recheck.",
-        ),
-        ProviderEntry(
             provider="sambanova",
             model="Meta-Llama-3.1-8B-Instruct",
             free_tier=_free_with_limits("Free developer tier; rate-limited per model."),
@@ -188,15 +201,15 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             notes="Not re-verified 2026-09-25 — recheck rate limits before relying on it.",
         ),
         ProviderEntry(
-            provider="nvidia_nim",
-            model="meta/llama-3.1-8b-instruct",
-            free_tier=_free_with_limits("Free NIM API credits for evaluation use."),
-            env_var="NVIDIA_API_KEY",
-            base_url=_base_url("nvidia_nim"),
-            speed_tier="medium",
-            last_verified=date(2026, 4, 21),
-            docs_url="https://build.nvidia.com/",
-            notes="Not re-verified 2026-09-25 — recheck credit terms before relying on it.",
+            provider="huggingface",
+            model="meta-llama/Meta-Llama-3-8B-Instruct",
+            free_tier=_free_with_limits("HF Router; shared free pool."),
+            env_var="HF_TOKEN",
+            base_url=_base_url("huggingface"),
+            speed_tier="slow",
+            last_verified=date(2026, 4, 19),
+            docs_url="https://huggingface.co/docs/inference-providers/index",
+            notes="Not re-verified 2026-09-25 — recheck before relying on it.",
         ),
         ProviderEntry(
             provider="together_ai",
@@ -207,17 +220,6 @@ PROVIDERS: dict[Modality, list[ProviderEntry]] = {
             speed_tier="fast",
             last_verified=date(2026, 4, 21),
             docs_url="https://www.together.ai/pricing",
-            notes="Not re-verified 2026-09-25 — recheck before relying on it.",
-        ),
-        ProviderEntry(
-            provider="huggingface",
-            model="meta-llama/Meta-Llama-3-8B-Instruct",
-            free_tier=_free_with_limits("HF Router; shared free pool."),
-            env_var="HF_TOKEN",
-            base_url=_base_url("huggingface"),
-            speed_tier="slow",
-            last_verified=date(2026, 4, 19),
-            docs_url="https://huggingface.co/docs/inference-providers/index",
             notes="Not re-verified 2026-09-25 — recheck before relying on it.",
         ),
     ],
